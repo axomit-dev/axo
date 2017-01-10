@@ -1,0 +1,23 @@
+{% if events %}
+
+  <table>
+    <tr>
+      <th> Name </th>
+      <th> Date </th>
+      <th> Is Mandatory </th>
+    </tr>
+    {% for event in events %}
+        <tr>
+          <!-- Remove reliance on a specific URL path -->
+          <!-- Uses the 'name' field for the URL -->
+          <!-- polls: to reference the correct URL from the right app -->
+          <td>{{ event.name }}</a></td>
+          <td> {{ event.date }} </td>
+          <td> {{ event.isMandatory }} </td>
+        </tr>
+    {% endfor %}
+    </table>
+
+{% else %}
+    <p>No events are available.</p>
+{% endif %}
