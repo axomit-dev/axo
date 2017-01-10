@@ -24,7 +24,7 @@
             {% if event.is_activated %}
               Activated!
             {% else %}
-              <a href="{% url 'attendance:activate' event.id %}"> Activate </a>
+              <a href="{% url 'attendance:activate' event.id %}"> Activate Now </a>
             {% endif %}
           </td>
           <!-- TODO: Use a form + POST to do that instead
