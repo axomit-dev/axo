@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse
 
 from .models import Event, Sister
@@ -9,6 +9,11 @@ def events(request):
 
 def checkin(request, event_id):
   # TODO
+  event = get_object_or_404(Event, pk=event_id)
   required_sisters = Sister.objects.exclude(status=Sister.ALUM).exclude(status=Sister.ABROAD)
-  return render(request, 'attendance/checkin.html', {'sisters': required_sisters})
+  context = {
+    'event': event,
+    'sisters': required_sisters,
+  }
+  return render(request, 'attendance/checkin.html', context)
   #return HttpResponse("Checkin for event %s." % event_id)

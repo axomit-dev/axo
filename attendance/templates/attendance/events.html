@@ -11,7 +11,11 @@
           <!-- Remove reliance on a specific URL path -->
           <!-- Uses the 'name' field for the URL -->
           <!-- polls: to reference the correct URL from the right app -->
-          <td>{{ event.name }}</a></td>
+          <td>
+            <a href="{% url 'attendance:checkin' event.id %}">
+              {{ event.name }}
+            </a>
+          </td>
           <td> {{ event.date }} </td>
           <td> {{ event.isMandatory }} </td>
         </tr>
