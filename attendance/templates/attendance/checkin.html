@@ -1,0 +1,7 @@
+<h1> Required Sisters: </h1>
+
+<ul>
+{% for sister in sisters %}
+  <li> {{ sister.user.username }} </li>
+{% endfor %}
+</ul>
