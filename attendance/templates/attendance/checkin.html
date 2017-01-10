@@ -1,9 +1,11 @@
+<a href="{% url 'attendance:events' %}"> See All Events </a>
+
 <h1> Event: {{ event.name }} </h1>
 
 <h1> Required Sisters: </h1>
 
 <ul>
-{% for sister in sisters %}
+{% for sister in event.required_sisters.all %}
   <li> {{ sister.user.username }} </li>
 {% endfor %}
 </ul>

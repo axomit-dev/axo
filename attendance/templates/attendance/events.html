@@ -8,16 +8,32 @@
     </tr>
     {% for event in events %}
         <tr>
-          <!-- Remove reliance on a specific URL path -->
-          <!-- Uses the 'name' field for the URL -->
-          <!-- polls: to reference the correct URL from the right app -->
           <td>
-            <a href="{% url 'attendance:checkin' event.id %}">
+            {% if event.is_activated %}
+              <a href="{% url 'attendance:checkin' event.id %}">
+                {{ event.name }}
+              </a>
+            {% else %}
               {{ event.name }}
-            </a>
+            {% endif %}
           </td>
           <td> {{ event.date }} </td>
-          <td> {{ event.isMandatory }} </td>
+          <td> {{ event.is_mandatory }} </td>
+          <!-- Activate Button -->
+          <td>
+            {% if event.is_activated %}
+              Activated!
+            {% else %}
+              <a href="{% url 'attendance:activate' event.id %}"> Activate </a>
+            {% endif %}
+          </td>
+          <!-- TODO: Use a form + POST to do that instead
+            <form action="{% url 'attendance:activate' event.id %}" method="POST">
+              {% csrf_token %}
+              <input id="activate_button" name="activate" type="button" value="Activate" />
+            </form>
+          -->
+          </td>
         </tr>
     {% endfor %}
     </table>
