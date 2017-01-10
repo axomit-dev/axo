@@ -4,8 +4,19 @@
 
 <h1> Required Sisters: </h1>
 
-<ul>
+<table>
+  <tr>
+    <th> Sister </th>
+    <th> Attendance </th>
+  </tr>
 {% for sister in event.required_sisters.all %}
-  <li> {{ sister.user.username }} </li>
-{% endfor %}
-</ul>
+  <tr>
+    <td> {{ sister.user.username }} </td>
+    {% if sister in event.sisters_attended.all %}
+      <td> Already checked in! </td>
+    {% else %}
+      <td> <a href="{% url 'attendance:checkin_sister' event.id sister.id %}"> Check In </a> </td>
+    {% endif %}
+  </tr>
+  {% endfor %}
+</table>

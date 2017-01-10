@@ -35,6 +35,7 @@ class Event(models.Model):
   is_mandatory = models.BooleanField(default=False)
   is_activated = models.BooleanField(default=False)
   required_sisters = models.ManyToManyField(Sister, blank=True, related_name='sisters_required')
+  sisters_attended = models.ManyToManyField(Sister, blank=True, related_name='Attendees')
 
   def __str__(self):
     formatted_date = self.date.strftime("%A, %B %d %Y at %I:%M%p")

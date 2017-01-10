@@ -28,3 +28,14 @@ def activate(request, event_id):
   return HttpResponseRedirect(
     reverse('attendance:checkin', args=(event.id,)))
 
+def checkin_sister(request, event_id, sister_id):
+  event = get_object_or_404(Event, pk=event_id)
+  sister = get_object_or_404(Sister, pk=sister_id)
+  # Add sister to list of attendees
+  event.sisters_attended.add(sister)
+  event.save()
+  # Redirect to the same checkin page
+  return HttpResponseRedirect(
+    reverse('attendance:checkin', args=(event.id,)))
+
+
