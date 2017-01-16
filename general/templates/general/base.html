@@ -10,11 +10,11 @@
 
 <body>
   <div id="container">
+    <h1> Alpha Chi Omega </h1>
 
-    <h2> AXO Attendance </h2>
+    <h2> Attendance </h2>
 
-
-    <div id="navigation">
+    <div id="attendance-navigation">
       <!-- Anyone can go to the homepage -->
       <a href="{% url 'attendance:index' %}"> Home </a>
 
@@ -31,6 +31,34 @@
       <div id="navigation-superuser">
         <a href="{% url 'attendance:events' %}">  All Events </a>
         <a href="{% url 'attendance:excuse_pending' %}"> Pending Excuses </a>
+      </div>
+      {% endif %}
+
+    </div>
+
+
+    <h2> Elections </h2>
+    <div id="elections-navigation">
+      <a href="{% url 'elections:index' %}"> Home </a>
+
+      <!-- Any user can do these actions -->
+      {% if user.is_authenticated %}
+        <a href="{% url 'elections:ois_submission' %}"> OIS Submission </a>
+        <a href="{% url 'elections:ois_results' %}"> OIS Results </a>
+        <a href="{% url 'elections:loi_submission' %}"> LOI Submission </a>
+        <a href="{% url 'elections:loi_results' %}"> Submitted LOIs </a>
+        <a href="{% url 'elections:slating' %}"> Slating </a>
+        <a href="{% url 'elections:voting' %}"> Voting </a>
+        <a href="{% url 'attendance:logout' %}"> Logout </a>
+      {% else %}
+        <a href="{% url 'attendance:login' %}"> Login </a>
+      {% endif %}
+
+      <!-- A superuser can also see results of slating and voting -->
+      {% if user.is_superuser %}
+      <div id="elections-navigation-superuser">
+        <a href="{% url 'elections:slating_results' %}">  Slating Results </a>
+        <a href="{% url 'elections:voting_results' %}"> Voting Results </a>
       </div>
       {% endif %}
 

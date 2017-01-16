@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Event, Sister
+from .models import Event
 
 class EventAdmin(admin.ModelAdmin):
   fieldsets = [
@@ -9,4 +9,3 @@ class EventAdmin(admin.ModelAdmin):
   list_display = ('name', 'date', 'is_mandatory', 'points')
 
 admin.site.register(Event, EventAdmin)
-admin.site.register(Sister)

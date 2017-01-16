@@ -6,7 +6,8 @@ from django.utils import timezone
 from django.core.mail import send_mail
 from django.conf import settings
 
-from .models import Event, Sister, User, Excuse
+from .models import Event, User, Excuse
+from general.models import Sister
 
 ##########################
 ##### HELPER METHODS #####
