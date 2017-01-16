@@ -1,8 +1,20 @@
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
+from django.contrib.auth.decorators import login_required
 
 from .models import Event, Sister, User
+
+# Helper method to fill in user and sister if someone is logged in.
+def get_context(request):
+  context = {}
+  context['user'] = request.user
+  if request.user.is_authenticated():
+    try:
+      context['sister'] = Sister.objects.get(user=request.user)
+    except:
+      pass
+  return context
 
 def index(request):
   return render(request, 'attendance/index.html', {})
@@ -21,12 +33,14 @@ def checkin(request, event_id):
     return HttpResponse("This event has not been activated yet.") 
 
 # View attendance record of the given user.
-def personal_record(request, user_id):
-  user = get_object_or_404(User, pk=user_id)
-  sister = get_object_or_404(Sister, user=user)
+@login_required
+def personal_record(request):
+  request_context = get_context(request)
+  #user = get_object_or_404(User, pk=user_id)
+  #sister = get_object_or_404(Sister, user=user)
   all_events = Event.objects.order_by('-date');
   context = {
-    'sister': sister,
+    'sister': request_context['sister'],
     'events': all_events,
   }
   return render(request, 'attendance/personal_record.html', context)

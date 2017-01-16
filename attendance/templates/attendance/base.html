@@ -10,7 +10,7 @@
       <a href="{% url 'attendance:index' %}"> Home </a>
       <a href="{% url 'attendance:events' %}"> See All Events </a>
       {% if user.is_authenticated %}
-        <a href="{% url 'attendance:personal_record' user.id %}"> See My Attendance </a>
+        <a href="{% url 'attendance:personal_record' %}"> See My Attendance </a>
         <a href="{% url 'attendance:logout' %}"> Logout </a>
         <p> Your username: {{ user.username }} </p>
       {% else %}

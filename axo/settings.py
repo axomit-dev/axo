@@ -115,6 +115,9 @@ USE_L10N = True
 
 USE_TZ = True
 
+# URL that allows users to login.
+LOGIN_URL = '/attendance/login/'
+
 # URL to redirect to on login success.
 LOGIN_REDIRECT_URL = '/attendance/events'
 
