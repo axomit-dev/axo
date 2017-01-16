@@ -16,6 +16,14 @@ def get_context(request):
       pass
   return context
 
+# Helper method to get the current sister logged in.
+def get_sister(request):
+  context = get_context(request)
+  if context['sister']:
+    return context['sister']
+  else:
+    return None
+
 def index(request):
   return render(request, 'attendance/index.html', {})
 
@@ -72,17 +80,31 @@ def checkin_sister(request, event_id, sister_id):
 # EXCUSE-RELATED VIEWS
 
 # Render the page to write an excuse.
+@login_required
 def excuse_write(request, event_id):
+  sister = get_sister(request)
   event = get_object_or_404(Event, pk=event_id)
-  return render(request, 'attendance/excuse_write.html', {'event': event})
+  context = {
+    'event': event
+  }
+  # See if they've already written an excuse for this event.
+  try:
+    excuse = Excuse.objects.get(sister=sister, event=event)
+  except Excuse.DoesNotExist:
+    pass
+  else:
+    context['excuse'] = excuse
+
+  return render(request, 'attendance/excuse_write.html', context)
 
 # Handle the POST request to submit an excuse.
+@login_required
 def excuse_submit(request, event_id):
-  request_context = get_context(request)
   event = get_object_or_404(Event, pk=event_id)
   excuse_text = request.POST['excuse']
   print(excuse_text)
-  sister = request_context['sister']
+  sister = get_sister(request)
   excuse = Excuse(event=event, sister=sister, text=excuse_text)
   excuse.save()
-  return HttpResponse("You have submitted an excuse.")
+  return HttpResponseRedirect(
+    reverse('attendance:excuse_write', args=(event.id,)))

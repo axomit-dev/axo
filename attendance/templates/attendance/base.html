@@ -6,6 +6,10 @@
 
 <body>
   <div id="container">
+
+    <h2> AXO Attendance </h2>
+
+    
     <div id="navigation">
       <a href="{% url 'attendance:index' %}"> Home </a>
       <a href="{% url 'attendance:events' %}"> See All Events </a>
@@ -18,7 +22,6 @@
       {% endif %}
     </div>
 
-    <h2> AXO Attendance </h2>
 
     {% block content %}
     {% endblock %}

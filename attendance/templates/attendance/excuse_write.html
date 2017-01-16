@@ -2,13 +2,19 @@
 
 {% block content %}
 
-<p> You're submitting an excuse for {{ event }}. </p>
+<h2> Event: {{ event }} </h2>
 
-<form action="{% url 'attendance:excuse_submit' event.id %}" method="post">
-  {% csrf_token %}
-  <textarea name="excuse" cols="40" rows="5"></textarea>
-  <input type="submit" value="Submit" />
-</form>
+{% if excuse %}
+  <p> You've already submitted an excuse for this event: </p>
+  <p> {{ excuse.text }} </p>
+{% else %}
 
+  <form action="{% url 'attendance:excuse_submit' event.id %}" method="post">
+    {% csrf_token %}
+    <textarea name="excuse" cols="40" rows="5"></textarea>
+    <input type="submit" value="Submit" />
+  </form>
+
+{% endif %}
 
 {% endblock content %}
