@@ -14,6 +14,8 @@
     <td> {{ event }} </td>
     {% if sister in event.sisters_attended.all %}
       <td> Attended </td>
+    {% elif sister in event.sisters_excused.all %}
+      <td> Excused </td>
     {% else %}
       <td> Missed </td>
     {% endif %}
