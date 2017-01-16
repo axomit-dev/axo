@@ -1,7 +1,7 @@
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
 from django.utils import timezone
 
 from .models import Event, Sister, User, Excuse
@@ -44,11 +44,13 @@ def index(request):
 ###############################
 
 # List of all events
+@user_passes_test(lambda u: u.is_superuser)
 def events(request):
   events = Event.objects.order_by('-date');
   return render(request, 'attendance/events.html', {'events': events})
 
 # Detail page for a specific event
+@user_passes_test(lambda u: u.is_superuser)
 def event_details(request, event_id):
   event = get_object_or_404(Event, pk=event_id)
   if (event.is_activated):
@@ -61,7 +63,7 @@ def event_details(request, event_id):
 # This records a list of sisters who should be attending, based
 # on the status of all sisters. Anyone that isn't abroad or an alum
 # is considered a possible attendee.
-@login_required
+@user_passes_test(lambda u: u.is_superuser)
 def activate(request, event_id):
   event = get_object_or_404(Event, pk=event_id)
   # Create the list of sisters who should attend
@@ -74,7 +76,7 @@ def activate(request, event_id):
     reverse('attendance:event_details', args=(event.id,)))
 
 # Check-in a particular sister for a particular event.
-@login_required
+@user_passes_test(lambda u: u.is_superuser)
 def checkin_sister(request, event_id, sister_id):
   event = get_object_or_404(Event, pk=event_id)
   sister = get_object_or_404(Sister, pk=sister_id)
@@ -136,13 +138,13 @@ def excuse_submit(request, event_id):
     reverse('attendance:personal_record'))
 
 # Display all pending excuses.
-@login_required
+@user_passes_test(lambda u: u.is_superuser)
 def excuse_pending(request):
   excuses = Excuse.objects.filter(status=Excuse.PENDING)
   return render(request, 'attendance/excuse_pending.html', {'excuses': excuses})
 
 # Approve an excuse.
-@login_required
+@user_passes_test(lambda u: u.is_superuser)
 def excuse_approve(request, excuse_id):
   excuse = get_object_or_404(Excuse, pk=excuse_id)
   excuse.status = Excuse.APPROVED
@@ -158,7 +160,7 @@ def excuse_approve(request, excuse_id):
     reverse('attendance:excuse_pending'))
 
 # Deny an excuse.
-@login_required
+@user_passes_test(lambda u: u.is_superuser)
 def excuse_deny(request, excuse_id):
   excuse = get_object_or_404(Excuse, pk=excuse_id)
   excuse.status = Excuse.DENIED
