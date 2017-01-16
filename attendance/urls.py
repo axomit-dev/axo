@@ -17,7 +17,7 @@ urlpatterns = [
   url(r'^excuses/write/(?P<event_id>[0-9]+)/$', views.excuse_write, name='excuse_write'),
   url(r'^excuses/submit/(?P<event_id>[0-9]+)/$', views.excuse_submit, name='excuse_submit'),
   
-  #url(r'^excuses/pending/$', views.excuse_pending, name='excuse_pending'),
+  url(r'^excuses/pending/$', views.excuse_pending, name='excuse_pending'),
   #url(r'^excuses/approve/(?P<excuse_id>[0-9]+)/$', views.excuse_approve, name='excuse_approve'),
   #url(r'^excuses/deny/(?P<excuse_id>[0-9]+)/$', views.excuse_deny, name='excuse_deny'),
 

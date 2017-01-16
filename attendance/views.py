@@ -108,3 +108,9 @@ def excuse_submit(request, event_id):
   excuse.save()
   return HttpResponseRedirect(
     reverse('attendance:excuse_write', args=(event.id,)))
+
+# Display all pending excuses.
+@login_required
+def excuse_pending(request):
+  excuses = Excuse.objects.filter(status=Excuse.PENDING)
+  return render(request, 'attendance/excuse_pending.html', {'excuses': excuses})

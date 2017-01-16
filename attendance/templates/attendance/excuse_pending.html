@@ -1,0 +1,24 @@
+{% extends "attendance/base.html" %}
+
+{% block content %}
+
+<h2> All Pending Excuses </h2>
+
+<table>
+  <tr>
+    <th> Event </th>
+    <th> Sister </th>
+    <th> Excuse </th>
+  </tr>
+
+  {% for excuse in excuses %}
+    <tr>
+      <td> {{ excuse.event }} </td>
+      <td> {{ excuse.sister.user.username }} </td>
+      <td> {{ excuse.text }} </td>
+    </tr>
+
+  {% endfor %}
+
+
+{% endblock content %}
