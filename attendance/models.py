@@ -30,6 +30,9 @@ class Sister(models.Model):
 
 @python_2_unicode_compatible
 class Event(models.Model):
+  # Excused absences are worth 75% of the original point value
+  VALUE_OF_EXCUSED_ABSENCE = .75
+
   name = models.CharField(max_length=200)
   date = models.DateTimeField()
   is_mandatory = models.BooleanField(default=False)
@@ -38,6 +41,7 @@ class Event(models.Model):
   sisters_attended = models.ManyToManyField(Sister, blank=True, related_name='Attendees')
   sisters_excused = models.ManyToManyField(Sister, blank=True, related_name='sisters_excused')
 
+  points = models.IntegerField(default=10)
 
   def __str__(self):
     formatted_date = self.date.strftime("%A, %B %d %Y at %I:%M%p")
