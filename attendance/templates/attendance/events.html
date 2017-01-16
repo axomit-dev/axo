@@ -15,7 +15,7 @@
         <tr>
           <td>
             {% if event.is_activated %}
-              <a href="{% url 'attendance:checkin' event.id %}">
+              <a href="{% url 'attendance:event_details' event.id %}">
                 {{ event.name }}
               </a>
             {% else %}

@@ -36,6 +36,8 @@ class Event(models.Model):
   is_activated = models.BooleanField(default=False)
   required_sisters = models.ManyToManyField(Sister, blank=True, related_name='sisters_required')
   sisters_attended = models.ManyToManyField(Sister, blank=True, related_name='Attendees')
+  sisters_excused = models.ManyToManyField(Sister, blank=True, related_name='sisters_excused')
+
 
   def __str__(self):
     formatted_date = self.date.strftime("%A, %B %d %Y at %I:%M%p")
@@ -43,11 +45,11 @@ class Event(models.Model):
 
 class Excuse(models.Model):
   PENDING = 0
-  ACCEPTED = 1
+  APPROVED = 1
   DENIED = 2
   STATUS = (
     (PENDING, 'Pending'),
-    (ACCEPTED, 'Accepted'),
+    (APPROVED, 'Approved'),
     (DENIED, 'Denied')
   )
 

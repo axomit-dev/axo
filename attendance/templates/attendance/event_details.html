@@ -18,8 +18,18 @@
     {% if sister in event.sisters_attended.all %}
       <td> Already checked in! </td>
     {% else %}
-      <td> <a href="{% url 'attendance:checkin_sister' event.id sister.id %}"> Check In </a> </td>
+      <td> 
+        <form action="{% url 'attendance:checkin_sister' event.id sister.id %}" method="post">
+          {% csrf_token %}
+          <input type="submit" value="Check In" />
+        </form>
+      </td>
     {% endif %}
+
+    {% if sister in event.sisters_excused.all %}
+      <td> Excused </td>
+    {% endif %}
+
   </tr>
   {% endfor %}
 </table>

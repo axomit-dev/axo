@@ -32,11 +32,11 @@ def events(request):
   events = Event.objects.order_by('-date');
   return render(request, 'attendance/events.html', {'events': events})
 
-def checkin(request, event_id):
+def event_details(request, event_id):
   event = get_object_or_404(Event, pk=event_id)
   if (event.is_activated):
     # Event has been activated
-    return render(request, 'attendance/checkin.html', {'event': event})
+    return render(request, 'attendance/event_details.html', {'event': event})
   else:
     return HttpResponse("This event has not been activated yet.") 
 
@@ -71,10 +71,16 @@ def checkin_sister(request, event_id, sister_id):
   # Add sister to list of attendees
   event.sisters_attended.add(sister)
   event.save()
-  # Redirect to the same checkin page
+  # Redirect to the same event details page
   return HttpResponseRedirect(
-    reverse('attendance:checkin', args=(event.id,)))
+    reverse('attendance:event_details', args=(event.id,)))
 
+
+# See status of attendance for an event.
+@login_required
+def event_status(request, event_id):
+  event = get_object_or_404(Event, pk=event_id)
+  return render(request, 'attendance/event_details.html', {'event': event})
 
 
 # EXCUSE-RELATED VIEWS
@@ -114,3 +120,28 @@ def excuse_submit(request, event_id):
 def excuse_pending(request):
   excuses = Excuse.objects.filter(status=Excuse.PENDING)
   return render(request, 'attendance/excuse_pending.html', {'excuses': excuses})
+
+# Approve an excuse
+@login_required
+def excuse_approve(request, excuse_id):
+  excuse = get_object_or_404(Excuse, pk=excuse_id)
+  excuse.status = Excuse.APPROVED
+  excuse.save()
+
+  # Add that sister to list of excused sisters
+  event = get_object_or_404(Event, pk=excuse.event.id)
+  sister = get_object_or_404(Sister, pk=excuse.sister.id)
+  event.sisters_excused.add(sister)
+  event.save()
+
+  return HttpResponseRedirect(
+    reverse('attendance:excuse_pending'))
+
+# Deny an excuse
+@login_required
+def excuse_deny(request, excuse_id):
+  excuse = get_object_or_404(Excuse, pk=excuse_id)
+  excuse.status = Excuse.DENIED
+  excuse.save()
+  return HttpResponseRedirect(
+    reverse('attendance:excuse_pending'))
