@@ -3,7 +3,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 
-from .models import Event, Sister, User
+from .models import Event, Sister, User, Excuse
 
 # Helper method to fill in user and sister if someone is logged in.
 def get_context(request):
@@ -69,3 +69,20 @@ def checkin_sister(request, event_id, sister_id):
 
 
 
+# EXCUSE-RELATED VIEWS
+
+# Render the page to write an excuse.
+def excuse_write(request, event_id):
+  event = get_object_or_404(Event, pk=event_id)
+  return render(request, 'attendance/excuse_write.html', {'event': event})
+
+# Handle the POST request to submit an excuse.
+def excuse_submit(request, event_id):
+  request_context = get_context(request)
+  event = get_object_or_404(Event, pk=event_id)
+  excuse_text = request.POST['excuse']
+  print(excuse_text)
+  sister = request_context['sister']
+  excuse = Excuse(event=event, sister=sister, text=excuse_text)
+  excuse.save()
+  return HttpResponse("You have submitted an excuse.")

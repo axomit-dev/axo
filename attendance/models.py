@@ -40,3 +40,18 @@ class Event(models.Model):
   def __str__(self):
     formatted_date = self.date.strftime("%A, %B %d %Y at %I:%M%p")
     return self.name + " | " + formatted_date
+
+class Excuse(models.Model):
+  PENDING = 0
+  ACCEPTED = 1
+  DENIED = 2
+  STATUS = (
+    (PENDING, 'Pending'),
+    (ACCEPTED, 'Accepted'),
+    (DENIED, 'Denied')
+  )
+
+  event = models.ForeignKey(Event)
+  sister = models.ForeignKey(Sister)
+  text = models.CharField(max_length=1000)
+  status = models.IntegerField(choices=STATUS, default=PENDING)

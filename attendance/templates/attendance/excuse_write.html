@@ -1,0 +1,14 @@
+{% extends "attendance/base.html" %}
+
+{% block content %}
+
+<p> You're submitting an excuse for {{ event }}. </p>
+
+<form action="{% url 'attendance:excuse_submit' event.id %}" method="post">
+  {% csrf_token %}
+  <textarea name="excuse" cols="40" rows="5"></textarea>
+  <input type="submit" value="Submit" />
+</form>
+
+
+{% endblock content %}
