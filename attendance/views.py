@@ -4,6 +4,9 @@ from django.urls import reverse
 
 from .models import Event, Sister
 
+def index(request):
+  return render(request, 'attendance/index.html', {})
+
 def events(request):
   print("displaying events")
   events = Event.objects.order_by('-date');

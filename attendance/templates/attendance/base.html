@@ -1,0 +1,21 @@
+<!doctype html>
+
+<head>
+  <title>{% block title %}{% endblock %}Alpha Chi Omega &ndash; Theta Omicron Chapter</title>
+</head>
+
+<body>
+  <div id="container">
+    <div id="navigation">
+      <a href="{% url 'attendance:index' %}"> Home </a>
+      <a href="{% url 'attendance:events' %}"> See All Events </a>
+    </div>
+
+    <h2> AXO Attendance </h2>
+
+    {% block content %}
+    {% endblock %}
+
+  </div>
+
+</body>
