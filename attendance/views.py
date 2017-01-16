@@ -64,10 +64,19 @@ def event_details(request, event_id):
 # on the status of all sisters. Anyone that isn't abroad or an alum
 # is considered a possible attendee.
 @user_passes_test(lambda u: u.is_superuser)
-def activate(request, event_id):
-  event = get_object_or_404(Event, pk=event_id)
+def activate(request, event_id):  
   # Create the list of sisters who should attend
-  sisters_required = Sister.objects.exclude(status=Sister.ALUM).exclude(status=Sister.ABROAD)
+  required_group = request.POST['activate_group']
+  if (required_group == 'all'):
+    sisters_required = Sister.objects.exclude(status=Sister.ALUM).exclude(status=Sister.ABROAD)
+  elif (required_group == 'new_members'):
+    sisters_required = Sister.objects.filter(status=Sister.NEW_MEMBER)
+  else:
+    # Value is a year
+    year = int(required_group)
+    sisters_required = Sister.objects.filter(class_year=year).exclude(status=Sister.ALUM).exclude(status=Sister.ABROAD)
+
+  event = get_object_or_404(Event, pk=event_id)
   event.sisters_required = sisters_required
   event.is_activated = True
   event.save()

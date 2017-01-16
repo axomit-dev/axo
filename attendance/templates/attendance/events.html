@@ -31,7 +31,16 @@
             {% else %}
               <form action="{% url 'attendance:activate' event.id %}" method="post">
                 {% csrf_token %}
-                <input type="submit" value="Activate Now" />
+                <select name="activate_group">
+                  <option value="all"> All Actives </option>
+                  <option value="new_members"> New Members Only </option>
+                  <!-- TODO: programmatically get list of years -->
+                  <option value="2017"> 2017s Only </option>
+                  <option value="2018"> 2018s Only </option>
+                  <option value="2019"> 2019s Only </option>
+                  <option value="2020"> 2020s Only </option>
+                </select>
+                <input type="submit" value="Activate" />
               </form>
             {% endif %}
           </td>

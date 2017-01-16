@@ -21,6 +21,8 @@ class Sister(models.Model):
 
   user = models.OneToOneField(User, on_delete=models.CASCADE)
   status = models.IntegerField(choices=STATUS)
+  class_year = models.IntegerField()
+
 
   def __str__(self):
     return self.user.username
@@ -41,8 +43,7 @@ class Event(models.Model):
   sisters_attended = models.ManyToManyField(Sister, blank=True, related_name='sisters_attended')
   sisters_excused = models.ManyToManyField(Sister, blank=True, related_name='sisters_excused')
 
-  points = models.IntegerField(default=10)
-
+  points = models.IntegerField()
   def __str__(self):
     formatted_date = self.date.strftime("%A, %B %d %Y at %I:%M%p")
     return self.name + " | " + formatted_date
