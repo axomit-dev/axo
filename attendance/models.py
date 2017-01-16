@@ -37,8 +37,8 @@ class Event(models.Model):
   date = models.DateTimeField()
   is_mandatory = models.BooleanField(default=False)
   is_activated = models.BooleanField(default=False)
-  required_sisters = models.ManyToManyField(Sister, blank=True, related_name='sisters_required')
-  sisters_attended = models.ManyToManyField(Sister, blank=True, related_name='Attendees')
+  sisters_required = models.ManyToManyField(Sister, blank=True, related_name='sisters_required')
+  sisters_attended = models.ManyToManyField(Sister, blank=True, related_name='sisters_attended')
   sisters_excused = models.ManyToManyField(Sister, blank=True, related_name='sisters_excused')
 
   points = models.IntegerField(default=10)

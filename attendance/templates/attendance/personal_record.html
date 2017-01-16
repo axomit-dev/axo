@@ -54,8 +54,12 @@
       <td> Attended </td>
     {% elif sister in event.sisters_excused.all %}
       <td> Excused </td>
-    {% else %}
+    {% elif sister in event.sisters_required.all %}
+      <!-- They were supposed to be there but weren't listed
+      as excused or attended -->
       <td> Missed </td>
+    {% else %}
+      <td> Not Required To Attend </td>
     {% endif %}
   </tr>
 {% endfor %}

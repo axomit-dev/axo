@@ -67,8 +67,8 @@ def event_details(request, event_id):
 def activate(request, event_id):
   event = get_object_or_404(Event, pk=event_id)
   # Create the list of sisters who should attend
-  required_sisters = Sister.objects.exclude(status=Sister.ALUM).exclude(status=Sister.ABROAD)
-  event.required_sisters = required_sisters
+  sisters_required = Sister.objects.exclude(status=Sister.ALUM).exclude(status=Sister.ABROAD)
+  event.sisters_required = sisters_required
   event.is_activated = True
   event.save()
   # Redirect to the event details page
