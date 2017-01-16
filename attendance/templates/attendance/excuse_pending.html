@@ -16,6 +16,7 @@
       <td> {{ excuse.event }} </td>
       <td> {{ excuse.sister.user.username }} </td>
       <td> {{ excuse.text }} </td>
+      <!-- Approve and Deny Buttons -->
       <td>
         <form action="{% url 'attendance:excuse_approve' excuse.id %}" method="post">
           {% csrf_token %}
@@ -29,10 +30,8 @@
         </form>
       </td>
 
-
     </tr>
 
   {% endfor %}
-
 
 {% endblock content %}

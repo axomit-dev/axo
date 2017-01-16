@@ -29,15 +29,12 @@
             {% if event.is_activated %}
               Activated!
             {% else %}
-              <a href="{% url 'attendance:activate' event.id %}"> Activate Now </a>
+              <form action="{% url 'attendance:activate' event.id %}" method="post">
+                {% csrf_token %}
+                <input type="submit" value="Activate Now" />
+              </form>
             {% endif %}
           </td>
-          <!-- TODO: Use a form + POST to do that instead
-            <form action="{% url 'attendance:activate' event.id %}" method="POST">
-              {% csrf_token %}
-              <input id="activate_button" name="activate" type="button" value="Activate" />
-            </form>
-          -->
         </tr>
     {% endfor %}
     </table>
