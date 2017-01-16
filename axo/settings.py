@@ -115,6 +115,12 @@ USE_L10N = True
 
 USE_TZ = True
 
+# URL to redirect to on login success.
+LOGIN_REDIRECT_URL = '/attendance/events'
+
+# URL to redirect to after logout.
+LOGOUT_REDIRECT_URL = '/attendance'
+
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.10/howto/static-files/
