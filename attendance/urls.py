@@ -14,7 +14,6 @@ urlpatterns = [
   url(r'^events/(?P<event_id>[0-9]+)/activate/$', views.activate, name='activate'),
   url(r'^events/(?P<event_id>[0-9]+)/checkin/sisters/(?P<sister_id>[0-9]+)$', views.checkin_sister, name='checkin_sister'),
 
-  url(r'^excuses/write/(?P<event_id>[0-9]+)/$', views.excuse_write, name='excuse_write'),
   url(r'^excuses/submit/(?P<event_id>[0-9]+)/$', views.excuse_submit, name='excuse_submit'),
   
   url(r'^excuses/pending/$', views.excuse_pending, name='excuse_pending'),

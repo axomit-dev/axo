@@ -38,11 +38,6 @@
               <input id="activate_button" name="activate" type="button" value="Activate" />
             </form>
           -->
-          {% if user.is_authenticated %}
-            <td>
-              <a href="{% url 'attendance:excuse_write' event.id %}"> Write an Excuse </a>
-            </td>
-          {% endif %}
         </tr>
     {% endfor %}
     </table>

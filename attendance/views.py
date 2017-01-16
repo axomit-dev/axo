@@ -2,6 +2,7 @@ from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
+from django.utils import timezone
 
 from .models import Event, Sister, User, Excuse
 
@@ -43,13 +44,29 @@ def event_details(request, event_id):
 # View attendance record of the given user.
 @login_required
 def personal_record(request):
-  request_context = get_context(request)
-  #user = get_object_or_404(User, pk=user_id)
-  #sister = get_object_or_404(Sister, user=user)
-  all_events = Event.objects.order_by('-date');
+  sister = get_sister(request)
+  time_threshold = timezone.now()
+  #date__lte means 'date is less than or equal to'
+  past_events = Event.objects.filter(date__lte=time_threshold).order_by('-date')
+  future_events = Event.objects.filter(date__gt=time_threshold).order_by('-date')
+
+  # List of either event or excuses
+  # If the item is an excuse, then there is an excuse associated
+  #    with that event for this particular sister.
+  # Otherwise, the item is an event and there is no associated excuse.
+  future_events_and_excuses = []
+  for event in future_events:
+    try:
+      excuse = Excuse.objects.get(event=event, sister=sister)
+    except Excuse.DoesNotExist:
+      future_events_and_excuses.append(event)
+    else:
+      future_events_and_excuses.append(excuse)
+
   context = {
-    'sister': request_context['sister'],
-    'events': all_events,
+    'sister': sister,
+    'past_events': past_events,
+    'future_events_and_excuses': future_events_and_excuses,
   }
   return render(request, 'attendance/personal_record.html', context)
 
@@ -63,7 +80,7 @@ def activate(request, event_id):
   event.save()
   # Redirect to the checkin page
   return HttpResponseRedirect(
-    reverse('attendance:checkin', args=(event.id,)))
+    reverse('attendance:event_details', args=(event.id,)))
 
 def checkin_sister(request, event_id, sister_id):
   event = get_object_or_404(Event, pk=event_id)
@@ -113,7 +130,9 @@ def excuse_submit(request, event_id):
   excuse = Excuse(event=event, sister=sister, text=excuse_text)
   excuse.save()
   return HttpResponseRedirect(
-    reverse('attendance:excuse_write', args=(event.id,)))
+    reverse('attendance:personal_record'))
+  #return HttpResponseRedirect(
+  #  reverse('attendance:excuse_write', args=(event.id,)))
 
 # Display all pending excuses.
 @login_required

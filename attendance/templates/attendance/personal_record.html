@@ -4,12 +4,48 @@
 
 <p> How You Doin'? </p>
 
+<h2> Future Events </h2>
+<table>
+  <tr>
+    <th> Event </th>
+    <th> Excuse Status </th>
+    <th> Text for Excuse </th>
+  </tr>
+  {% for item in future_events_and_excuses %}
+    {% if item.points %}
+      <!-- It's an event -->
+      <tr>
+        <td> {{ item }} </td>
+        <!-- Submit Excuse Button -->
+        <td>
+          <form action="{% url 'attendance:excuse_submit' item.id %}" method="post">
+            {% csrf_token %}
+            <textarea name="excuse" cols="40" rows="2"></textarea>
+            <input type="submit" value="Submit Excuse" />
+          </form>
+        </td>
+      </tr>
+    {% else %}
+      <!-- It's an excuse -->
+      <tr>
+        <td> {{ item.event }} </td>
+        <td> {{ item.get_status_display }} </td>
+        <td> {{ item.text }} </td>
+    {% endif %}
+
+  {% endfor %}
+</table>
+
+
+
+
+<h2> Past Events </h2>
 <table>
   <tr>
     <th> Event </th>
     <th> Attendance </th>
   </tr>
-{% for event in events %}
+{% for event in past_events %}
   <tr>
     <td> {{ event }} </td>
     {% if sister in event.sisters_attended.all %}
