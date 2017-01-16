@@ -3,6 +3,8 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.utils import timezone
+from django.core.mail import send_mail
+from django.conf import settings
 
 from .models import Event, Sister, User, Excuse
 
@@ -165,6 +167,20 @@ def excuse_approve(request, excuse_id):
   event.sisters_excused.add(sister)
   event.save()
 
+  # Email sister with result
+  if (sister.user.email):
+    message = 'Your excuse is approved. \n' + \
+      'For reference, here is the excuse you submitted: \n' + \
+      excuse.text
+    send_mail(
+      'Excuse for ' + event.__str__(),
+      message,
+      settings.EMAIL_HOST_USER,
+      [sister.user.email],
+      fail_silently=False,
+    )
+
+  # Go back to list of pending excuses
   return HttpResponseRedirect(
     reverse('attendance:excuse_pending'))
 
@@ -174,5 +190,21 @@ def excuse_deny(request, excuse_id):
   excuse = get_object_or_404(Excuse, pk=excuse_id)
   excuse.status = Excuse.DENIED
   excuse.save()
+
+  # Email sister with result
+  sister = get_object_or_404(Sister, pk=excuse.sister.id)
+  event = get_object_or_404(Event, pk=excuse.event.id)
+  if (sister.user.email):
+    message = 'Your excuse is denied. \n' + \
+      'For reference, here is the excuse you submitted: \n' + \
+      excuse.text
+    send_mail(
+      'Excuse for ' + event.__str__(),
+      message,
+      settings.EMAIL_HOST_USER,
+      [sister.user.email],
+      fail_silently=False,
+    )
+
   return HttpResponseRedirect(
     reverse('attendance:excuse_pending'))
