@@ -1,0 +1,24 @@
+{% extends "attendance/base.html" %}
+
+{% block content %}
+
+<p> How You Doin'? </p>
+
+<table>
+  <tr>
+    <th> Event </th>
+    <th> Attendance </th>
+  </tr>
+{% for event in events %}
+  <tr>
+    <td> {{ event }} </td>
+    {% if sister in event.sisters_attended.all %}
+      <td> Attended </td>
+    {% else %}
+      <td> Missed </td>
+    {% endif %}
+  </tr>
+{% endfor %}
+</table>
+
+{% endblock content %}

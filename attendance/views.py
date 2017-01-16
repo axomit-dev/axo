@@ -2,7 +2,7 @@ from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
 
-from .models import Event, Sister
+from .models import Event, Sister, User
 
 def index(request):
   return render(request, 'attendance/index.html', {})
@@ -18,7 +18,19 @@ def checkin(request, event_id):
     # Event has been activated
     return render(request, 'attendance/checkin.html', {'event': event})
   else:
-    return HttpResponse("This event has not been activated yet.")  
+    return HttpResponse("This event has not been activated yet.") 
+
+# View attendance record of the given user.
+def personal_record(request, user_id):
+  user = get_object_or_404(User, pk=user_id)
+  sister = get_object_or_404(Sister, user=user)
+  all_events = Event.objects.order_by('-date');
+  context = {
+    'sister': sister,
+    'events': all_events,
+  }
+  return render(request, 'attendance/personal_record.html', context)
+
 
 def activate(request, event_id):
   event = get_object_or_404(Event, pk=event_id)
@@ -40,5 +52,6 @@ def checkin_sister(request, event_id, sister_id):
   # Redirect to the same checkin page
   return HttpResponseRedirect(
     reverse('attendance:checkin', args=(event.id,)))
+
 
 
