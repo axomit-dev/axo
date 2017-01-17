@@ -1,0 +1,54 @@
+h2 {
+    font-size: 160%;
+}
+
+hr {
+    border-color: #A0A0A0;
+    width: 400px;
+}
+#login-text {
+    opacity: 0;
+}
+#login {
+    position:absolute;
+    right:0;
+    top:0;
+    text-align: center;
+    font-size: 60%;
+    padding: 15px;
+}
+#login:hover #login-text {
+    opacity:1;
+}
+#title {
+    letter-spacing: 3px;
+    font-weight: bold;
+}
+#subtitle{
+    letter-spacing: 2px;
+    font-weight: bold;
+}
+#container {
+    text-align: center;
+    width: 500px;
+    margin: auto;
+}
+
+#attendance {
+    display: inline-block;
+}
+
+#elections {
+    padding-left: 30px;
+    display: inline-block;
+}
+
+#house {
+    padding-left: 30px;
+    display: inline-block;
+}
+
+#resources {
+    padding-left: 30px;
+    display: inline-block;
+}
