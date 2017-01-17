@@ -4,7 +4,8 @@ from django.test import TestCase
 from django.urls import reverse
 from django.utils import timezone
 
-from .models import Event, Sister
+from .models import Event
+from general.models import Sister
 
 
 def create_event(event_name, days, is_mandatory=False, is_activated=False):
