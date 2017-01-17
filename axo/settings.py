@@ -129,3 +129,14 @@ LOGOUT_REDIRECT_URL = '/attendance/login'
 # https://docs.djangoproject.com/en/1.10/howto/static-files/
 
 STATIC_URL = '/static/'
+
+# Email-related things
+# Use EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+# for debugging. It will print emails to standard output.
+EMAIL_USE_TLS = True
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_PASSWORD = 'lyreup890' #my gmail password
+EMAIL_HOST_USER = 'axo.mit.attendance@gmail.com' #my gmail username
+EMAIL_PORT = 587
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
