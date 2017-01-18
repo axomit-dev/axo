@@ -19,7 +19,7 @@
 
     {% if user.is_authenticated %}
       <!-- <a href="{% url 'attendance:personal_record' %}"> Attendance for {{ user.username }} </a> -->
-      <a href="{% url 'attendance:logout' %}"> logout </a>
+      <a href="{% url 'logout' %}"> logout </a>
       <br>
       <div id = "attendance">
         <h2> attendance </h2>
@@ -34,9 +34,8 @@
 
           {% if user.is_authenticated %}
             <a href="{% url 'attendance:personal_record' %}"> Attendance for {{ user.username }} </a>
-            <a href="{% url 'attendance:logout' %}"> Logout </a>
+            
           {% else %}
-            <a href="{% url 'attendance:login' %}"> Login </a>
           {% endif %}
 
           A superuser can also see pending excuses and mark people as attending 
@@ -65,7 +64,6 @@
             <a href="{% url 'elections:loi_results' %}"> Submitted LOIs </a>
             <a href="{% url 'elections:slating_submission' %}"> Slating </a>
             <a href="{% url 'elections:voting_submission' %}"> Voting </a>
-            <a href="{% url 'attendance:logout' %}"> Logout </a>
           {% else %}
             <a href="{% url 'attendance:login' %}"> Login </a>
           {% endif %}
@@ -98,7 +96,7 @@
 
     {% else %}
     <br>
-    <p> Welcome to the sisters-only part of the site! Please <a href="{% url 'attendance:login' %}">login</a> to proceed.</p>
+    <p> Welcome to the sisters-only part of the site! Please <a href="{% url 'login' %}">login</a> to proceed.</p>
     {% endif %}
     <br>
     <div id="login">

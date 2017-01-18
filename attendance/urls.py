@@ -6,9 +6,6 @@ from . import views
 app_name = 'attendance'
 
 urlpatterns = [
-  # All authentication views
-  url('^', include('django.contrib.auth.urls')),
-
   # Homepage
   url(r'^$', views.index, name='index'),
 

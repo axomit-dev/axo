@@ -118,13 +118,13 @@ USE_L10N = True
 USE_TZ = True
 
 # URL that allows users to login.
-LOGIN_URL = '/attendance/login/'
+LOGIN_URL = '/login/'
 
 # URL to redirect to on login success.
 LOGIN_REDIRECT_URL = '/attendance/sister'
 
 # URL to redirect to after logout.
-LOGOUT_REDIRECT_URL = '/attendance/login'
+LOGOUT_REDIRECT_URL = '/login'
 
 
 # Static files (CSS, JavaScript, Images)
