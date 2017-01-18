@@ -11,85 +11,100 @@
 
 <body>
 
-  <div id="login">
-    <a href="/">
-      <img src="{% static 'general/images/login.png' %}" style="width:30px;height:30px;border:0;">
-    </a>
-    <p id="login-text"> login </p>
-  </div>
-
   <div id="container">
     <hr>
-    <h1 id="title"> ALPHA CHI OMEGA </h1>
+    <h1 id="title"><a href="/">ALPHA CHI OMEGA</a></h1>
     <p id = 'subtitle'>THETA OMICRON</p>
     <hr>
-    <div id = "attendance">
-      <h2> attendance </h2>
 
-      <div id="attendance-navigation">
-        <!-- Anyone can go to the homepage -->
-        <a href="{% url 'attendance:index' %}">Home</a>
+    {% if user.is_authenticated %}
+      <!-- <a href="{% url 'attendance:personal_record' %}"> Attendance for {{ user.username }} </a> -->
+      <a href="{% url 'attendance:logout' %}"> logout </a>
+      <br>
+      <div id = "attendance">
+        <h2> attendance </h2>
+        <div id="attendance-navigation">
+          <a href="/"> placeholder</a>
+          <!-- 
+          Anyone can go to the homepage
 
-        <!-- Any logged-in user can see their attendance and log out/in -->
-        {% if user.is_authenticated %}
-          <a href="{% url 'attendance:personal_record' %}"> Attendance for {{ user.username }} </a>
-          <a href="{% url 'attendance:logout' %}"> Logout </a>
-        {% else %}
-          <a href="{% url 'attendance:login' %}"> Login </a>
-        {% endif %}
+          <a href="{% url 'attendance:index' %}">Home</a>
 
-        <!-- A superuser can also see pending excuses and mark people as attending -->
-        {% if user.is_superuser %}
-        <div id="navigation-superuser">
-          <a href="{% url 'attendance:events' %}">  All Events </a>
-          <a href="{% url 'attendance:excuse_pending' %}"> Pending Excuses </a>
+          Any logged-in user can see their attendance and log out/in 
+
+          {% if user.is_authenticated %}
+            <a href="{% url 'attendance:personal_record' %}"> Attendance for {{ user.username }} </a>
+            <a href="{% url 'attendance:logout' %}"> Logout </a>
+          {% else %}
+            <a href="{% url 'attendance:login' %}"> Login </a>
+          {% endif %}
+
+          A superuser can also see pending excuses and mark people as attending 
+
+          {% if user.is_superuser %}
+          <div id="navigation-superuser">
+            <a href="{% url 'attendance:events' %}">  All Events </a>
+            <a href="{% url 'attendance:excuse_pending' %}"> Pending Excuses </a>
+          </div>
+          {% endif %}
+          -->
         </div>
-        {% endif %}
       </div>
-    </div>
 
-    <div id="elections">
-      <h2> elections </h2>
-      <div id="elections-navigation">
-        <a href="{% url 'elections:index' %}"> Home </a>
+      <div id="elections">
+        <h2> elections </h2>
+        <div id="elections-navigation">
+          <a href="/"> placeholder</a>
+          <!--
+          <a href="{% url 'elections:index' %}"> Home </a>
+          Any logged-in user can do these actions 
+          {% if user.is_authenticated %}
+            <a href="{% url 'elections:ois_submission' %}"> OIS Submission </a>
+            <a href="{% url 'elections:ois_results' %}"> OIS Results </a>
+            <a href="{% url 'elections:loi_submission' %}"> LOI Submission </a>
+            <a href="{% url 'elections:loi_results' %}"> Submitted LOIs </a>
+            <a href="{% url 'elections:slating_submission' %}"> Slating </a>
+            <a href="{% url 'elections:voting_submission' %}"> Voting </a>
+            <a href="{% url 'attendance:logout' %}"> Logout </a>
+          {% else %}
+            <a href="{% url 'attendance:login' %}"> Login </a>
+          {% endif %}
 
-        <!-- Any logged-in user can do these actions -->
-        {% if user.is_authenticated %}
-          <a href="{% url 'elections:ois_submission' %}"> OIS Submission </a>
-          <a href="{% url 'elections:ois_results' %}"> OIS Results </a>
-          <a href="{% url 'elections:loi_submission' %}"> LOI Submission </a>
-          <a href="{% url 'elections:loi_results' %}"> Submitted LOIs </a>
-          <a href="{% url 'elections:slating_submission' %}"> Slating </a>
-          <a href="{% url 'elections:voting_submission' %}"> Voting </a>
-          <a href="{% url 'attendance:logout' %}"> Logout </a>
-        {% else %}
-          <a href="{% url 'attendance:login' %}"> Login </a>
-        {% endif %}
-
-        <!-- A superuser can also see results of slating and voting -->
-        {% if user.is_superuser %}
-        <div id="elections-navigation-superuser">
-          <a href="{% url 'elections:slating_results' %}">  Slating Results </a>
-          <a href="{% url 'elections:voting_results' %}"> Voting Results </a>
+          A superuser can also see results of slating and voting 
+          {% if user.is_superuser %}
+          <div id="elections-navigation-superuser">
+            <a href="{% url 'elections:slating_results' %}">  Slating Results </a>
+            <a href="{% url 'elections:voting_results' %}"> Voting Results </a>
+          </div>
+          {% endif %}
+          -->
         </div>
-        {% endif %}
       </div>
-    </div>
-    <div id="house">
-      <h2>house</h2>
-      <div id="house navigation">
-        <a href="/"> placeholder</a>
-      </div>
-    </div>
-    <div id="resources">
-      <h2>resources</h2>
-      <div id="resources navigation">
-        <a href="/"> placeholder</a>
-      </div>
-    </div>
 
-    {% block content %}
-    {% endblock %}
+      <div id="house">
+        <h2>house</h2>
+        <div id="house navigation">
+          <a href="/"> placeholder</a>
+        </div>
+      </div>
+
+      
+      <div id="resources">
+        <h2>resources</h2>
+        <div id="resources navigation">
+          <a href="/"> placeholder</a>
+        </div>
+      </div>
+
+    {% else %}
+    <br>
+    <p> Welcome to the sisters-only part of the site! Please <a href="{% url 'attendance:login' %}">login</a> to proceed.</p>
+    {% endif %}
+    <br>
+    <div id="login">
+      {% block content %}
+      {% endblock %}
+    </div>
   </div>
 
 </body>

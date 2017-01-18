@@ -6,19 +6,10 @@ hr {
     border-color: #A0A0A0;
     width: 400px;
 }
-#login-text {
-    opacity: 0;
-}
+
 #login {
-    position:absolute;
-    right:0;
-    top:0;
-    text-align: center;
-    font-size: 60%;
-    padding: 15px;
-}
-#login:hover #login-text {
-    opacity:1;
+    width: 210px;
+    margin: auto;
 }
 #title {
     letter-spacing: 3px;
@@ -30,7 +21,6 @@ hr {
 }
 #container {
     text-align: center;
-    width: 500px;
     margin: auto;
 }
 
