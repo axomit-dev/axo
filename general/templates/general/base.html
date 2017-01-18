@@ -100,10 +100,14 @@
     <p> Welcome to the sisters-only part of the site! Please <a href="{% url 'login' %}">login</a> to proceed. Or, <a href="{% url 'password_reset' %}">reset your password</a> if you've forgotten. </p>
     {% endif %}
     <br>
-    <div id="login">
+    <div id="block">
       {% block content %}
       {% endblock %}
     </div>
+  </div>
+
+  <div id="credits">
+    <a href="{% url 'credits' %}"> made with ♥︎</a>
   </div>
 
 </body>

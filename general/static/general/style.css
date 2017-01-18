@@ -6,20 +6,29 @@ hr {
     border-color: #A0A0A0;
     width: 400px;
 }
-
-#login {
-    width: 210px;
+a{
+    color: #000;
+    font-weight: bold;
+}
+a:hover{
+    color: #A40909;
+    text-decoration: none;
+}
+#block {
+    text-align: center;
     margin: auto;
 }
 #title {
     letter-spacing: 3px;
     font-weight: bold;
 }
+
 #subtitle{
     letter-spacing: 2px;
     font-weight: bold;
 }
 #container {
+    padding-top: 30px;
     text-align: center;
     margin: auto;
 }
@@ -42,3 +51,26 @@ hr {
     padding-left: 30px;
     display: inline-block;
 }
+
+#credits {
+    position: fixed;
+    bottom: 0;
+    padding: 5px;
+    width: 100%;
+    text-align: center;
+}
+#credits a{
+    font-weight: normal;
+}
+input[type=submit]{
+    background-color: white;
+    border-radius: 7px;
+    border: 1px solid #ccc;
+}
+table {
+    margin: auto;
+}
+/*#login-input{
+    background-color: red;
+    width: 100%;
+}*/
