@@ -121,10 +121,10 @@ USE_TZ = True
 LOGIN_URL = '/login/'
 
 # URL to redirect to on login success.
-LOGIN_REDIRECT_URL = '/attendance/sister'
+LOGIN_REDIRECT_URL = '/'
 
 # URL to redirect to after logout.
-LOGOUT_REDIRECT_URL = '/login'
+LOGOUT_REDIRECT_URL = '/'
 
 
 # Static files (CSS, JavaScript, Images)
