@@ -19,8 +19,8 @@
 
     {% if user.is_authenticated %}
       <!-- <a href="{% url 'attendance:personal_record' %}"> Attendance for {{ user.username }} </a> -->
-      <a href="{% url 'logout' %}"> logout </a>
-      <a href="{% url 'password_change' %}"> change password </a>
+      <a href="{% url 'logout' %}"> logout</a>
+      <a href="{% url 'password_change' %}"> change password</a>
       <br>
       <div id = "attendance">
         <h2> attendance </h2>
@@ -97,7 +97,7 @@
 
     {% else %}
     <br>
-    <p> Welcome to the sisters-only part of the site! Please <a href="{% url 'login' %}">login</a> to proceed.</p>
+    <p> Welcome to the sisters-only part of the site! Please <a href="{% url 'login' %}">login</a> to proceed. Or, <a href="{% url 'password_reset' %}">reset your password</a> if you've forgotten. </p>
     {% endif %}
     <br>
     <div id="login">
