@@ -1,0 +1,44 @@
+h2 {
+    font-size: 160%;
+}
+
+hr {
+    border-color: #A0A0A0;
+    width: 400px;
+}
+
+#login {
+    width: 210px;
+    margin: auto;
+}
+#title {
+    letter-spacing: 3px;
+    font-weight: bold;
+}
+#subtitle{
+    letter-spacing: 2px;
+    font-weight: bold;
+}
+#container {
+    text-align: center;
+    margin: auto;
+}
+
+#attendance {
+    display: inline-block;
+}
+
+#elections {
+    padding-left: 30px;
+    display: inline-block;
+}
+
+#house {
+    padding-left: 30px;
+    display: inline-block;
+}
+
+#resources {
+    padding-left: 30px;
+    display: inline-block;
+}
