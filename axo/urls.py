@@ -16,17 +16,23 @@ Including another URLconf
 from django.conf.urls import include, url
 from django.contrib import admin
 from django.contrib.auth import views as auth_views
+from general import views as general_views
+#from django.urls import reverse
+
 
 urlpatterns = [
 
-    # All authentication views
-    url('^', include('django.contrib.auth.urls')),
-    #url(r'^login/', auth_views.login, name='login'),
-    #url(r'^logout/', auth_views.logout, name='logout'),
+# All authentication views
+#url('^', include('django.contrib.auth.urls')),
+url(r'^login/', auth_views.login, name='login'),
+url(r'^logout/', auth_views.logout, name='logout'),
+url(r'^change-password/$', auth_views.password_change,
+    {'post_change_redirect': 'attendance:personal_record'},
+    name='password_change'),
 
-    url(r'^polls/', include('polls.urls')),
-    url(r'^admin/', admin.site.urls),
-    url(r'^attendance/', include('attendance.urls')),
-    url(r'^', include('general.urls')),
-    url(r'^elections/', include('elections.urls')),
+url(r'^polls/', include('polls.urls')),
+url(r'^admin/', admin.site.urls),
+url(r'^attendance/', include('attendance.urls')),
+url(r'^', include('general.urls')),
+url(r'^elections/', include('elections.urls')),
 ]
