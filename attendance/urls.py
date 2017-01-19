@@ -10,6 +10,7 @@ urlpatterns = [
   url(r'^$', views.index, name='index'),
 
   # Sister-related views
+  url(r'^sisters/$', views.sisters, name='sisters'),
   url(r'^sister/$', views.personal_record, name='personal_record'),
 
   # Event-related views

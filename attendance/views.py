@@ -133,6 +133,12 @@ def personal_record(request):
   }
   return render(request, 'attendance/personal_record.html', context)
 
+# View a list of all sisters.
+@user_passes_test(lambda u: u.is_superuser)
+def sisters(request):
+  active_sisters = Sister.objects.exclude(status=Sister.ALUM)
+  return render(request, 'attendance/sisters.html', {'sisters': active_sisters})
+
 
 ################################
 ##### EXCUSE-RELATED VIEWS #####
