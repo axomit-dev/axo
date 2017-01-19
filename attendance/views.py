@@ -74,7 +74,7 @@ def index(request):
 ###############################
 
 # List of all events
-@user_passes_test(lambda u: u.is_superuser)
+@user_passes_test(lambda u: u.is_staff)
 def events(request):
   events = Event.objects.order_by('-date')
   # Get years for activation button
@@ -90,7 +90,7 @@ def events(request):
   return render(request, 'attendance/events.html', context)
 
 # Detail page for a specific event
-@user_passes_test(lambda u: u.is_superuser)
+@user_passes_test(lambda u: u.is_staff)
 def event_details(request, event_id):
   event = get_object_or_404(Event, pk=event_id)
   if (event.is_activated):
@@ -124,7 +124,7 @@ def event_details(request, event_id):
 # This records a list of sisters who should be attending, based
 # on the status of all sisters. Anyone that isn't abroad or an alum
 # is considered a possible attendee.
-@user_passes_test(lambda u: u.is_superuser)
+@user_passes_test(lambda u: u.is_staff)
 def activate(request, event_id):  
   # Create the list of sisters who should attend
   required_group = request.POST['activate_group']
@@ -146,7 +146,7 @@ def activate(request, event_id):
     reverse('attendance:event_details', args=(event.id,)))
 
 # Check-in a particular sister for a particular event.
-@user_passes_test(lambda u: u.is_superuser)
+@user_passes_test(lambda u: u.is_staff)
 def checkin_sister(request, event_id, sister_id):
   event = get_object_or_404(Event, pk=event_id)
   sister = get_object_or_404(Sister, pk=sister_id)
