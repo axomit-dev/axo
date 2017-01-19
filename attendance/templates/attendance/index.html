@@ -1,8 +1,20 @@
 {% extends "general/base.html" %}
 
 {% block content %}
+{% if user.is_authenticated %}
 
-<p> This is the attendance index. </p>
+<a href="{% url 'attendance:personal_record' %}"> attendance for {{ user.username }} </a>
+
+{% else %}
+{% endif %}
+
+{% if user.is_superuser %}
+  <div id="navigation-superuser">
+    <br><p>superuser options:</p>
+    <a href="{% url 'attendance:events' %}">  all events </a><br>
+    <a href="{% url 'attendance:excuse_pending' %}"> pending excuses </a>
+  </div>
+{% endif %}
 
 
 {% endblock content %}

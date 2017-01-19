@@ -2,6 +2,24 @@
 
 {% block content %}
 
-<p> Coming Soon... Elections Index </p>
+{% if user.is_authenticated %}
+<a href="{% url 'elections:ois_submission' %}"> OIS submission </a><br>
+<a href="{% url 'elections:ois_results' %}"> OIS results </a><br>
+<a href="{% url 'elections:loi_submission' %}"> LOI submission </a><br>
+<a href="{% url 'elections:loi_results' %}"> submitted LOIs </a><br>
+<a href="{% url 'elections:slating_submission' %}"> slating </a><br>
+<a href="{% url 'elections:voting_submission' %}"> voting </a><br>
+
+{% else %}
+{% endif %}
+
+<!-- A superuser can also see results of slating and voting  -->
+{% if user.is_superuser %}
+<div id="elections-navigation-superuser">
+  <br><p>superuser options:</p>
+  <a href="{% url 'elections:slating_results' %}">  slating results </a><br>
+  <a href="{% url 'elections:voting_results' %}"> voting results </a>
+</div>
+{% endif %}
 
 {% endblock content %}
