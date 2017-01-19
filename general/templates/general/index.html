@@ -1,7 +1,10 @@
 {% extends 'general/base.html' %}
 
 {% block content %}
+{% if user.is_authenticated %}
+<p> hey der </p>
 
-<p> This is the general index. </p>
+{% else %}
+{% endif %}
 
 {% endblock content %}
