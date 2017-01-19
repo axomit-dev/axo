@@ -76,8 +76,18 @@ def index(request):
 # List of all events
 @user_passes_test(lambda u: u.is_superuser)
 def events(request):
-  events = Event.objects.order_by('-date');
-  return render(request, 'attendance/events.html', {'events': events})
+  events = Event.objects.order_by('-date')
+  # Get years for activation button
+  years_query = Sister.objects.values('class_year').distinct()
+  years_list = [x['class_year'] for x in years_query]
+  # Order latest to earliest
+  years_list.sort()
+  years_list.reverse()
+  context = {
+    'events': events,
+    'years': years_list,
+  }
+  return render(request, 'attendance/events.html', context)
 
 # Detail page for a specific event
 @user_passes_test(lambda u: u.is_superuser)

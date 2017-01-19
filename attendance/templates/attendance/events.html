@@ -34,11 +34,9 @@
                 <select name="activate_group">
                   <option value="all"> All Actives </option>
                   <option value="new_members"> New Members Only </option>
-                  <!-- TODO: programmatically get list of years -->
-                  <option value="2017"> 2017s Only </option>
-                  <option value="2018"> 2018s Only </option>
-                  <option value="2019"> 2019s Only </option>
-                  <option value="2020"> 2020s Only </option>
+                  {% for year in years %}
+                  <option value="{{year}}"> {{year}}s Only </option>
+                  {% endfor %}
                 </select>
                 <input type="submit" value="Activate" />
               </form>
