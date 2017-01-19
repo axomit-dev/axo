@@ -5,6 +5,7 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from django.utils import timezone
 from django.core.mail import send_mail
 from django.conf import settings
+from django.db.models import Count
 
 from .models import Event, User, Excuse
 from general.models import Sister
@@ -76,7 +77,10 @@ def index(request):
 # List of all events
 @user_passes_test(lambda u: u.is_superuser)
 def events(request):
-  events = Event.objects.order_by('-date')
+  events = Event.objects.order_by('-date').annotate(
+    fraction_attended=Count('sisters_attended')/Count('sisters_required'))
+  #print(events[2].percent_attended)
+
   # Get years for activation button
   years_query = Sister.objects.values('class_year').distinct()
   years_list = [x['class_year'] for x in years_query]
