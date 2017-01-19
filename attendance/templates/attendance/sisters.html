@@ -2,6 +2,12 @@
 
 {% block content %}
 
-Coming soon! All sister records.
+<p> Coming soon! All sister records. </p>
+
+{% for sister in sisters %}
+
+  <p><a href="{% url 'attendance:sister_record' sister.id %}"> {{ sister.user.username }}</a></p>
+
+{% endfor %}
 
 {% endblock %}
