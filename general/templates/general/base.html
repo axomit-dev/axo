@@ -25,20 +25,14 @@
         <h2> attendance </h2>
         <div id="attendance-navigation">
           <a href="/"> placeholder</a>
-          <!-- 
-          Anyone can go to the homepage
-
-          <a href="{% url 'attendance:index' %}">Home</a>
-
-          Any logged-in user can see their attendance and log out/in 
+          
+          <!-- Any logged-in user can see their personal attendance -->
 
           {% if user.is_authenticated %}
-            <a href="{% url 'attendance:personal_record' %}"> Attendance for {{ user.username }} </a>
-            
-          {% else %}
+            <a href="{% url 'attendance:personal_record' %}"> Attendance for {{ user.username }} </a>       
           {% endif %}
 
-          A superuser can also see pending excuses and mark people as attending 
+          <!-- A superuser can also see pending excuses and mark people as attending -->
 
           {% if user.is_superuser %}
           <div id="navigation-superuser">
@@ -46,7 +40,6 @@
             <a href="{% url 'attendance:excuse_pending' %}"> Pending Excuses </a>
           </div>
           {% endif %}
-          -->
         </div>
       </div>
 
