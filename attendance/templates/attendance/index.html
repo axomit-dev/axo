@@ -1,13 +1,21 @@
 {% extends "general/base.html" %}
 
 {% block content %}
+
+<!-- Any logged-in user can see their personal attendance -->
 {% if user.is_authenticated %}
-
-<a href="{% url 'attendance:personal_record' %}"> attendance for {{ user.username }} </a>
-
-{% else %}
+  <a href="{% url 'attendance:personal_record' %}"> attendance for {{ user.username }} </a>
 {% endif %}
 
+<!-- A staff can also mark people as attending -->
+{% if user.is_staff %}
+  <div id="navigation-staff">
+    <br><p>staff options:</p>
+    <a href="{% url 'attendance:events' %}">  all events </a>
+  </div>
+{% endif %}
+
+<!-- A superuser can also see pending excuses and see the attendance records of every sister. -->
 {% if user.is_superuser %}
   <div id="navigation-superuser">
     <br><p>superuser options:</p>
@@ -18,3 +26,27 @@
 
 
 {% endblock content %}
+
+
+
+
+          {% if user.is_authenticated %}
+            <a href="{% url 'attendance:personal_record' %}"> Attendance for {{ user.username }} </a>       
+          {% endif %}
+
+          <!-- A staff can also mark people as attending -->
+
+          {% if user.is_staff %}
+          <div id="navigation-staff">
+            <a href="{% url 'attendance:events' %}">  All Events </a>
+          </div>
+          {% endif %}
+
+          <!-- A superuser can also see pending excuses and see the attendance records of every sister. -->
+
+          {% if user.is_superuser %}
+          <div id="navigation-superuser">
+            <a href="{% url 'attendance:excuse_pending' %}"> Pending Excuses </a>
+            <a href="{% url 'attendance:sisters' %}"> All Sister Records </a>
+          </div>
+          {% endif %}

@@ -37,32 +37,7 @@
 </table>
 
 
+{% include 'attendance/past_event_table.html' %}
 
-<h2> Past Events </h2>
-<table>
-  <tr>
-    <th> Event </th>
-    <th> Attendance </th>
-  </tr>
-{% for event in past_events %}
-  <tr>
-    <td> {{ event }} </td>
-    <!-- Sister could be in both excused and attended lists, if they
-    got an excuse approved but then decided to go anyway.
-    So, check the attended list first. -->
-    {% if sister in event.sisters_attended.all %}
-      <td> Attended </td>
-    {% elif sister in event.sisters_excused.all %}
-      <td> Excused </td>
-    {% elif sister in event.sisters_required.all %}
-      <!-- They were supposed to be there but weren't listed
-      as excused or attended -->
-      <td> Missed </td>
-    {% else %}
-      <td> Not Required To Attend </td>
-    {% endif %}
-  </tr>
-{% endfor %}
-</table>
 
 {% endblock content %}

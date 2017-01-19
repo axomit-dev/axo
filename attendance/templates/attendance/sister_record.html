@@ -1,0 +1,9 @@
+{% extends 'general/base.html' %}
+
+{% block content %}
+
+Sister record for {{sister.user.username}}.
+
+{% include 'attendance/past_event_table.html' %}
+
+{% endblock %}

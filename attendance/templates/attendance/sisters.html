@@ -1,0 +1,13 @@
+{% extends 'general/base.html' %}
+
+{% block content %}
+
+<p> All sister records. </p>
+
+{% for sister in sisters %}
+
+  <p><a href="{% url 'attendance:sister_record' sister.id %}"> {{ sister.user.username }}</a></p>
+
+{% endfor %}
+
+{% endblock %}

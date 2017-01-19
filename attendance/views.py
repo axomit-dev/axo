@@ -32,6 +32,33 @@ def get_sister(request):
   else:
     return None
 
+# Returns all the information necessary for a full attendance record.
+def get_sister_record(sister):
+  time_threshold = timezone.now()
+  #date__lte means 'date is less than or equal to'
+  past_events = Event.objects.filter(date__lte=time_threshold).order_by('-date')
+  future_events = Event.objects.filter(date__gt=time_threshold).order_by('-date')
+
+  # List of events and excuses
+  # If the item is an excuse, then there is an excuse associated
+  #    with that event for this particular sister.
+  # Otherwise, the item is an event and there is no associated excuse.
+  future_events_and_excuses = []
+  for event in future_events:
+    try:
+      excuse = Excuse.objects.get(event=event, sister=sister)
+    except Excuse.DoesNotExist:
+      future_events_and_excuses.append(event)
+    else:
+      future_events_and_excuses.append(excuse)
+
+  context = {
+    'sister': sister,
+    'past_events': past_events,
+    'future_events_and_excuses': future_events_and_excuses,
+  }
+  return context
+
 
 #######################
 ##### BASIC VIEWS #####
@@ -108,30 +135,21 @@ def checkin_sister(request, event_id, sister_id):
 @login_required
 def personal_record(request):
   sister = get_sister(request)
-  time_threshold = timezone.now()
-  #date__lte means 'date is less than or equal to'
-  past_events = Event.objects.filter(date__lte=time_threshold).order_by('-date')
-  future_events = Event.objects.filter(date__gt=time_threshold).order_by('-date')
-
-  # List of events and excuses
-  # If the item is an excuse, then there is an excuse associated
-  #    with that event for this particular sister.
-  # Otherwise, the item is an event and there is no associated excuse.
-  future_events_and_excuses = []
-  for event in future_events:
-    try:
-      excuse = Excuse.objects.get(event=event, sister=sister)
-    except Excuse.DoesNotExist:
-      future_events_and_excuses.append(event)
-    else:
-      future_events_and_excuses.append(excuse)
-
-  context = {
-    'sister': sister,
-    'past_events': past_events,
-    'future_events_and_excuses': future_events_and_excuses,
-  }
+  context = get_sister_record(sister)
   return render(request, 'attendance/personal_record.html', context)
+
+# View a list of all sisters.
+@user_passes_test(lambda u: u.is_superuser)
+def sisters(request):
+  active_sisters = Sister.objects.exclude(status=Sister.ALUM)
+  return render(request, 'attendance/sisters.html', {'sisters': active_sisters})
+
+# View the attendance record of the sister with sister_id.
+@user_passes_test(lambda u: u.is_superuser)
+def sister_record(request, sister_id):
+  sister = Sister.objects.get(id=sister_id)
+  context = get_sister_record(sister)
+  return render(request, 'attendance/sister_record.html', context)
 
 
 ################################
