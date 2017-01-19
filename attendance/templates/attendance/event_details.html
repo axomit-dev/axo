@@ -3,9 +3,15 @@
 
 {% block content %}
 
-<h1> Event: {{ event.name }} </h1>
+<h2> Event: {{ event.name }} </h2>
 
-<h1> Required Sisters: </h1>
+<br>
+
+attended: {{ percent_attended }}% &nbsp;&nbsp;•&nbsp; excused: {{ percent_excused }}% &nbsp;&nbsp;•&nbsp; absent: {{ percent_absent }}%
+
+<br>
+
+<h3> Required Sisters: </h3>
 
 <table>
   <tr>

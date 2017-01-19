@@ -5,7 +5,6 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from django.utils import timezone
 from django.core.mail import send_mail
 from django.conf import settings
-from django.db.models import Count
 
 from .models import Event, User, Excuse
 from general.models import Sister
@@ -77,10 +76,7 @@ def index(request):
 # List of all events
 @user_passes_test(lambda u: u.is_superuser)
 def events(request):
-  events = Event.objects.order_by('-date').annotate(
-    fraction_attended=Count('sisters_attended')/Count('sisters_required'))
-  #print(events[2].percent_attended)
-
+  events = Event.objects.order_by('-date')
   # Get years for activation button
   years_query = Sister.objects.values('class_year').distinct()
   years_list = [x['class_year'] for x in years_query]
@@ -99,8 +95,29 @@ def event_details(request, event_id):
   event = get_object_or_404(Event, pk=event_id)
   if (event.is_activated):
     # Event has been activated
-    return render(request, 'attendance/event_details.html', {'event': event})
+
+    # Get fraction attended, excused, and absent
+    # The excused set and attended set should be mutually exclusive
+    num_required = len(event.sisters_required.all())
+    fraction_attended = len(event.sisters_attended.all())*1.0 / num_required
+    fraction_excused = len(event.sisters_excused.all())*1.0 / num_required
+    fraction_absent = 1.0 - fraction_attended - fraction_excused
+    print(fraction_attended)
+
+    # Convert fraction to 2-digit integer for percentage
+    percent_attended = int(round(fraction_attended*100, 0))
+    percent_excused = int(round(fraction_excused*100, 0))
+    percent_absent = int(round(fraction_absent*100, 0))
+
+    context = {
+      'percent_attended': percent_attended,
+      'percent_excused': percent_excused,
+      'percent_absent': percent_absent,
+      'event': event,
+    }
+    return render(request, 'attendance/event_details.html', context)
   else:
+    # TODO: use render with a different context
     return HttpResponse("This event has not been activated yet.") 
 
 # Activate an event.
@@ -135,6 +152,8 @@ def checkin_sister(request, event_id, sister_id):
   sister = get_object_or_404(Sister, pk=sister_id)
   # Add sister to list of attendees
   event.sisters_attended.add(sister)
+  # Remove from excused absences to avoid duplication
+  event.sisters_excused.remove(sister)
   event.save()
   # Redirect to the same event details page
   return HttpResponseRedirect(
@@ -195,10 +214,12 @@ def excuse_approve(request, excuse_id):
   excuse.save()
 
   # Add that sister to list of excused sisters
+  # if they haven't alreaady been checked in
   event = get_object_or_404(Event, pk=excuse.event.id)
   sister = get_object_or_404(Sister, pk=excuse.sister.id)
-  event.sisters_excused.add(sister)
-  event.save()
+  if (sister not in event.sisters_attended.all()):
+    event.sisters_excused.add(sister)
+    event.save()
 
   # Email sister with result
   if (sister.user.email):
