@@ -34,6 +34,7 @@ def get_sister(request):
 
 # Returns all the information necessary for a full attendance record
 # for the given sister in the given semester.
+# Assumes that both sister and semester_id are valid.
 def get_sister_record(sister, semester_id):
   semester = Semester.objects.get(id=semester_id)
   time_threshold = timezone.now()
@@ -108,15 +109,21 @@ def event_details(request, event_id):
     # Get fraction attended, excused, and absent
     # The excused set and attended set should be mutually exclusive
     num_required = len(event.sisters_required.all())
-    fraction_attended = len(event.sisters_attended.all())*1.0 / num_required
-    fraction_excused = len(event.sisters_excused.all())*1.0 / num_required
-    fraction_absent = 1.0 - fraction_attended - fraction_excused
-    print(fraction_attended)
 
-    # Convert fraction to 2-digit integer for percentage
-    percent_attended = int(round(fraction_attended*100, 0))
-    percent_excused = int(round(fraction_excused*100, 0))
-    percent_absent = int(round(fraction_absent*100, 0))
+    # TODO: Display something if no required sisters?
+    if num_required == 0:
+      percent_attended = 0
+      percent_excused = 0
+      percent_absent = 0
+    else:
+      fraction_attended = len(event.sisters_attended.all())*1.0 / num_required
+      fraction_excused = len(event.sisters_excused.all())*1.0 / num_required
+      fraction_absent = 1.0 - fraction_attended - fraction_excused
+
+      # Convert fraction to 2-digit integer for percentage
+      percent_attended = int(round(fraction_attended*100, 0))
+      percent_excused = int(round(fraction_excused*100, 0))
+      percent_absent = int(round(fraction_absent*100, 0))
 
     context = {
       'percent_attended': percent_attended,

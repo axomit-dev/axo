@@ -5,7 +5,7 @@ from django.urls import reverse
 from django.utils import timezone
 from django.contrib.auth.models import User
 
-from .models import Event
+from .models import Event, Semester, Excuse
 from . import views
 from general.models import Sister
 
@@ -15,16 +15,18 @@ test_email = 'axo.mit.attendance@gmail.com'
 ##### HELPER METHODS #####
 ##########################
 
-def create_event(event_name, days, points, is_mandatory=False, is_activated=False):
+def create_event(event_name, days, points, semester=None, is_mandatory=False, is_activated=False):
   """
   Helper method to create an event.
-  days is the number of days offset from 2/5/2017 at 5am that the event occurs.
+  days is the number of days offset from now at 5am that the event occurs.
   A negative number means the event was in the past.
   Returns the new event.
   """
   # 5AM because of our timezone relative to UTC.
   time = timezone.now() + datetime.timedelta(days=days)
-  return Event.objects.create(name=event_name, date=time, points=points, is_mandatory=is_mandatory, is_activated=is_activated)
+  if not semester:
+    semester = Semester.objects.create(term=Semester.SPRING, year=2000)
+  return Event.objects.create(name=event_name, date=time, points=points, semester=semester, is_mandatory=is_mandatory, is_activated=is_activated)
 
 
 # Creates and logs in a normal user.
@@ -43,14 +45,198 @@ def create_sister(username, status, class_year):
   sister = Sister.objects.create(user=user, status=status, class_year=class_year)
   return sister
 
+# Creates and returns a semester
+def create_semester(term, year):
+  semester = Semester.objects.create(term=term, year=year)
+  return semester
+
+# Creates and returns an excuse
+def create_excuse(event, sister, text, status=Excuse.PENDING):
+  excuse = Excuse.objects.create(event=event, sister=sister, text=text, status=status)
+  return excuse
+
+###################################
+##### GET_SISTER_RECORD TESTS #####
+###################################
+class GetSisterRecordTests(TestCase):
+  def test_get_sister_record_no_events(self):
+    sister = create_sister('ccassidy', Sister.ACTIVE, 2018)
+    semester1 = create_semester(Semester.FALL, 2017)
+    semester2 = create_semester(Semester.SPRING, 2018)
+
+    context = views.get_sister_record(sister, semester1.id)
+
+    self.assertEqual(context['sister'], sister)
+    self.assertEqual(len(context['past_events']), 0)
+    self.assertEqual(len(context['future_events_and_excuses']), 0)
+    self.assertEqual(context['current_semester'], semester1)
+    self.assertEqual(len(context['semesters']), 2)
+    self.assertEqual(semester1 in context['semesters'], True)
+    self.assertEqual(semester2 in context['semesters'], True)
+
+  def test_get_sister_record_one_future_event_in_semester(self):
+    sister = create_sister('bro', Sister.ACTIVE, 2016)
+    semester = create_semester(Semester.FALL, 2017)
+    event = create_event("future", days=3, points=10, semester=semester)
+
+    context = views.get_sister_record(sister, semester.id)
+
+    self.assertEqual(context['sister'], sister)
+    self.assertEqual(len(context['past_events']), 0)
+    self.assertEqual(len(context['future_events_and_excuses']), 1)
+    self.assertEqual(event in context['future_events_and_excuses'], True)
+    self.assertEqual(context['current_semester'], semester)
+    self.assertEqual(len(context['semesters']), 1)
+    self.assertEqual(semester in context['semesters'], True)
+
+  def test_get_sister_record_one_future_event_not_in_semester(self):
+    sister = create_sister('bro', Sister.ACTIVE, 2016)
+    semester = create_semester(Semester.FALL, 2017)
+    semester_of_event = create_semester(Semester.SPRING, 2017)
+    event = create_event("future", days=3, points=10, semester=semester_of_event)
+
+    context = views.get_sister_record(sister, semester.id)
+
+    self.assertEqual(context['sister'], sister)
+    self.assertEqual(len(context['past_events']), 0)
+    self.assertEqual(len(context['future_events_and_excuses']), 0)
+    self.assertEqual(context['current_semester'], semester)
+    self.assertEqual(len(context['semesters']), 2)
+    self.assertEqual(semester in context['semesters'], True)
+    self.assertEqual(semester_of_event in context['semesters'], True)
+
+  def test_get_sister_record_one_past_event_in_semester(self):
+    sister = create_sister('bro', Sister.ACTIVE, 2016)
+    semester = create_semester(Semester.FALL, 2017)
+    event = create_event("past", days=-3, points=10, semester=semester)
+
+    context = views.get_sister_record(sister, semester.id)
+
+    self.assertEqual(context['sister'], sister)
+    self.assertEqual(len(context['past_events']), 1)
+    self.assertEqual(event in context['past_events'], True)
+    self.assertEqual(len(context['future_events_and_excuses']), 0)
+    self.assertEqual(context['current_semester'], semester)
+    self.assertEqual(len(context['semesters']), 1)
+    self.assertEqual(semester in context['semesters'], True)
+
+  def test_get_sister_record_one_past_event_not_in_semester(self):
+    sister = create_sister('bro', Sister.ACTIVE, 2016)
+    semester = create_semester(Semester.FALL, 2017)
+    semester_of_event = create_semester(Semester.SPRING, 2017)
+    event = create_event("past", days=-3, points=10, semester=semester_of_event)
+
+    context = views.get_sister_record(sister, semester.id)
+
+    self.assertEqual(context['sister'], sister)
+    self.assertEqual(len(context['past_events']), 0)
+    self.assertEqual(len(context['future_events_and_excuses']), 0)
+    self.assertEqual(context['current_semester'], semester)
+    self.assertEqual(len(context['semesters']), 2)
+    self.assertEqual(semester in context['semesters'], True)
+    self.assertEqual(semester_of_event in context['semesters'], True)
+
+  def test_get_sister_record_one_future_event_with_excuse(self):
+    sister = create_sister("newbie", Sister.NEW_MEMBER, 2020)
+    semester = create_semester(Semester.SPRING, 2025)
+    event = create_event("chapter", 4, 20, semester)
+    excuse = create_excuse(event, sister, "yo", Excuse.APPROVED)
+
+    context = views.get_sister_record(sister, semester.id)
+
+    self.assertEqual(context['sister'], sister)
+    self.assertEqual(len(context['past_events']), 0)
+    self.assertEqual(len(context['future_events_and_excuses']), 1)
+    self.assertEqual(excuse in context['future_events_and_excuses'], True)
+    self.assertEqual(context['current_semester'], semester)
+    self.assertEqual(len(context['semesters']), 1)
+    self.assertEqual(semester in context['semesters'], True)
+
+  def test_get_sister_record_past_and_future_events(self):
+    sister = create_sister("lee", Sister.ABROAD, 2019)
+    semester = create_semester(Semester.SPRING, 2016)
+    event_future1 = create_event("chapter", 4, 20, semester)
+    event_future2 = create_event("fireside", 1, 10, semester)
+    event_past1 = create_event("fondue", -2, 30, semester)
+    event_past2 = create_event("house cleaning", -50, 30, semester)
+
+    context = views.get_sister_record(sister, semester.id)
+
+    self.assertEqual(context['sister'], sister)
+    self.assertEqual(len(context['past_events']), 2)
+    self.assertEqual(event_past1 in context['past_events'], True)
+    self.assertEqual(event_past2 in context['past_events'], True)
+    self.assertEqual(len(context['future_events_and_excuses']), 2)
+    self.assertEqual(event_future1 in context['future_events_and_excuses'], True)
+    self.assertEqual(event_future2 in context['future_events_and_excuses'], True)
+    self.assertEqual(context['current_semester'], semester)
+    self.assertEqual(len(context['semesters']), 1)
+    self.assertEqual(semester in context['semesters'], True)
+
+  def test_get_sister_record_past_and_future_events_and_excuses(self):
+    sister = create_sister("lee", Sister.ABROAD, 2019)
+    semester = create_semester(Semester.SPRING, 2016)
+    event_future1 = create_event("chapter", 4, 20, semester)
+    event_future2 = create_event("fireside", 1, 10, semester)
+    event_past1 = create_event("fondue", -2, 30, semester)
+    excuse_for_future1 = create_excuse(event_future1, sister, "imdying", Excuse.DENIED)
+    
+    context = views.get_sister_record(sister, semester.id)
+
+    self.assertEqual(context['sister'], sister)
+    self.assertEqual(len(context['past_events']), 1)
+    self.assertEqual(event_past1 in context['past_events'], True)
+    self.assertEqual(len(context['future_events_and_excuses']), 2)
+    self.assertEqual(excuse_for_future1 in context['future_events_and_excuses'], True)
+    self.assertEqual(event_future2 in context['future_events_and_excuses'], True)
+    self.assertEqual(context['current_semester'], semester)
+    self.assertEqual(len(context['semesters']), 1)
+    self.assertEqual(semester in context['semesters'], True)
+
+  def test_get_sister_record_events_and_excuses_different_semesters(self):
+    sister = create_sister("emma", Sister.PRC, 2017)
+    semester1 = create_semester(Semester.SPRING, 2016)
+    semester2 = create_semester(Semester.FALL, 2016)
+    semester3 = create_semester(Semester.FALL, 2018)
+
+    event_sem1_future1 = create_event("chapter1", 4, 20, semester1)
+    event_sem1_future2 = create_event("chapter2", 1, 10, semester1)
+    event_sem1_future3 = create_event("chapter3", 400,30, semester1)
+    event_sem1_past1 = create_event("bro", -39, 32, semester1)
+    event_sem1_past2 = create_event("bro2", -38, 2, semester1)
+    excuse_sem1_future2 = create_excuse(event_sem1_future2, sister, "alkskdajf")
+    excuse_sem1_past1 = create_excuse(event_sem1_past1, sister, "aslke", Excuse.APPROVED)
+
+    event_sem2_future = create_event(";aoiij", 2, 30, semester2)
+    event_sem2_past = create_event("wjwj", -9, 19, semester2)
+    excuse_sem2_past = create_excuse(event_sem2_past, sister, "esi", Excuse.APPROVED)
+
+    event_sem3_future = create_event("weoij", 25, 39, semester3)
+    excuse_sem3_future = create_excuse(event_sem3_future, sister, "yo", Excuse.DENIED)
+
+    
+    context = views.get_sister_record(sister, semester1.id)
+
+    self.assertEqual(context['sister'], sister)
+    self.assertEqual(len(context['past_events']), 2)
+    self.assertEqual(event_sem1_past1 in context['past_events'], True)
+    self.assertEqual(event_sem1_past2 in context['past_events'], True)
+    self.assertEqual(len(context['future_events_and_excuses']), 3)
+    self.assertEqual(excuse_sem1_future2 in context['future_events_and_excuses'], True)
+    self.assertEqual(event_sem1_future1 in context['future_events_and_excuses'], True)
+    self.assertEqual(event_sem1_future3 in context['future_events_and_excuses'], True)
+    self.assertEqual(context['current_semester'], semester1)
+    self.assertEqual(len(context['semesters']), 3)
+    self.assertEqual(semester1 in context['semesters'], True)
+    self.assertEqual(semester2 in context['semesters'], True)
+    self.assertEqual(semester3 in context['semesters'], True)
+
 ##########################
 ##### ACTIVATE TESTS #####
 ##########################
 
 # TODO: Test the actual HTML that's returned?
-class ActivateTests(TestCase):
-  # Possible activate_groups: 'all', 'new_members', and a year in string form
-  
+class ActivateTests(TestCase):  
   # Activate an event without any sisters
   def test_activate_simple(self):
     # Create database objects
