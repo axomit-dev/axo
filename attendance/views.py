@@ -6,7 +6,7 @@ from django.utils import timezone
 from django.core.mail import send_mail
 from django.conf import settings
 
-from .models import Event, User, Excuse
+from .models import Event, User, Excuse, Semester
 from general.models import Sister
 
 ##########################
@@ -32,12 +32,14 @@ def get_sister(request):
   else:
     return None
 
-# Returns all the information necessary for a full attendance record.
-def get_sister_record(sister):
+# Returns all the information necessary for a full attendance record
+# for the given sister in the given semester.
+def get_sister_record(sister, semester_id):
+  semester = Semester.objects.get(id=semester_id)
   time_threshold = timezone.now()
   #date__lte means 'date is less than or equal to'
-  past_events = Event.objects.filter(date__lte=time_threshold).order_by('-date')
-  future_events = Event.objects.filter(date__gt=time_threshold).order_by('-date')
+  past_events = Event.objects.filter(semester=semester, date__lte=time_threshold).order_by('-date')
+  future_events = Event.objects.filter(semester=semester, date__gt=time_threshold).order_by('-date')
 
   # List of events and excuses
   # If the item is an excuse, then there is an excuse associated
@@ -52,10 +54,13 @@ def get_sister_record(sister):
     else:
       future_events_and_excuses.append(excuse)
 
+  semesters = Semester.objects.all()
   context = {
     'sister': sister,
     'past_events': past_events,
     'future_events_and_excuses': future_events_and_excuses,
+    'semesters': semesters,
+    'current_semester': semester,
   }
   return context
 
@@ -66,7 +71,11 @@ def get_sister_record(sister):
 
 # Homepage
 def index(request):
-  return render(request, 'attendance/index.html', {})
+  # Set latest_semester session variable
+  # to use when rendering attendance for a default semester
+  #request.session['latest_semester'] = latest_semester.id
+  latest_semester = Semester.objects.all()[0]
+  return render(request, 'attendance/index.html', {'semester': latest_semester})
 
 
 ###############################
@@ -166,22 +175,27 @@ def checkin_sister(request, event_id, sister_id):
 
 # View attendance record of the logged-in user.
 @login_required
-def personal_record(request):
+def personal_record(request, semester_id):
   sister = get_sister(request)
-  context = get_sister_record(sister)
+  context = get_sister_record(sister, semester_id)
   return render(request, 'attendance/personal_record.html', context)
 
 # View a list of all sisters.
 @user_passes_test(lambda u: u.is_superuser)
 def sisters(request):
   active_sisters = Sister.objects.exclude(status=Sister.ALUM)
-  return render(request, 'attendance/sisters.html', {'sisters': active_sisters})
+  latest_semester = Semester.objects.all()[0]
+  context = {
+    'sisters': active_sisters,
+    'semester': latest_semester,
+  }
+  return render(request, 'attendance/sisters.html', context)
 
 # View the attendance record of the sister with sister_id.
 @user_passes_test(lambda u: u.is_superuser)
-def sister_record(request, sister_id):
+def sister_record(request, sister_id, semester_id):
   sister = Sister.objects.get(id=sister_id)
-  context = get_sister_record(sister)
+  context = get_sister_record(sister, semester_id)
   return render(request, 'attendance/sister_record.html', context)
 
 
@@ -197,8 +211,10 @@ def excuse_submit(request, event_id):
   sister = get_sister(request)
   excuse = Excuse(event=event, sister=sister, text=excuse_text)
   excuse.save()
+
+  latest_semester = Semester.objects.all()[0]
   return HttpResponseRedirect(
-    reverse('attendance:personal_record'))
+    reverse('attendance:personal_record', args=(latest_semester.id,)))
 
 # Display all pending excuses.
 @user_passes_test(lambda u: u.is_superuser)

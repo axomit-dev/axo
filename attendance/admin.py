@@ -1,11 +1,12 @@
 from django.contrib import admin
 
-from .models import Event
+from .models import Event, Semester
 
 class EventAdmin(admin.ModelAdmin):
   fieldsets = [
-    (None, {'fields': ['name', 'date', 'is_mandatory', 'points']})
+    (None, {'fields': ['name', 'date', 'is_mandatory', 'points', 'semester']})
   ]
-  list_display = ('name', 'date', 'is_mandatory', 'points')
+  list_display = ('name', 'date', 'is_mandatory', 'points', 'semester')
 
 admin.site.register(Event, EventAdmin)
+admin.site.register(Semester)

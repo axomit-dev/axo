@@ -2,7 +2,20 @@
 
 {% block content %}
 
-<p> How You Doin'? </p>
+<div id="semester-tabs">
+&nbsp;&nbsp;•&nbsp;
+{% for semester in semesters %}
+  <!-- Color currently selected semester green -->
+  <!-- TODO: Better way to do this? -->
+  {% if semester.id == current_semester.id %}
+    <a href="{% url 'attendance:personal_record' semester.id %}" style="color: #28960a">
+  {% else %}
+    <a href="{% url 'attendance:personal_record' semester.id %}">
+  {% endif %}
+   {{ semester }}</a>&nbsp;&nbsp;•&nbsp;
+{% endfor %}
+</div>
+
 
 <h2> Future Events </h2>
 <table>
