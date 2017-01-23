@@ -44,6 +44,8 @@ class Event(models.Model):
   sisters_excused = models.ManyToManyField(Sister, blank=True, related_name='sisters_excused')
 
   points = models.IntegerField()
+ 
+
   def __str__(self):
     formatted_date = self.date.strftime("%A, %B %d %Y at %I:%M%p")
     return self.name + " | " + formatted_date

@@ -31,3 +31,8 @@ class Sister(models.Model):
     # TODO: Make first_name, last_name required for Users somehow
     #return "%s %s" % (self.user.first_name, self.user.last_name)
 
+
+
+
+
+
