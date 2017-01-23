@@ -9,6 +9,11 @@ from django.conf import settings
 from .models import Event, User, Excuse, Semester
 from general.models import Sister
 
+#####################
+##### CONSTANTS #####
+#####################
+no_percentage_available_message = "There have been no mandatory events that you've needed to attend yet!"
+
 ##########################
 ##### HELPER METHODS #####
 ##########################
@@ -64,23 +69,31 @@ def get_sister_record(sister, semester_id):
     'current_semester': semester,
   }
   return context
-#TODO: run test cases for calculate_percentage
+
+# Returns a sister's attendance for the given semester.
+# Attendance is returned as a float, where 1.0 represents 100% attendance.
+# If there haven't been any mandatory events or this sister hasn't
+#   been required at any events this semester, the no_percentage_available_message
+#   will be returned instead.
+# Assumes that both sister and semester_id are valid.
 def calculate_percentage(sister,semester_id):
+  semester = Semester.objects.get(id=semester_id)
   total_points=0
   earned_points=0
-  for event in Event.objects.all():
-    if sister in event.sisters_required.all():
-      total_points+=event.points
+  for event in Event.objects.filter(semester=semester):
+    if (sister in event.sisters_required.all()):
+      if (event.is_mandatory):
+        total_points+=event.points
       if sister in event.sisters_attended.all():
         earned_points+=event.points
       elif sister in event.sisters_excused.all():
-        earned_points+= (.75)*event.points
+        earned_points+= Event.VALUE_OF_EXCUSED_ABSENCE*event.points
     elif sister in event.sisters_attended.all() and sister not in event.sisters_required.all():
       earned_points+=event.points
   if total_points !=0:
     return float(earned_points)/float(total_points)
   else:
-    return "No events yet"
+    return no_percentage_available_message
 #######################
 ##### BASIC VIEWS #####
 #######################
