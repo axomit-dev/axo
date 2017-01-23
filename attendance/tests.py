@@ -112,6 +112,7 @@ class GetSisterRecordTests(TestCase):
 
     context = views.get_sister_record(sister, semester.id)
 
+    
     self.assertEqual(context['sister'], sister)
     self.assertEqual(len(context['past_events']), 1)
     self.assertEqual(event in context['past_events'], True)
@@ -135,7 +136,21 @@ class GetSisterRecordTests(TestCase):
     self.assertEqual(len(context['semesters']), 2)
     self.assertEqual(semester in context['semesters'], True)
     self.assertEqual(semester_of_event in context['semesters'], True)
+  def test_get_sister_record_one_past_event_not_in_semester(self):
+    sister = create_sister('bro', Sister.ACTIVE, 2016)
+    semester = create_semester(Semester.FALL, 2017)
+    semester_of_event = create_semester(Semester.SPRING, 2017)
+    event = create_event("past", days=-3, points=10, semester=semester_of_event)
 
+    context = views.get_sister_record(sister, semester.id)
+
+    self.assertEqual(context['sister'], sister)
+    self.assertEqual(len(context['past_events']), 0)
+    self.assertEqual(len(context['future_events_and_excuses']), 0)
+    self.assertEqual(context['current_semester'], semester)
+    self.assertEqual(len(context['semesters']), 2)
+    self.assertEqual(semester in context['semesters'], True)
+    self.assertEqual(semester_of_event in context['semesters'], True)
   def test_get_sister_record_one_future_event_with_excuse(self):
     sister = create_sister("newbie", Sister.NEW_MEMBER, 2020)
     semester = create_semester(Semester.SPRING, 2025)
@@ -182,7 +197,7 @@ class GetSisterRecordTests(TestCase):
     excuse_for_future1 = create_excuse(event_future1, sister, "imdying", Excuse.DENIED)
     
     context = views.get_sister_record(sister, semester.id)
-
+   
     self.assertEqual(context['sister'], sister)
     self.assertEqual(len(context['past_events']), 1)
     self.assertEqual(event_past1 in context['past_events'], True)
@@ -198,7 +213,6 @@ class GetSisterRecordTests(TestCase):
     semester1 = create_semester(Semester.SPRING, 2016)
     semester2 = create_semester(Semester.FALL, 2016)
     semester3 = create_semester(Semester.FALL, 2018)
-
     event_sem1_future1 = create_event("chapter1", 4, 20, semester1)
     event_sem1_future2 = create_event("chapter2", 1, 10, semester1)
     event_sem1_future3 = create_event("chapter3", 400,30, semester1)
@@ -216,7 +230,7 @@ class GetSisterRecordTests(TestCase):
 
     
     context = views.get_sister_record(sister, semester1.id)
-
+  
     self.assertEqual(context['sister'], sister)
     self.assertEqual(len(context['past_events']), 2)
     self.assertEqual(event_sem1_past1 in context['past_events'], True)
@@ -230,6 +244,7 @@ class GetSisterRecordTests(TestCase):
     self.assertEqual(semester1 in context['semesters'], True)
     self.assertEqual(semester2 in context['semesters'], True)
     self.assertEqual(semester3 in context['semesters'], True)
+
 
 ##########################
 ##### ACTIVATE TESTS #####

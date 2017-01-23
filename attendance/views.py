@@ -64,8 +64,23 @@ def get_sister_record(sister, semester_id):
     'current_semester': semester,
   }
   return context
-
-
+#TODO: run test cases for calculate_percentage
+def calculate_percentage(sister,semester_id):
+  total_points=0
+  earned_points=0
+  for event in Event.objects.all():
+    if sister in event.sisters_required.all():
+      total_points+=event.points
+      if sister in event.sisters_attended.all():
+        earned_points+=event.points
+      elif sister in event.sisters_excused.all():
+        earned_points+= (.75)*event.points
+    elif sister in event.sisters_attended.all() and sister not in event.sisters_required.all():
+      earned_points+=event.points
+  if total_points !=0:
+    return float(earned_points)/float(total_points)
+  else:
+    return "No events yet"
 #######################
 ##### BASIC VIEWS #####
 #######################
@@ -204,6 +219,11 @@ def sister_record(request, sister_id, semester_id):
   sister = Sister.objects.get(id=sister_id)
   context = get_sister_record(sister, semester_id)
   return render(request, 'attendance/sister_record.html', context)
+@user_passes_test(lambda u:u.is_superuser)
+def sister_percentage(request,sister_id,semester_id):
+   sister = Sister.objects.get(id=sister_id)
+   percent=calculate_percentage(sister,semester_id)
+   return render(request,'attendance/sister_record.html',percent)
 
 
 ################################
