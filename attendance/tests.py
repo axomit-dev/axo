@@ -233,13 +233,21 @@ class CalculatePercentageTests(TestCase):
     event_sem2_mand.sisters_required.add(sister_other)
     event_sem2_notmand.sisters_required.add(sister_other)
 
+    event_sem1_mand.sisters_attended.add(sister)
+    event_sem1_notmand.sisters_attended.add(sister)
+    event_sem2_mand.sisters_attended.add(sister)
+
+    event_sem1_mand.sisters_attended.add(sister_other)
+    event_sem1_notmand2.sisters_attended.add(sister_other)
+    event_sem2_mand.sisters_excused.add(sister_other)
+
     # Get percentage for semester1 for normal sister
     percentage = views.calculate_percentage(sister, semester1.id)
 
-    #mandatory_points = 50
-    #earned_points = Event.VALUE_OF_EXCUSED_ABSENCE*50
-    #expected_percentage = earned_points*1.0 / mandatory_points
-    #self.assertEqual(percentage, expected_percentage)
+    mandatory_points = 50 + 20
+    earned_points = 50 + 15
+    expected_percentage = earned_points*1.0 / mandatory_points
+    self.assertEqual(percentage, expected_percentage)
 
 
 ###################################

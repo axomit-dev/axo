@@ -67,10 +67,11 @@ def get_sister_record(sister, semester_id):
     'future_events_and_excuses': future_events_and_excuses,
     'semesters': semesters,
     'current_semester': semester,
+    'percentage': format_percentage(calculate_percentage(sister, semester_id)),
   }
   return context
 
-# Returns a sister's attendance for the given semester.
+# Returns a sister's attendance for the given semester for events in the past.
 # Attendance is returned as a float, where 1.0 represents 100% attendance.
 # If there haven't been any mandatory events or this sister hasn't
 #   been required at any events this semester, the no_percentage_available_message
@@ -78,9 +79,13 @@ def get_sister_record(sister, semester_id):
 # Assumes that both sister and semester_id are valid.
 def calculate_percentage(sister,semester_id):
   semester = Semester.objects.get(id=semester_id)
+  time_threshold = timezone.now()
+  past_events = Event.objects.filter(semester=semester, date__lte=time_threshold)
+  
   total_points=0
   earned_points=0
-  for event in Event.objects.filter(semester=semester):
+  
+  for event in past_events:
     if (sister in event.sisters_required.all()):
       if (event.is_mandatory):
         total_points+=event.points
@@ -94,6 +99,19 @@ def calculate_percentage(sister,semester_id):
     return float(earned_points)/float(total_points)
   else:
     return no_percentage_available_message
+
+def format_percentage(fraction):
+  print("fraction received:")
+  print(fraction)
+  if (fraction != no_percentage_available_message):
+    # If they're within 85%, be more granular
+    if abs(fraction - .85) <= .05:
+      return str(int(round(fraction*100, 2))) + "%"
+    else:
+      return str(int(round(fraction*100, 0))) + "%"
+  return fraction
+
+
 #######################
 ##### BASIC VIEWS #####
 #######################
