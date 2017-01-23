@@ -17,7 +17,7 @@ urlpatterns = [
   url(r'^sister/(?P<semester_id>[0-9]+)/$', views.personal_record, name='personal_record'),
 
   # Event-related views
-  url(r'^events/$', views.events, name='events'),
+  url(r'^events/all/(?P<semester_id>[0-9]+)/$', views.events, name='events'), # All events for a certain semester
   url(r'^events/(?P<event_id>[0-9]+)/$', views.event_details, name='event_details'),
   url(r'^events/(?P<event_id>[0-9]+)/activate/$', views.activate, name='activate'),
   url(r'^events/(?P<event_id>[0-9]+)/checkin/sisters/(?P<sister_id>[0-9]+)$', views.checkin_sister, name='checkin_sister'),

@@ -11,7 +11,7 @@
 {% if user.is_staff %}
   <div id="navigation-staff">
     <br><p>staff options:</p>
-    <a href="{% url 'attendance:events' %}">  all events </a>
+    <a href="{% url 'attendance:events' semester.id %}">  all events </a>
   </div>
 {% endif %}
 

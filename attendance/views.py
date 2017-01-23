@@ -133,19 +133,25 @@ def index(request):
 ##### EVENT-RELATED VIEWS #####
 ###############################
 
-# List of all events
+# List of all events for the given semester
 @user_passes_test(lambda u: u.is_staff)
-def events(request):
-  events = Event.objects.order_by('-date')
+def events(request, semester_id):
+  # Get all events for this semester
+  semester = Semester.objects.get(id=semester_id)
+  events = Event.objects.filter(semester=semester).order_by('-date')
   # Get years for activation button
   years_query = Sister.objects.values('class_year').distinct()
   years_list = [x['class_year'] for x in years_query]
   # Order latest to earliest
   years_list.sort()
   years_list.reverse()
+
+  semesters = Semester.objects.all()
   context = {
     'events': events,
     'years': years_list,
+    'semesters': semesters,
+    'current_semester': semester
   }
   return render(request, 'attendance/events.html', context)
 
