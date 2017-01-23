@@ -55,6 +55,30 @@ def create_excuse(event, sister, text, status=Excuse.PENDING):
   excuse = Excuse.objects.create(event=event, sister=sister, text=text, status=status)
   return excuse
 
+######################################
+##### CALCULATE_PERCENTAGE TESTS #####
+######################################
+class CalculatePercentageTests(TestCase):
+  def test_calculate_percentage_no_events(self):
+    self.assertEqual(True, True)
+
+  #def test_calculate_percentage_no_events_in_given_semester(self):
+
+  #def test_calculate_percentage_one_event_attended(self):
+
+  #def test_calculate_percentage_one_event_excused(self):
+
+  #def test_calculate_percentage_one_event_absent(self):
+
+  #def test_calculate_percentage_one_event_not_required_to_attend(self):
+
+  #def test_calculate_percentage_many_events_same_semester(self):
+
+  #def test_calculate_percentage_many_events_different_semesters(self):
+
+  #def test_caclulate_percentage_many_events_many_semesters_many_sisters(self):
+
+
 ###################################
 ##### GET_SISTER_RECORD TESTS #####
 ###################################
