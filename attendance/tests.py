@@ -77,10 +77,10 @@ class CalculatePercentageTests(TestCase):
 
     self.assertEqual(percentage, views.no_percentage_available_message)
 
-  def test_calculate_percentage_one_mandatory_event_attended(self):
+  def test_calculate_percentage_one_past_mandatory_event_attended(self):
     sister = create_sister("reb", Sister.ACTIVE, 2019)
     semester = create_semester(Semester.FALL, 2018)
-    event = create_event("yo", 40, 30, semester=semester, is_mandatory=True)
+    event = create_event("yo", -1, 30, semester=semester, is_mandatory=True)
     event.sisters_required.add(sister)
     event.sisters_attended.add(sister)
 
@@ -88,10 +88,10 @@ class CalculatePercentageTests(TestCase):
 
     self.assertEqual(percentage, 1.0)
 
-  def test_calculate_percentage_one_mandatory_event_excused(self):
+  def test_calculate_percentage_one_past_mandatory_event_excused(self):
     sister = create_sister("reb", Sister.ACTIVE, 2019)
     semester = create_semester(Semester.FALL, 2018)
-    event = create_event("yo", 40, 30, semester=semester, is_mandatory=True)
+    event = create_event("yo", -2, 30, semester=semester, is_mandatory=True)
     event.sisters_required.add(sister)
     event.sisters_excused.add(sister)
 
@@ -99,30 +99,30 @@ class CalculatePercentageTests(TestCase):
 
     self.assertEqual(percentage, .75)
 
-  def test_calculate_percentage_one_mandatory_event_absent(self):
+  def test_calculate_percentage_one_past_mandatory_event_absent(self):
     sister = create_sister("reb", Sister.ACTIVE, 2019)
     semester = create_semester(Semester.FALL, 2018)
-    event = create_event("yo", 40, 30, semester=semester, is_mandatory=True)
+    event = create_event("yo", -6, 30, semester=semester, is_mandatory=True)
     event.sisters_required.add(sister)
 
     percentage = views.calculate_percentage(sister, semester.id)
 
     self.assertEqual(percentage, 0.0)
 
-  def test_calculate_percentage_one_mandatory_event_not_required_to_attend(self):
+  def test_calculate_percentage_one_past_mandatory_event_not_required_to_attend(self):
     sister = create_sister("reb", Sister.ACTIVE, 2019)
     semester = create_semester(Semester.FALL, 2018)
-    event = create_event("yo", 40, 30, semester=semester, is_mandatory=True)
+    event = create_event("yo", -40, 30, semester=semester, is_mandatory=True)
 
     percentage = views.calculate_percentage(sister, semester.id)
 
     # Since they haven't needed to attend any events, can't calculate a percentage
     self.assertEqual(percentage, views.no_percentage_available_message)
 
-  def test_calculate_percentage_one_non_mandatory_event_attended(self):
+  def test_calculate_percentage_one_past_non_mandatory_event_attended(self):
     sister = create_sister("reb", Sister.ACTIVE, 2019)
     semester = create_semester(Semester.FALL, 2018)
-    event = create_event("yo", 40, 30, semester=semester, is_mandatory=False)
+    event = create_event("yo", -1000, 30, semester=semester, is_mandatory=False)
     event.sisters_required.add(sister)
     event.sisters_attended.add(sister)
 
@@ -131,11 +131,11 @@ class CalculatePercentageTests(TestCase):
     # Since there's no mandatory events yet, can't calculate a percentage
     self.assertEqual(percentage, views.no_percentage_available_message)
 
-  def test_calculate_percentage_two_events_one_mandatory(self):
+  def test_calculate_percentage_two_past_events_one_mandatory(self):
     sister = create_sister("siena", Sister.ACTIVE, 2018)
     semester = create_semester(Semester.FALL, 2017)
     event_mandatory = create_event("chapter", -2, 20, semester=semester, is_mandatory=True)
-    event_not = create_event("mixer", 5, 10, semester=semester, is_mandatory=False)
+    event_not = create_event("mixer", -5, 10, semester=semester, is_mandatory=False)
 
     event_mandatory.sisters_required.add(sister)
     event_not.sisters_required.add(sister)
@@ -149,8 +149,8 @@ class CalculatePercentageTests(TestCase):
   def test_calculate_percentage_over_one_hundred_percent(self):
     sister = create_sister("siena", Sister.ACTIVE, 2018)
     semester = create_semester(Semester.FALL, 2017)
-    event_mandatory = create_event("chapter", -2, 20, semester=semester, is_mandatory=True)
-    event_not = create_event("mixer", 5, 12, semester=semester, is_mandatory=False)
+    event_mandatory = create_event("chapter", -20, 20, semester=semester, is_mandatory=True)
+    event_not = create_event("mixer", -6, 12, semester=semester, is_mandatory=False)
 
     event_mandatory.sisters_required.add(sister)
     event_mandatory.sisters_excused.add(sister)
@@ -163,13 +163,13 @@ class CalculatePercentageTests(TestCase):
     expected_percentage = earned_points / 20.0 # = 1.35
     self.assertEqual(percentage, expected_percentage)
 
-  def test_calculate_percentage_many_events_same_semester(self):
+  def test_calculate_percentage_many_past_events_same_semester(self):
     sister = create_sister("siena", Sister.ACTIVE, 2018)
     semester = create_semester(Semester.FALL, 2017)
     event_mandatory1 = create_event("chapter", -2, 20, semester=semester, is_mandatory=True)
-    event_mandatory2 = create_event("chapter2", 14, 30, semester=semester, is_mandatory=True)
-    event_not_mandatory1 = create_event("mixer", 5, 12, semester=semester, is_mandatory=False)
-    event_not_mandatory2 = create_event("mixer2", 12, 10, semester=semester, is_mandatory=False)
+    event_mandatory2 = create_event("chapter2", -14, 30, semester=semester, is_mandatory=True)
+    event_not_mandatory1 = create_event("mixer", -5, 12, semester=semester, is_mandatory=False)
+    event_not_mandatory2 = create_event("mixer2", -12, 10, semester=semester, is_mandatory=False)
 
     event_mandatory1.sisters_required.add(sister)
     event_mandatory2.sisters_required.add(sister)
@@ -185,13 +185,13 @@ class CalculatePercentageTests(TestCase):
     expected_percentage = earned_points*1.0 / mandatory_points
     self.assertEqual(percentage, expected_percentage)
 
-  def test_calculate_percentage_many_events_different_semesters(self):
+  def test_calculate_percentage_many_past_events_different_semesters(self):
     sister = create_sister("aw;elif", Sister.ABROAD, 2018)
     semester1 = create_semester(Semester.SPRING, 2016)
     semester2 = create_semester(Semester.FALL, 2016)
-    event_sem1_mand = create_event("initiation", days=10, points=50, semester=semester1, is_mandatory=True)
+    event_sem1_mand = create_event("initiation", days=-10, points=50, semester=semester1, is_mandatory=True)
     event_sem1_notmand = create_event("idkman", days=1, points=15, semester=semester1, is_mandatory=False)
-    event_sem2_mand = create_event("dva shifts", days=20, points=20, semester=semester2, is_mandatory=True)
+    event_sem2_mand = create_event("dva shifts", days=-20, points=20, semester=semester2, is_mandatory=True)
 
     event_sem1_mand.sisters_required.add(sister)
     event_sem1_notmand.sisters_required.add(sister)
@@ -207,17 +207,17 @@ class CalculatePercentageTests(TestCase):
     expected_percentage = earned_points*1.0 / mandatory_points
     self.assertEqual(percentage, expected_percentage)
 
-  def test_caclulate_percentage_many_events_many_semesters_many_sisters(self):
+  def test_caclulate_percentage_many_past_events_many_semesters_many_sisters(self):
     sister = create_sister("aw;elif", Sister.ABROAD, 2018)
     sister_other = create_sister("button smash", Sister.ACTIVE, 2017)
     semester1 = create_semester(Semester.SPRING, 2016)
     semester2 = create_semester(Semester.FALL, 2016)
-    event_sem1_mand = create_event("initiation", days=10, points=50, semester=semester1, is_mandatory=True)
-    event_sem1_mand2 = create_event("my journey 2018s", days=1, points=20, semester=semester1, is_mandatory=True)
-    event_sem1_notmand = create_event("idkman", days=1, points=15, semester=semester1, is_mandatory=False)
-    event_sem1_notmand2 = create_event("2017 fireside", days=20, points=10, semester=semester1, is_mandatory=False)
-    event_sem2_mand = create_event("dva shifts", days=20, points=20, semester=semester2, is_mandatory=True)
-    event_sem2_notmand = create_event("zeta psi mixer", days=5, points=5, semester=semester2, is_mandatory=False)
+    event_sem1_mand = create_event("initiation", days=-10, points=50, semester=semester1, is_mandatory=True)
+    event_sem1_mand2 = create_event("my journey 2018s", days=-1, points=20, semester=semester1, is_mandatory=True)
+    event_sem1_notmand = create_event("idkman", days=-1, points=15, semester=semester1, is_mandatory=False)
+    event_sem1_notmand2 = create_event("2017 fireside", days=-20, points=10, semester=semester1, is_mandatory=False)
+    event_sem2_mand = create_event("dva shifts", days=-20, points=20, semester=semester2, is_mandatory=True)
+    event_sem2_notmand = create_event("zeta psi mixer", days=-5, points=5, semester=semester2, is_mandatory=False)
 
     # sister required at everything except 2017 fireside
     event_sem1_mand.sisters_required.add(sister)
