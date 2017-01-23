@@ -190,7 +190,7 @@ class CalculatePercentageTests(TestCase):
     semester1 = create_semester(Semester.SPRING, 2016)
     semester2 = create_semester(Semester.FALL, 2016)
     event_sem1_mand = create_event("initiation", days=-10, points=50, semester=semester1, is_mandatory=True)
-    event_sem1_notmand = create_event("idkman", days=1, points=15, semester=semester1, is_mandatory=False)
+    event_sem1_notmand = create_event("idkman", days=-1, points=15, semester=semester1, is_mandatory=False)
     event_sem2_mand = create_event("dva shifts", days=-20, points=20, semester=semester2, is_mandatory=True)
 
     event_sem1_mand.sisters_required.add(sister)
@@ -246,6 +246,110 @@ class CalculatePercentageTests(TestCase):
 
     mandatory_points = 50 + 20
     earned_points = 50 + 15
+    expected_percentage = earned_points*1.0 / mandatory_points
+    self.assertEqual(percentage, expected_percentage)
+
+  def test_calculate_percentage_one_future_event(self):
+    sister = create_sister("siena", Sister.ACTIVE, 2018)
+    semester = create_semester(Semester.FALL, 2017)
+    event = create_event("chapter", 40, 20, semester=semester, is_mandatory=True)
+    event.sisters_required.add(sister)
+
+    percentage = views.calculate_percentage(sister, semester.id)
+
+    self.assertEqual(percentage, views.no_percentage_available_message)
+
+  def test_calculate_percentage_one_future_event_attended(self):
+    sister = create_sister("siena", Sister.ACTIVE, 2018)
+    semester = create_semester(Semester.FALL, 2017)
+    event = create_event("chapter", 1, 20, semester=semester, is_mandatory=True)
+    event.sisters_required.add(sister)
+    event.sisters_attended.add(sister)
+
+    percentage = views.calculate_percentage(sister, semester.id)
+
+    self.assertEqual(percentage, views.no_percentage_available_message)
+
+  def test_calculate_percentage_one_future_event_excused(self):
+    sister = create_sister("siena", Sister.ACTIVE, 2018)
+    semester = create_semester(Semester.FALL, 2017)
+    event = create_event("chapter", 2, 20, semester=semester, is_mandatory=True)
+
+    event.sisters_required.add(sister)
+    event.sisters_excused.add(sister)
+
+    percentage = views.calculate_percentage(sister, semester.id)
+
+    self.assertEqual(percentage, views.no_percentage_available_message)
+
+  def test_calculate_percentage_future_events_and_past_events_not_required(self):
+    sister = create_sister("siena", Sister.ACTIVE, 2018)
+    semester = create_semester(Semester.FALL, 2017)
+    event = create_event("chapter", 2, 20, semester=semester, is_mandatory=True)
+    event_past = create_event("idk", -2, 13, semester=semester, is_mandatory=True)
+
+    event.sisters_required.add(sister)
+    event.sisters_excused.add(sister)
+
+    percentage = views.calculate_percentage(sister, semester.id)
+
+    self.assertEqual(percentage, views.no_percentage_available_message)
+
+  def test_calculate_percentage_future_and_past_events_same_semester(self):
+    sister = create_sister("siena", Sister.ACTIVE, 2018)
+    semester = create_semester(Semester.FALL, 2017)
+    event_past1 = create_event("chapter", -20, 20, semester=semester, is_mandatory=True)
+    event_past2 = create_event("mixer", -6, 12, semester=semester, is_mandatory=False)
+    event_future1 = create_event("chapter2", 60, 58, semester=semester, is_mandatory=True)
+    event_future2 = create_event("mixer2", 6, 11, semester=semester, is_mandatory=False)
+
+    event_past1.sisters_required.add(sister)
+    event_past1.sisters_attended.add(sister)
+    event_past2.sisters_required.add(sister)
+    event_future1.sisters_required.add(sister)
+    event_future2.sisters_required.add(sister)
+    event_future1.sisters_excused.add(sister)
+
+    percentage = views.calculate_percentage(sister, semester.id)
+
+    self.assertEqual(percentage, 1.0)
+
+  def test_calculate_percentage_future_and_past_events_different_semesters(self):
+    sister = create_sister("aw;elif", Sister.ABROAD, 2018)
+    semester1 = create_semester(Semester.SPRING, 2016)
+    semester2 = create_semester(Semester.FALL, 2016)
+
+    # Past
+    event_sem1_mand = create_event("initiation", days=-10, points=25, semester=semester1, is_mandatory=True)
+    event_sem1_notmand = create_event("idkman", days=-1, points=20, semester=semester1, is_mandatory=False)
+    event_sem2_mand = create_event("dva shifts", days=-20, points=10, semester=semester2, is_mandatory=True)
+
+    # Future
+    event_sem1_future_mand = create_event("bid night", days=25, points=30, semester=semester1, is_mandatory=True)
+    event_sem2_future_mand = create_event("first day of classes", days=10, points=10, semester=semester2, is_mandatory=True)
+    event_sem2_future_notmand =  create_event("something", days=40, points=20, semester=semester2, is_mandatory=False)
+
+    # Past
+    event_sem1_mand.sisters_required.add(sister)
+    event_sem1_notmand.sisters_required.add(sister)
+    event_sem2_mand.sisters_required.add(sister)
+    event_sem1_mand.sisters_attended.add(sister)
+    event_sem1_notmand.sisters_attended.add(sister)
+    event_sem2_mand.sisters_excused.add(sister)
+
+    # Future
+    event_sem1_future_mand.sisters_required.add(sister)
+    event_sem2_future_mand.sisters_required.add(sister)
+    event_sem2_future_notmand.sisters_required.add(sister)
+    event_sem1_future_mand.sisters_excused.add(sister)
+    event_sem2_future_notmand.sisters_attended.add(sister)
+
+    # Get percentage for semester1
+    percentage = views.calculate_percentage(sister, semester1.id)
+
+    # Points for semester 1 past events only
+    mandatory_points = 25
+    earned_points = 20 + 25
     expected_percentage = earned_points*1.0 / mandatory_points
     self.assertEqual(percentage, expected_percentage)
 

@@ -84,7 +84,7 @@ def calculate_percentage(sister,semester_id):
   
   total_points=0
   earned_points=0
-  
+
   for event in past_events:
     if (sister in event.sisters_required.all()):
       if (event.is_mandatory):
@@ -100,9 +100,13 @@ def calculate_percentage(sister,semester_id):
   else:
     return no_percentage_available_message
 
+# Formats the fraction for display as an attendance percentage.
+# If .80 <= fraction <= .90, returns the fraction as a percent
+#   with two decimals and a percent sign.
+#   Otherwise, if fraction is a number, returns the fraction
+#   as a percent with 0 decimal places and a percent sign.
+#   Otherwise, will return the initial fraction.
 def format_percentage(fraction):
-  print("fraction received:")
-  print(fraction)
   if (fraction != no_percentage_available_message):
     # If they're within 85%, be more granular
     if abs(fraction - .85) <= .05:
