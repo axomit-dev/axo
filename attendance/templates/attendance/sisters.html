@@ -6,7 +6,7 @@
 
 {% for sister in sisters %}
 
-  <p><a href="{% url 'attendance:sister_record' sister.id semester.id %}"> {{ sister.user.username }}</a></p>
+  <p><a href="{% url 'attendance:sister_record' sister.id semester.id %}"> {{ sister.user.username }}</a> &nbsp;&nbsp;•&nbsp; {{ sister.percentage }}</p>
 
 {% endfor %}
 

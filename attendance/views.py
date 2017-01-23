@@ -237,11 +237,20 @@ def personal_record(request, semester_id):
   context = get_sister_record(sister, semester_id)
   return render(request, 'attendance/personal_record.html', context)
 
-# View a list of all sisters.
+# View a list of all sisters and their percentages.
 @user_passes_test(lambda u: u.is_superuser)
 def sisters(request):
-  active_sisters = Sister.objects.exclude(status=Sister.ALUM).exclude(stauts=Sister.DEAFFILIATED)
   latest_semester = Semester.objects.all()[0]
+  active_sisters = Sister.objects.exclude(status=Sister.ALUM).exclude(status=Sister.DEAFFILIATED)#.annotate(
+   #   percentage=format_percentage(calculate_percentage(id, latest_semester.id)))
+
+  # List of tuples, each tuple being a sister and her percentage
+  #active_sisters_with_percentages = []
+  for sister in active_sisters:
+    percent = format_percentage(calculate_percentage(sister, latest_semester.id))
+    sister.percentage = percent
+  #  active_sisters_with_percentages.append((sister, percent))
+
   context = {
     'sisters': active_sisters,
     'semester': latest_semester,
@@ -254,11 +263,6 @@ def sister_record(request, sister_id, semester_id):
   sister = Sister.objects.get(id=sister_id)
   context = get_sister_record(sister, semester_id)
   return render(request, 'attendance/sister_record.html', context)
-@user_passes_test(lambda u:u.is_superuser)
-def sister_percentage(request,sister_id,semester_id):
-   sister = Sister.objects.get(id=sister_id)
-   percent=calculate_percentage(sister,semester_id)
-   return render(request,'attendance/sister_record.html',percent)
 
 
 ################################
