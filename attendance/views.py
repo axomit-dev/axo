@@ -138,20 +138,20 @@ def event_details(request, event_id):
 
 # Activate an event.
 # This records a list of sisters who should be attending, based
-# on the status of all sisters. Anyone that isn't abroad or an alum
-# is considered a possible attendee.
+# on the status of all sisters. Anyone that isn't abroad, an alum,
+# or deaffiliated is considered a possible attendee.
 @user_passes_test(lambda u: u.is_staff)
 def activate(request, event_id):  
   # Create the list of sisters who should attend
   required_group = request.POST['activate_group']
   if (required_group == 'all'):
-    sisters_required = Sister.objects.exclude(status=Sister.ALUM).exclude(status=Sister.ABROAD)
+    sisters_required = Sister.objects.exclude(status=Sister.ALUM).exclude(status=Sister.ABROAD).exclude(status=Sister.DEAFFILIATED)
   elif (required_group == 'new_members'):
     sisters_required = Sister.objects.filter(status=Sister.NEW_MEMBER)
   else:
     # Value is a year
     year = int(required_group)
-    sisters_required = Sister.objects.filter(class_year=year).exclude(status=Sister.ALUM).exclude(status=Sister.ABROAD)
+    sisters_required = Sister.objects.filter(class_year=year).exclude(status=Sister.ALUM).exclude(status=Sister.ABROAD).exclude(status=Sister.DEAFFILIATED)
 
   event = get_object_or_404(Event, pk=event_id)
   event.sisters_required = sisters_required
@@ -190,7 +190,7 @@ def personal_record(request, semester_id):
 # View a list of all sisters.
 @user_passes_test(lambda u: u.is_superuser)
 def sisters(request):
-  active_sisters = Sister.objects.exclude(status=Sister.ALUM)
+  active_sisters = Sister.objects.exclude(status=Sister.ALUM).exclude(stauts=Sister.DEAFFILIATED)
   latest_semester = Semester.objects.all()[0]
   context = {
     'sisters': active_sisters,

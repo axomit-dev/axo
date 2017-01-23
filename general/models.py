@@ -11,12 +11,14 @@ class Sister(models.Model):
   NEW_MEMBER = 2
   PRC = 3
   ABROAD = 4
+  DEAFFILIATED = 5
   STATUS = (
     (ACTIVE, 'Active'),
     (ALUM, 'Alum'),
     (NEW_MEMBER, 'New Member'),
     (PRC, 'PRC'),
-    (ABROAD, 'Abroad')
+    (ABROAD, 'Abroad'),
+    (DEAFFILIATED, 'Deaffiliated'),
   )
 
   user = models.OneToOneField(User, on_delete=models.CASCADE)

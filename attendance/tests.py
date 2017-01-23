@@ -341,6 +341,7 @@ class ActivateTests(TestCase):
     sister4 = create_sister('newmembie2020', Sister.NEW_MEMBER, 2020)
     sister5 = create_sister('prc2017', Sister.PRC, 2017)
     sister6 = create_sister('active2019', Sister.ACTIVE, 2019)
+    sister10 = create_sister('deaffiliated2020', Sister.DEAFFILIATED, 2020)
 
     # Make POST request
     post_url = reverse('attendance:activate', kwargs={'event_id': event.id})
@@ -353,12 +354,14 @@ class ActivateTests(TestCase):
     event_new = Event.objects.get(id=event.id)
     self.assertEqual(event_new.is_activated, True)
     # Sisters 1, 4, 5, and 6 should be required to attend
+    self.assertEqual(len(event_new.sisters_required.all()),  4)
     self.assertEqual(sister1 in event_new.sisters_required.all(), True)
     self.assertEqual(sister2 in event_new.sisters_required.all(), False)
     self.assertEqual(sister3 in event_new.sisters_required.all(), False)
     self.assertEqual(sister4 in event_new.sisters_required.all(), True)
     self.assertEqual(sister5 in event_new.sisters_required.all(), True)
     self.assertEqual(sister6 in event_new.sisters_required.all(), True)
+    self.assertEqual(sister10 in event_new.sisters_required.all(), False)
 
   # Activate an event for only new members
   def test_activate_new_members(self):
@@ -373,6 +376,7 @@ class ActivateTests(TestCase):
     sister5 = create_sister('prc2017', Sister.PRC, 2017)
     sister6 = create_sister('active2019', Sister.ACTIVE, 2019)
     sister7 = create_sister('newmembie2019', Sister.NEW_MEMBER, 2019)
+    sister10 = create_sister('deaffiliated2020', Sister.DEAFFILIATED, 2020)
 
     # Make POST request
     post_url = reverse('attendance:activate', kwargs={'event_id': event.id})
@@ -385,6 +389,7 @@ class ActivateTests(TestCase):
     event_new = Event.objects.get(id=event.id)
     self.assertEqual(event_new.is_activated, True)
     # Sisters 4 and 7 should be required to attend
+    self.assertEqual(len(event_new.sisters_required.all()),  2)
     self.assertEqual(sister1 in event_new.sisters_required.all(), False)
     self.assertEqual(sister2 in event_new.sisters_required.all(), False)
     self.assertEqual(sister3 in event_new.sisters_required.all(), False)
@@ -392,6 +397,7 @@ class ActivateTests(TestCase):
     self.assertEqual(sister5 in event_new.sisters_required.all(), False)
     self.assertEqual(sister6 in event_new.sisters_required.all(), False)
     self.assertEqual(sister7 in event_new.sisters_required.all(), True)
+    self.assertEqual(sister10 in event_new.sisters_required.all(), False)
 
   # Activate an event for a specific class year
   def test_activate_class_year(self):
@@ -408,6 +414,8 @@ class ActivateTests(TestCase):
     sister7 = create_sister('newmembie2019', Sister.NEW_MEMBER, 2019)
     sister8 = create_sister('newmembie2018', Sister.NEW_MEMBER, 2018)
     sister9 = create_sister('alum2018', Sister.ALUM, 2018)
+    sister10 = create_sister('deaffiliated2020', Sister.DEAFFILIATED, 2020)
+    sister11 = create_sister('deaffiliated2018', Sister.DEAFFILIATED, 2018)
 
     # Make POST request
     post_url = reverse('attendance:activate', kwargs={'event_id': event.id})
@@ -421,6 +429,7 @@ class ActivateTests(TestCase):
     self.assertEqual(event_new.is_activated, True)
     # Sisters 1 and 8should be required to attend
     # Abroad and alum don't attend)
+    self.assertEqual(len(event_new.sisters_required.all()),  2)
     self.assertEqual(sister1 in event_new.sisters_required.all(), True)
     self.assertEqual(sister2 in event_new.sisters_required.all(), False)
     self.assertEqual(sister3 in event_new.sisters_required.all(), False)
@@ -430,6 +439,8 @@ class ActivateTests(TestCase):
     self.assertEqual(sister7 in event_new.sisters_required.all(), False)
     self.assertEqual(sister8 in event_new.sisters_required.all(), True)
     self.assertEqual(sister9 in event_new.sisters_required.all(), False)
+    self.assertEqual(sister10 in event_new.sisters_required.all(), False)
+    self.assertEqual(sister11 in event_new.sisters_required.all(), False)
 
   # Activate an event for a class year that doesn't have anyone in it
   def test_activate_class_year_no_one_in_it(self):
@@ -442,6 +453,7 @@ class ActivateTests(TestCase):
     sister3 = create_sister('abroad2018', Sister.ABROAD, 2018)
     sister4 = create_sister('newmembie2020', Sister.NEW_MEMBER, 2020)
     sister5 = create_sister('prc2017', Sister.PRC, 2017)
+    sister10 = create_sister('deaffiliated2020', Sister.DEAFFILIATED, 2020)
 
     # Make POST request
     post_url = reverse('attendance:activate', kwargs={'event_id': event.id})
@@ -453,10 +465,10 @@ class ActivateTests(TestCase):
     # Event should be activated
     event_new = Event.objects.get(id=event.id)
     self.assertEqual(event_new.is_activated, True)
-    # Sisters 1 and 8should be required to attend
-    # Abroad and alum don't attend)
+    self.assertEqual(len(event_new.sisters_required.all()),  0)
     self.assertEqual(sister1 in event_new.sisters_required.all(), False)
     self.assertEqual(sister2 in event_new.sisters_required.all(), False)
     self.assertEqual(sister3 in event_new.sisters_required.all(), False)
     self.assertEqual(sister4 in event_new.sisters_required.all(), False)
     self.assertEqual(sister5 in event_new.sisters_required.all(), False)
+    self.assertEqual(sister10 in event_new.sisters_required.all(), False)
