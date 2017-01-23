@@ -105,12 +105,12 @@ def calculate_percentage(sister,semester_id):
 #   with two decimals and a percent sign.
 #   Otherwise, if fraction is a number, returns the fraction
 #   as a percent with 0 decimal places and a percent sign.
-#   Otherwise, will return the initial fraction.
+# If fraction = no_percentage_available_message, that will be returned.
 def format_percentage(fraction):
   if (fraction != no_percentage_available_message):
     # If they're within 85%, be more granular
     if abs(fraction - .85) <= .05:
-      return str(int(round(fraction*100, 2))) + "%"
+      return str(round(fraction*100, 2)) + "%"
     else:
       return str(int(round(fraction*100, 0))) + "%"
   return fraction

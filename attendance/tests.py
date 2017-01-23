@@ -55,6 +55,35 @@ def create_excuse(event, sister, text, status=Excuse.PENDING):
   excuse = Excuse.objects.create(event=event, sister=sister, text=text, status=status)
   return excuse
 
+###################################
+##### FORMAT_PERCENTAGE TESTS #####
+###################################
+class FormatPercentageTests(TestCase):
+  def test_format_percentage_default_message(self):
+    result = views.format_percentage(views.no_percentage_available_message)
+    self.assertEqual(result, views.no_percentage_available_message)
+ 
+  def test_format_percentage_60(self):
+    result = views.format_percentage(.60)
+    self.assertEqual(result, "60%")
+
+  def test_format_percentage_82(self):
+    result = views.format_percentage(.82)
+    self.assertEqual(result, "82.0%")
+    # TODO: Force it to be 2 decimals always?
+
+  def test_format_percentage_86_368(self):
+    result = views.format_percentage(.86368)
+    self.assertEqual(result, "86.37%")
+
+  def test_format_percentage_97_34(self):
+    result = views.format_percentage(.9734)
+    self.assertEqual(result, "97%")
+
+  def test_format_percentage_109_698(self):
+    result = views.format_percentage(1.09698)
+    self.assertEqual(result, "110%")
+
 ######################################
 ##### CALCULATE_PERCENTAGE TESTS #####
 ######################################
