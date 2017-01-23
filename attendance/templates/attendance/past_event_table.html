@@ -1,12 +1,12 @@
-<br>
 <p> Overall Attendance for past events this semester: {{ percentage }} </p>
-<br>
 
 <h2> Past Events </h2>
 <table>
   <tr>
     <th> Event </th>
     <th> Attendance </th>
+    <th> Point Value for Event </th>
+    <th> Was Mandatory? </th>
   </tr>
 {% for event in past_events %}
   <tr>
@@ -22,6 +22,18 @@
     {% else %}
       <td> Not Required To Attend </td>
     {% endif %}
+    <td> {{ event.points }} </td>
+    {% if event.is_mandatory %}
+      <td> Yes </td>
+    {% else %}
+      <td> No </td>
+    {% endif %}
   </tr>
 {% endfor %}
+
+
 </table>
+
+<br> 
+
+<p> Your attendance percentage is calculated out of all points for mandatory events that you were expected to attend. </p>

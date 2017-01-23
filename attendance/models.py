@@ -47,8 +47,12 @@ class Event(models.Model):
  
 
   def __str__(self):
-    formatted_date = self.date.strftime("%A, %B %d %Y at %I:%M%p")
+    # Example display of the formatted date:
+    # Sunday 1/19/17 at 6:30pm
+    formatted_date = '{dt:%a} {dt.month}/{dt.day}/{dt.year} at {dt:%I}:{dt:%M}{dt:%p}'.format(dt=self.date)
+    #formatted_date = self.date.strftime("%a %m/%d/%y at %I:%M%p")
     return self.name + " | " + formatted_date
+
 
 class Excuse(models.Model):
   PENDING = 0

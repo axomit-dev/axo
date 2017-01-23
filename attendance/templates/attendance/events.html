@@ -22,9 +22,8 @@
 
   <table>
     <tr>
-      <th> Name </th>
-      <th> Date </th>
-      <th> Is Mandatory </th>
+      <th> Event </th>
+      <th> Is Mandatory? </th>
       <th> Activation? </th>
     </tr>
     {% for event in events %}
@@ -32,14 +31,17 @@
           <td>
             {% if event.is_activated %}
               <a href="{% url 'attendance:event_details' event.id %}">
-                {{ event.name }}
+                {{ event }}
               </a>
             {% else %}
-              {{ event.name }}
+              {{ event }}
             {% endif %}
           </td>
-          <td> {{ event.date }} </td>
-          <td> {{ event.is_mandatory }} </td>
+          {% if event.is_mandatory %}
+            <td> Yes </td>
+          {% else %}
+            <td> No </td>
+          {% endif %}
           <!-- Activate Button -->
           <td>
             {% if event.is_activated %}
@@ -61,6 +63,8 @@
         </tr>
     {% endfor %}
     </table>
+
+    <br>
 
   <p> When you click the 'Activate' button, all members that are active and are part of the selected group will be recorded as possible attendees. For example, if you choose a class year, then all memebers of that class year who aren't abroad will be possible attendees. </p>
 

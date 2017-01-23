@@ -71,3 +71,12 @@ input[type=submit]{
 table {
     margin: auto;
 }
+
+.circle_green { 
+    width:1%;
+    padding:10px 11px;
+    margin:0 auto;
+    border:2px solid #a1a1a1;
+    border-radius:100%;
+    background-color:green;
+}

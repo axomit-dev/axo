@@ -3,15 +3,9 @@
 
 {% block content %}
 
-<h2> Event: {{ event.name }} </h2>
-
-<br>
+<h3> {{ event }} </h3>
 
 attended: {{ percent_attended }}% &nbsp;&nbsp;•&nbsp; excused: {{ percent_excused }}% &nbsp;&nbsp;•&nbsp; absent: {{ percent_absent }}%
-
-<br>
-
-<h3> Required Sisters: </h3>
 
 <table>
   <tr>
@@ -23,7 +17,7 @@ attended: {{ percent_attended }}% &nbsp;&nbsp;•&nbsp; excused: {{ percent_excu
   <tr>
     <td> {{ sister.user.username }} </td>
     {% if sister in event.sisters_attended.all %}
-      <td> Already checked in! </td>
+      <td> Yes! </td>
     {% else %}
       <td> 
         <form action="{% url 'attendance:checkin_sister' event.id sister.id %}" method="post">
