@@ -35,6 +35,7 @@ INSTALLED_APPS = [
     'general.apps.GeneralConfig',
     'attendance.apps.AttendanceConfig',
     'elections.apps.ElectionsConfig',
+    'house.apps.HouseConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

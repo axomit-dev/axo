@@ -1,0 +1,12 @@
+{% extends "general/base.html" %}
+
+{% block content %}
+
+<!-- Any logged-in user can see their personal attendance -->
+{% if user.is_authenticated %}
+  <p><a href="{% url 'house:dinner' %}"> dinner </a></p>
+  <p><a href="{% url 'house:parking' %}"> parking </a></p>
+{% endif %}
+
+
+{% endblock content %}
