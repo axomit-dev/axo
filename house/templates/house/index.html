@@ -4,8 +4,13 @@
 
 <!-- Any logged-in user can see their personal attendance -->
 {% if user.is_authenticated %}
+  <p><a href="https://docs.google.com/spreadsheets/d/1i4aSU4Kbsm1jyEq1oBN707LIEnu4OelWIveX9QBljA0/edit?usp=sharing" target="_blank"> sign up for dinner! </a></p>
+  <p><a href="https://docs.google.com/spreadsheets/d/16SgRKOdgfi6K0R7mcoazDorYu-RgY-hRlWtu2Cz5oGk/edit?usp=sharing" target="_blank"> parking </a></p>
+  <p> Note that those links will open the spreadsheet in a new tab. </p>
+  <!-- TODO: Embed spreadsheet on those pages 
   <p><a href="{% url 'house:dinner' %}"> dinner </a></p>
   <p><a href="{% url 'house:parking' %}"> parking </a></p>
+-->
 {% endif %}
 
 
