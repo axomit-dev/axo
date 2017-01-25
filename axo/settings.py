@@ -149,7 +149,7 @@ DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 ## ATHENA-RELATED ITEMS
 ## Comment these out when doing local development,
 ## And uncomment them when planning on pulling from Athena.
-
+'''
 STATIC_ROOT = '/mit/axo/web_scripts/site-sisters/static'
 
 ALLOWED_HOSTS = ["axo.scripts.mit.edu", "axo-sisters.mit.edu"]
@@ -164,3 +164,4 @@ DATABASES = {
         'PORT': '',
     }
 }
+'''

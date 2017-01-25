@@ -253,12 +253,30 @@ def sisters(request):
   # List of tuples, each tuple being a sister and her percentage
   #active_sisters_with_percentages = []
   for sister in active_sisters:
-    percent = format_percentage(calculate_percentage(sister, latest_semester.id))
+    percent = calculate_percentage(sister, latest_semester.id)
     sister.percentage = percent
   #  active_sisters_with_percentages.append((sister, percent))
 
+  if request.GET.get('order_by_percent', False):
+    print("order by percent")
+    print(active_sisters[0].percentage)
+
+    def sort_func(sister):
+      return sister.percentage
+
+    #sorted_sisters = active_sisters.order_by('-percentage')
+    sorted_sisters = sorted(active_sisters, key=sort_func)
+    # TODO
+  else:
+    print("NOT order by percent")
+    def sort_func(sister):
+      return sister.user.username
+    sorted_sisters = sorted(active_sisters, key=sort_func)
+
+  # TODO: Format percentages
+
   context = {
-    'sisters': active_sisters,
+    'sisters': sorted_sisters,
     'semester': latest_semester,
   }
   return render(request, 'attendance/sisters.html', context)
