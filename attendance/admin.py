@@ -8,7 +8,7 @@ class EventAdmin(admin.ModelAdmin):
   ]
   list_display = ('name', 'date', 'is_mandatory', 'points', 'semester')
 
-  list_filter = ['semester', 'date', 'points']
+  list_filter = ['semester', 'date', 'points', 'is_mandatory']
   search_fields = ['name']
 
 
