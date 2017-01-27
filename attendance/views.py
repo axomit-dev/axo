@@ -5,6 +5,7 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from django.utils import timezone
 from django.core.mail import send_mail
 from django.conf import settings
+from general.views import get_sister
 
 from .models import Event, User, Excuse, Semester
 from general.models import Sister
@@ -17,25 +18,6 @@ no_percentage_available_message = "There have been no mandatory events that you'
 ##########################
 ##### HELPER METHODS #####
 ##########################
-
-# Returns dictionary with user and sister if someone is logged in.
-def get_context(request):
-  context = {}
-  context['user'] = request.user
-  if request.user.is_authenticated():
-    try:
-      context['sister'] = Sister.objects.get(user=request.user)
-    except:
-      pass
-  return context
-
-# Returns the current sister logged in, if there is one.
-def get_sister(request):
-  context = get_context(request)
-  if context['sister']:
-    return context['sister']
-  else:
-    return None
 
 # Returns all the information necessary for a full attendance record
 # for the given sister in the given semester.

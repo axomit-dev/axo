@@ -2,11 +2,13 @@
 
 {% block content %}
 
+<!-- TODO: Strike-through headings as they're completed for the semester? -->
+
 {% if user.is_authenticated %}
-<a href="{% url 'elections:ois_submission' %}"> OIS submission </a><br>
-<a href="{% url 'elections:ois_results' %}"> OIS results </a><br>
-<a href="{% url 'elections:loi_submission' %}"> LOI submission </a><br>
-<a href="{% url 'elections:loi_results' %}"> submitted LOIs </a><br>
+<a href="{% url 'elections:ois_submission' %}"> ois submission </a><br>
+<a href="{% url 'elections:ois_results' %}"> ois results </a><br>
+<a href="{% url 'elections:loi_submission' %}"> loi submission </a><br>
+<a href="{% url 'elections:loi_results' %}"> submitted lois </a><br>
 <a href="{% url 'elections:slating_submission' %}"> slating </a><br>
 <a href="{% url 'elections:voting_submission' %}"> voting </a><br>
 

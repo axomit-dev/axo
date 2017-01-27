@@ -144,6 +144,8 @@ EMAIL_HOST_USER = 'axo.mit.attendance@gmail.com' #my gmail username
 EMAIL_PORT = 587
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
+# Elections-related things
+OIS_OPEN = True
 
 
 ## ATHENA-RELATED ITEMS
