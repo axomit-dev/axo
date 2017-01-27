@@ -45,6 +45,8 @@ class Event(models.Model):
 
   points = models.IntegerField()
  
+  class Meta:
+    ordering = ['-date']
 
   def __str__(self):
     # Example display of the formatted date:
