@@ -19,7 +19,7 @@
 {% if user.is_superuser %}
   <div id="navigation-superuser">
     <br><p>superuser options:</p>
-    <a href="{% url 'attendance:sisters' %}">  all sister records </a><br>
+    <a href="{% url 'attendance:sisters' semester.id %}">  all sister records </a><br>
     <a href="{% url 'attendance:excuse_pending' %}"> pending excuses </a>
   </div>
 {% endif %}

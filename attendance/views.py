@@ -245,13 +245,13 @@ def personal_record(request, semester_id):
 
 # View a list of all sisters and their percentages.
 @user_passes_test(lambda u: u.is_superuser)
-def sisters(request):
-  latest_semester = Semester.objects.all()[0]
+def sisters(request, semester_id):
+  semester = Semester.objects.get(id=semester_id)
   active_sisters = Sister.objects.exclude(status=Sister.ALUM).exclude(status=Sister.DEAFFILIATED)
 
   # Calculate each sister's percentaage
   for sister in active_sisters:
-    percent = calculate_percentage(sister, latest_semester.id)
+    percent = calculate_percentage(sister, semester.id)
     sister.percentage = percent
 
   if request.GET.get('order_by_percent', False):
@@ -274,7 +274,8 @@ def sisters(request):
 
   context = {
     'sisters': sorted_sisters,
-    'semester': latest_semester,
+    'current_semester': semester,
+    'semesters': Semester.objects.all()
   }
   return render(request, 'attendance/sisters.html', context)
 
