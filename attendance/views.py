@@ -247,33 +247,30 @@ def personal_record(request, semester_id):
 @user_passes_test(lambda u: u.is_superuser)
 def sisters(request):
   latest_semester = Semester.objects.all()[0]
-  active_sisters = Sister.objects.exclude(status=Sister.ALUM).exclude(status=Sister.DEAFFILIATED)#.annotate(
-   #   percentage=format_percentage(calculate_percentage(id, latest_semester.id)))
+  active_sisters = Sister.objects.exclude(status=Sister.ALUM).exclude(status=Sister.DEAFFILIATED)
 
-  # List of tuples, each tuple being a sister and her percentage
-  #active_sisters_with_percentages = []
+  # Calculate each sister's percentaage
   for sister in active_sisters:
     percent = calculate_percentage(sister, latest_semester.id)
     sister.percentage = percent
-  #  active_sisters_with_percentages.append((sister, percent))
 
   if request.GET.get('order_by_percent', False):
-    print("order by percent")
-    print(active_sisters[0].percentage)
-
+    # If order_by_percent = True, sort sisters by percentage,
+    # lowest percentage first
     def sort_func(sister):
       return sister.percentage
-
-    #sorted_sisters = active_sisters.order_by('-percentage')
     sorted_sisters = sorted(active_sisters, key=sort_func)
-    # TODO
   else:
-    print("NOT order by percent")
+    # Otherwise, sort sisters by username alphabetically
     def sort_func(sister):
       return sister.user.username
     sorted_sisters = sorted(active_sisters, key=sort_func)
 
-  # TODO: Format percentages
+  # Format the percentage correctly after using it for sorting
+  def format(sister):
+    sister.percentage = format_percentage(sister.percentage)
+    return sister
+  sorted_sisters = [format(sister) for sister in sorted_sisters]
 
   context = {
     'sisters': sorted_sisters,

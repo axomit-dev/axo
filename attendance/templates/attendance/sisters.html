@@ -9,7 +9,6 @@
 <p><a href="{% url 'attendance:sisters' %}?order_by_percent=True"> order by percentage, lowest to highest </a></p>
 
 {% for sister in sisters %}
-
   <p><a href="{% url 'attendance:sister_record' sister.id semester.id %}"> {{ sister.user.username }}</a> &nbsp;&nbsp;•&nbsp; {{ sister.percentage }}</p>
 
 {% endfor %}

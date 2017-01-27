@@ -164,4 +164,6 @@ DATABASES = {
         'PORT': '',
     }
 }
+
+DEBUG = False
 '''
