@@ -58,6 +58,7 @@ def ois_submission(request):
   return render(request, 'elections/ois_submission.html', context)
 
 def ois_results(request):
+  # TODO: Sort by position then by interest
   results = OfficeInterest.objects.all()
   return render(request, 'elections/ois_results.html', {'results': results})
 
