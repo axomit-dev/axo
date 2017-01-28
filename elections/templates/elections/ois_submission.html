@@ -13,7 +13,7 @@
     <p> Make sure to select a choice for every position! </p>
   {% endif %}
 
-    <p> Instructions: Please indicate your interest level in each position below. This form isn't at all binding and you're required to fill it out to participate in voting later! </p>
+    <p> Instructions: Please indicate your interest level in each position below. Any new forms you submit will replace your old responses. This form isn't at all binding and you're required to fill it out to participate in voting later! </p>
 
     <form action="{% url 'elections:ois_submission' %}" method="post">
       {% csrf_token %}

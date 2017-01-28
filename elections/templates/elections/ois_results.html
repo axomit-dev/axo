@@ -2,6 +2,23 @@
 
 {% block content %}
 
-<p> Coming Soon... Elections OIS Results </p>
+<h3> OIS Results </h3>
+
+<table>
+  <tr>
+    <th> Position </th>
+    <th> Sister </th>
+    <th> Interested? </th>
+  </tr>
+  {% for result in results %}
+  <tr>
+    <td> {{ result.office.title }} </td>
+    <td> {{ result.sister.user.username }} </td>
+    <td> {{ result.interest }} </td>
+  </tr>
+  {% endfor %}
+
+</table>
+
 
 {% endblock content %}
