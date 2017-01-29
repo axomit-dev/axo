@@ -13,7 +13,7 @@
     <p> Make sure to select a choice for every position! </p>
   {% endif %}
 
-    <p> Instructions: Please indicate your interest level in each position below. Any new forms you submit will replace your old responses. This form isn't at all binding and you're required to fill it out to participate in voting later! </p>
+    <p> Instructions: Please indicate your interest level in each position below. Any new forms you submit will replace your old responses, even if you don't fill it out for every position. This form isn't at all binding and you're required to fill it out for every position to participate in voting later! </p>
 
     <form action="{% url 'elections:ois_submission' %}" method="post">
       {% csrf_token %}
@@ -22,13 +22,13 @@
         <p> {{ office.title }} </p>
         <p> {{ office.description }} </p>
 
-
-        <input type="radio" name="{{ office.id }}" value="yes"/>
+        <input type="radio" name="{{ office.id }}" value="0"/>
         <label>Yes</label>
-        <input type="radio" name="{{ office.id }}" value="no"/>
-        <label>No</label>
-        <input type="radio" name="{{ office.id }}" value="maybe"/>
+        <input type="radio" name="{{ office.id }}" value="1"/>
         <label>Maybe</label>
+        <input type="radio" name="{{ office.id }}" value="2"/>
+        <label>No</label>
+
 
       {% endfor %}
 

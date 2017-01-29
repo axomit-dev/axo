@@ -21,12 +21,18 @@ class OfficeInterest(models.Model):
   sister = models.ForeignKey(Sister)
   office = models.ForeignKey(Office)
 
-  YES = 'Yes'
-  NO = 'No'
-  MAYBE = 'Maybe'
+  YES = 0
+  MAYBE = 1
+  NO = 2
   INTEREST_LEVELS = (
     (YES, 'Yes'),
     (NO, 'No'),
     (MAYBE, 'Maybe'),
   )
-  interest = models.CharField(choices=INTEREST_LEVELS, max_length=5)
+  interest = models.IntegerField(choices=INTEREST_LEVELS)
+
+  class Meta:
+    # There should only be one entry for a sister-office pair
+    unique_together = ('sister', 'office')
+    # Order by office then by interest, Yes first and No last
+    ordering = ['office', 'interest']
