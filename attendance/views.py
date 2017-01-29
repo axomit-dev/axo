@@ -72,7 +72,8 @@ def calculate_percentage(sister,semester_id):
     if (sister in event.sisters_required.all()):
       if (event.is_mandatory):
         total_points+=event.points
-      if sister in event.sisters_attended.all():
+      if (sister in event.sisters_attended.all()) or (sister in event.sisters_freebied.all()):
+        # A freebie earns 100% of the event points
         earned_points+=event.points
       elif sister in event.sisters_excused.all():
         earned_points+= Event.VALUE_OF_EXCUSED_ABSENCE*event.points
