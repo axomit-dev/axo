@@ -278,9 +278,27 @@ def sister_record(request, sister_id, semester_id):
 @login_required
 def excuse_submit(request, event_id):
   event = get_object_or_404(Event, pk=event_id)
+  sister = get_sister(request)
   # Display the page
   if request.method == 'GET':
-    return render(request, 'attendance/excuse_form.html', {'event': event})
+    context = {
+      'event': event,
+    }
+    # See if sister has already used freebie before
+    # Doesn't look at status of excuse since it assumes
+    # all freebie requests will be granted. Alternatively,
+    # could validate during approving excuse that this is
+    # the first freebie of the semester.
+    freebie_excuses = Excuse.objects.filter(
+      sister=sister, is_freebie=True, event__semester=event.semester)
+    print(freebie_excuses)
+    if len(freebie_excuses) > 0:
+      context['used_freebie'] = True
+    else:
+      # They haven't used a freebie this semester
+      context['used_freebie'] = False
+    print(context)
+    return render(request, 'attendance/excuse_form.html', context)
   
   # Save the submitted data
   elif request.method == 'POST':
@@ -295,7 +313,6 @@ def excuse_submit(request, event_id):
     # Save excuse
     # TODO: Make sure there isn't already an existing excuse?
     excuse_text = request.POST['excuse']
-    sister = get_sister(request)
     excuse = Excuse(event=event, sister=sister, text=excuse_text, is_freebie=using_freebie)
     excuse.save()
 
