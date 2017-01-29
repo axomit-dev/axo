@@ -435,6 +435,8 @@ class GetSisterRecordTests(TestCase):
     self.assertEqual(len(context['semesters']), 2)
     self.assertEqual(semester1 in context['semesters'], True)
     self.assertEqual(semester2 in context['semesters'], True)
+    self.assertEqual(context['overall_earned_points'], 0)
+    self.assertEqual(context['overall_total_points'], 0)
 
   def test_get_sister_record_one_future_event_in_semester(self):
     sister = create_sister('bro', Sister.ACTIVE, 2016)
@@ -450,6 +452,8 @@ class GetSisterRecordTests(TestCase):
     self.assertEqual(context['current_semester'], semester)
     self.assertEqual(len(context['semesters']), 1)
     self.assertEqual(semester in context['semesters'], True)
+    self.assertEqual(context['overall_earned_points'], 0)
+    self.assertEqual(context['overall_total_points'], 0)
 
   def test_get_sister_record_one_future_event_not_in_semester(self):
     sister = create_sister('bro', Sister.ACTIVE, 2016)
@@ -466,11 +470,15 @@ class GetSisterRecordTests(TestCase):
     self.assertEqual(len(context['semesters']), 2)
     self.assertEqual(semester in context['semesters'], True)
     self.assertEqual(semester_of_event in context['semesters'], True)
+    self.assertEqual(context['overall_earned_points'], 0)
+    self.assertEqual(context['overall_total_points'], 0)
 
   def test_get_sister_record_one_past_event_in_semester(self):
     sister = create_sister('bro', Sister.ACTIVE, 2016)
     semester = create_semester(Semester.FALL, 2017)
     event = create_event("past", days=-3, points=10, semester=semester)
+    event.sisters_required.add(sister)
+    event.sisters_freebied.add(sister)
 
     context = views.get_sister_record(sister, semester.id)
 
@@ -482,6 +490,8 @@ class GetSisterRecordTests(TestCase):
     self.assertEqual(context['current_semester'], semester)
     self.assertEqual(len(context['semesters']), 1)
     self.assertEqual(semester in context['semesters'], True)
+    self.assertEqual(context['overall_earned_points'], 10) # Sister freebied
+    self.assertEqual(context['overall_total_points'], 0) # Isn't mandatory
 
   def test_get_sister_record_one_past_event_not_in_semester(self):
     sister = create_sister('bro', Sister.ACTIVE, 2016)
@@ -498,23 +508,9 @@ class GetSisterRecordTests(TestCase):
     self.assertEqual(len(context['semesters']), 2)
     self.assertEqual(semester in context['semesters'], True)
     self.assertEqual(semester_of_event in context['semesters'], True)
+    self.assertEqual(context['overall_earned_points'], 0)
+    self.assertEqual(context['overall_total_points'], 0)
 
-  def test_get_sister_record_one_past_event_not_in_semester(self):
-    sister = create_sister('bro', Sister.ACTIVE, 2016)
-    semester = create_semester(Semester.FALL, 2017)
-    semester_of_event = create_semester(Semester.SPRING, 2017)
-    event = create_event("past", days=-3, points=10, semester=semester_of_event)
-
-    context = views.get_sister_record(sister, semester.id)
-
-    self.assertEqual(context['sister'], sister)
-    self.assertEqual(len(context['past_events']), 0)
-    self.assertEqual(len(context['future_events_and_excuses']), 0)
-    self.assertEqual(context['current_semester'], semester)
-    self.assertEqual(len(context['semesters']), 2)
-    self.assertEqual(semester in context['semesters'], True)
-    self.assertEqual(semester_of_event in context['semesters'], True)
-    
   def test_get_sister_record_one_future_event_with_excuse(self):
     sister = create_sister("newbie", Sister.NEW_MEMBER, 2020)
     semester = create_semester(Semester.SPRING, 2025)
@@ -530,14 +526,20 @@ class GetSisterRecordTests(TestCase):
     self.assertEqual(context['current_semester'], semester)
     self.assertEqual(len(context['semesters']), 1)
     self.assertEqual(semester in context['semesters'], True)
+    self.assertEqual(context['overall_earned_points'], 0)
+    self.assertEqual(context['overall_total_points'], 0)
 
   def test_get_sister_record_past_and_future_events(self):
     sister = create_sister("lee", Sister.ABROAD, 2019)
     semester = create_semester(Semester.SPRING, 2016)
     event_future1 = create_event("chapter", 4, 20, semester)
     event_future2 = create_event("fireside", 1, 10, semester)
-    event_past1 = create_event("fondue", -2, 30, semester)
-    event_past2 = create_event("house cleaning", -50, 30, semester)
+    event_past1 = create_event("fondue", -2, 30, semester, is_mandatory=True)
+    event_past2 = create_event("house cleaning", -50, 30, semester, is_mandatory=True)
+
+    event_past1.sisters_required.add(sister)
+    event_past1.sisters_attended.add(sister)
+    event_past2.sisters_required.add(sister)
 
     context = views.get_sister_record(sister, semester.id)
 
@@ -551,6 +553,8 @@ class GetSisterRecordTests(TestCase):
     self.assertEqual(context['current_semester'], semester)
     self.assertEqual(len(context['semesters']), 1)
     self.assertEqual(semester in context['semesters'], True)
+    self.assertEqual(context['overall_earned_points'], 30)
+    self.assertEqual(context['overall_total_points'], 30+30)
 
   def test_get_sister_record_past_and_future_events_and_excuses(self):
     sister = create_sister("lee", Sister.ABROAD, 2019)
@@ -571,6 +575,8 @@ class GetSisterRecordTests(TestCase):
     self.assertEqual(context['current_semester'], semester)
     self.assertEqual(len(context['semesters']), 1)
     self.assertEqual(semester in context['semesters'], True)
+    self.assertEqual(context['overall_earned_points'], 0) # Didn't make sister required
+    self.assertEqual(context['overall_total_points'], 0) # Didn't make sister required
 
   def test_get_sister_record_events_and_excuses_different_semesters(self):
     sister = create_sister("emma", Sister.PRC, 2017)
@@ -608,6 +614,8 @@ class GetSisterRecordTests(TestCase):
     self.assertEqual(semester1 in context['semesters'], True)
     self.assertEqual(semester2 in context['semesters'], True)
     self.assertEqual(semester3 in context['semesters'], True)
+    self.assertEqual(context['overall_earned_points'], 0) # Didn't make sister required
+    self.assertEqual(context['overall_total_points'], 0) # Didn't make sister required
 
 
 ##########################

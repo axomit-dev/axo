@@ -30,6 +30,26 @@ def get_sister_record(sister, semester_id):
   past_events = Event.objects.filter(semester=semester, date__lte=time_threshold).order_by('-date')
   future_events = Event.objects.filter(semester=semester, date__gt=time_threshold).order_by('-date')
 
+  # For past events, determine what points sister actually earned
+  # TODO: Duplicate code from calculate percentage?
+  overall_earned_points = 0
+  overall_total_points = 0
+  for event in past_events:
+    if sister in event.sisters_required.all():
+      if (sister in event.sisters_attended.all()) or (sister in event.sisters_freebied.all()):
+        event.earned_points = event.points
+      elif (sister in event.sisters_excused.all()):
+        event.earned_points = Excuse.VALUE_OF_EXCUSED_ABSENCE*event.points
+      else:
+        event.earned_points = 0
+      event.save()
+      overall_earned_points += event.earned_points
+      if (event.is_mandatory):
+        overall_total_points += event.points
+    else:
+      event.earned_points = "--"
+
+
   # List of events and excuses
   # If the item is an excuse, then there is an excuse associated
   #    with that event for this particular sister.
@@ -51,6 +71,8 @@ def get_sister_record(sister, semester_id):
     'semesters': semesters,
     'current_semester': semester,
     'percentage': format_percentage(calculate_percentage(sister, semester_id)),
+    'overall_total_points': overall_total_points,
+    'overall_earned_points': overall_earned_points,
   }
   return context
 

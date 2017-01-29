@@ -16,11 +16,11 @@
 {% endfor %}
 </div>
 
+{% include 'attendance/past_event_table.html' %}
 
-<h2> Future Events </h2>
 <table>
   <tr>
-    <th> Event </th>
+    <th> Events (Future) </th>
     <th> Excuse Status </th>
     <th> Text for Excuse </th>
   </tr>
@@ -43,9 +43,5 @@
 
   {% endfor %}
 </table>
-
-
-{% include 'attendance/past_event_table.html' %}
-
 
 {% endblock content %}
