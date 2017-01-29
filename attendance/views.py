@@ -318,12 +318,15 @@ def excuse_approve(request, excuse_id):
   excuse.status = Excuse.APPROVED
   excuse.save()
 
-  # Add that sister to list of excused sisters
+  # Add that sister to list of excused or freebie sisters
   # if they haven't alreaady been checked in
   event = get_object_or_404(Event, pk=excuse.event.id)
   sister = get_object_or_404(Sister, pk=excuse.sister.id)
   if (sister not in event.sisters_attended.all()):
-    event.sisters_excused.add(sister)
+    if (excuse.is_freebie):
+      event.sisters_freebied.add(sister)
+    else:
+      event.sisters_excused.add(sister)
     event.save()
 
   # Email sister with result

@@ -42,6 +42,9 @@ class Event(models.Model):
   sisters_required = models.ManyToManyField(Sister, blank=True, related_name='sisters_required')
   sisters_attended = models.ManyToManyField(Sister, blank=True, related_name='sisters_attended')
   sisters_excused = models.ManyToManyField(Sister, blank=True, related_name='sisters_excused')
+  
+  # List of sisters who used their freebie for this event.
+  sisters_freebied = models.ManyToManyField(Sister, blank=True, related_name='sisters_freebied')
 
   points = models.IntegerField()
  
