@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.conf import settings
 from general.views import get_sister
+from django.contrib.auth.decorators import login_required, user_passes_test
 
 from .models import Office, OfficeInterest
 
@@ -50,6 +51,8 @@ def ois_submission(request):
 
     # If got through the whole for loop, they've submitted it
     context['submitted'] = True
+    # TODO: return HttpResponseRedirect since we successfully dealt
+    # with POST data.
 
   return render(request, 'elections/ois_submission.html', context)
 

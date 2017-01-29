@@ -70,3 +70,8 @@ class Excuse(models.Model):
   sister = models.ForeignKey(Sister)
   text = models.CharField(max_length=1000)
   status = models.IntegerField(choices=STATUS, default=PENDING)
+
+  # If true, the user would like to use their freebie for the semester
+  # on this event, meaning they get 100% of the points
+  # and do not need to attend.
+  is_freebie = models.BooleanField(default=False)

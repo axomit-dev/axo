@@ -30,12 +30,7 @@
       <tr>
         <td> {{ item }} </td>
         <!-- Submit Excuse Button -->
-        <td>
-          <form action="{% url 'attendance:excuse_submit' item.id %}" method="post">
-            {% csrf_token %}
-            <textarea name="excuse" cols="40" rows="2"></textarea>
-            <input type="submit" value="Submit Excuse" />
-          </form>
+        <td> <a href="{% url 'attendance:excuse_submit' item.id %}"> submit excuse </a>
         </td>
       </tr>
     {% else %}

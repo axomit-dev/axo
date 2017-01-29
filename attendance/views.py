@@ -6,6 +6,7 @@ from django.utils import timezone
 from django.core.mail import send_mail
 from django.conf import settings
 from general.views import get_sister
+from django.utils.datastructures import MultiValueDictKeyError
 
 from .models import Event, User, Excuse, Semester
 from general.models import Sister
@@ -277,14 +278,32 @@ def sister_record(request, sister_id, semester_id):
 @login_required
 def excuse_submit(request, event_id):
   event = get_object_or_404(Event, pk=event_id)
-  excuse_text = request.POST['excuse']
-  sister = get_sister(request)
-  excuse = Excuse(event=event, sister=sister, text=excuse_text)
-  excuse.save()
+  # Display the page
+  if request.method == 'GET':
+    return render(request, 'attendance/excuse_form.html', {'event': event})
+  
+  # Save the submitted data
+  elif request.method == 'POST':
+    # See if they chose it as a freebie
+    try:
+      freebie = request.POST['is_freebie']
+      using_freebie = True
+    except MultiValueDictKeyError:
+      # They didn't check the box
+      using_freebie = False
 
-  latest_semester = Semester.objects.all()[0]
-  return HttpResponseRedirect(
-    reverse('attendance:personal_record', args=(latest_semester.id,)))
+    # Save excuse
+    # TODO: Make sure there isn't already an existing excuse?
+    excuse_text = request.POST['excuse']
+    sister = get_sister(request)
+    excuse = Excuse(event=event, sister=sister, text=excuse_text, is_freebie=using_freebie)
+    excuse.save()
+
+    # Redirect to the personal record page, to the semester
+    # that the event is from
+    return HttpResponseRedirect(
+      reverse('attendance:personal_record', args=(event.semester.id,)))
+  
 
 # Display all pending excuses.
 @user_passes_test(lambda u: u.is_superuser)
