@@ -44,14 +44,21 @@ def ois_submission(request):
   if not ois_open:
     return render(request, 'elections/ois_submission.html', {'ois_closed': True})
 
+  # Determine whether it's an exec or non-exec election
+  try:
+    exec_election = settings.EXEC_ELECTION
+  except:
+    exec_election = False
+
   # Determine whether sister is eligible to run for each office
-  offices = Office.objects.all()
+  offices = Office.objects.filter(is_exec=exec_election)
   sister = get_sister(request)
   for office in offices:
     office.is_eligible = is_eligible(sister, office)
     office.save()
   context = {
-    'offices': offices
+    'offices': offices,
+    'exec_election': exec_election,
   }
 
   # If they pressed submit, store that data
@@ -60,7 +67,7 @@ def ois_submission(request):
       # If they're not eligible for the office, move on
       if not office.is_eligible:
         continue
-        
+
       # See if they've already submitted for this position
       try:
         office_interest = OfficeInterest.objects.get(sister=sister, office=office)

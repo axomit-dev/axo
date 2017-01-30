@@ -145,7 +145,7 @@ EMAIL_PORT = 587
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 # Elections-related things
-EXEC_ELECTION = False
+EXEC_ELECTION = True
 OIS_OPEN = True
 
 
