@@ -5,6 +5,28 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 
 from .models import Office, OfficeInterest
 
+##########################
+##### HELPER METHODS #####
+##########################
+
+# Returns true if the sister is eligible to run / vote
+# for the given office.
+def is_eligible(sister, office):
+  if office.eligible_class == Office.ALL_CLASSES:
+    return True
+  else:
+    # TODO: Better way to do this?
+    if office.eligible_class == Office.FRESHMAN:
+      class_year = settings.SENIOR_CLASS_YEAR + 3
+    elif office.eligible_class == Office.SOPHOMORE:
+      class_year = settings.SENIOR_CLASS_YEAR + 2
+    elif office.eligible_class == Office.JUNIOR:
+      class_year = settings.SENIOR_CLASS_YEAR + 1
+    else: # office.eligible_class == Office.SENIOR:
+      class_year = settings.SENIOR_CLASS_YEAR
+
+    return sister.class_year == class_year
+
 @login_required
 def index(request):
   return render(request, 'elections/index.html', {})
@@ -12,6 +34,7 @@ def index(request):
 @login_required
 def ois_submission(request):
   # TODO: Display whether they've submitted it already?
+
 
   # Determine whether OIS is open
   try:
@@ -21,9 +44,12 @@ def ois_submission(request):
   if not ois_open:
     return render(request, 'elections/ois_submission.html', {'ois_closed': True})
 
-  # Get initial data
+  # Determine whether sister is eligible to run for each office
   offices = Office.objects.all()
   sister = get_sister(request)
+  for office in offices:
+    office.is_eligible = is_eligible(sister, office)
+    office.save()
   context = {
     'offices': offices
   }
@@ -31,6 +57,10 @@ def ois_submission(request):
   # If they pressed submit, store that data
   if request.method == 'POST':
     for office in offices:
+      # If they're not eligible for the office, move on
+      if not office.is_eligible:
+        continue
+        
       # See if they've already submitted for this position
       try:
         office_interest = OfficeInterest.objects.get(sister=sister, office=office)

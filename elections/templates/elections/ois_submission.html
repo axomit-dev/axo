@@ -22,13 +22,16 @@
         <p> {{ office.title }} </p>
         <p> {{ office.description }} </p>
 
-        <input type="radio" name="{{ office.id }}" value="0"/>
-        <label>Yes</label>
-        <input type="radio" name="{{ office.id }}" value="1"/>
-        <label>Maybe</label>
-        <input type="radio" name="{{ office.id }}" value="2"/>
-        <label>No</label>
-
+        {% if office.is_eligible %}
+          <input type="radio" name="{{ office.id }}" value="0"/>
+          <label>Yes</label>
+          <input type="radio" name="{{ office.id }}" value="1"/>
+          <label>Maybe</label>
+          <input type="radio" name="{{ office.id }}" value="2"/>
+          <label>No</label>
+        {% else %}
+        <p> Not eligible to run </p>
+        {% endif %}
 
       {% endfor %}
 

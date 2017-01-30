@@ -145,7 +145,15 @@ EMAIL_PORT = 587
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 # Elections-related things
+EXEC_ELECTION = False
 OIS_OPEN = True
+
+
+# SENIOR_CLASS_YEAR is equal to the class year of the current seniors.
+# It is used for determining who can vote for what positions
+# in elections-related items.
+# This must be changed each fall.
+SENIOR_CLASS_YEAR = 2017
 
 
 ## ATHENA-RELATED ITEMS
