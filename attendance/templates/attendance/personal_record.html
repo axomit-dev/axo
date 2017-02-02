@@ -8,7 +8,7 @@
   <!-- Color currently selected semester green -->
   <!-- TODO: Better way to do this? -->
   {% if semester.id == current_semester.id %}
-    <a href="{% url 'attendance:personal_record' semester.id %}" style="color: #28960a">
+    <a href="{% url 'attendance:personal_record' semester.id %}" style="color: #A40909">
   {% else %}
     <a href="{% url 'attendance:personal_record' semester.id %}">
   {% endif %}
@@ -17,33 +17,35 @@
 </div>
 
 
-<h2> Future Events </h2>
-<table>
+<h1> Upcoming </h1>
+<table class='event-table'>
   <tr>
     <th> Event </th>
-    <th> Excuse Status </th>
-    <th> Text for Excuse </th>
+    <th> Excuse </th>
+    <th> Excuse Status</th>
   </tr>
   {% for item in future_events_and_excuses %}
     {% if item.points %}
-      <!-- It's an event -->
-      <tr>
-        <td> {{ item }} </td>
-        <!-- Submit Excuse Button -->
-        <td>
-          <form action="{% url 'attendance:excuse_submit' item.id %}" method="post">
-            {% csrf_token %}
-            <textarea name="excuse" cols="40" rows="2"></textarea>
-            <input type="submit" value="Submit Excuse" />
-          </form>
-        </td>
-      </tr>
+    <!-- It's an event -->
+    <tr>
+      <td> {{ item }} </td>
+      <!-- Submit Excuse Button -->
+      <td>
+        <form id='excuse-form' action="{% url 'attendance:excuse_submit' item.id %}" method="post">
+          {% csrf_token %}
+          <textarea name="excuse" cols="30" rows="2"></textarea>
+          <input class = 'gen-btn' type="submit" value="Submit" />
+        </form>
+      </td>
+      <td> n/a </td>
+    </tr>
     {% else %}
-      <!-- It's an excuse -->
-      <tr>
-        <td> {{ item.event }} </td>
-        <td> {{ item.get_status_display }} </td>
-        <td> {{ item.text }} </td>
+    <!-- It's an excuse -->
+    <tr>
+      <td> {{ item.event }} </td>
+      <td> {{ item.text }} </td>
+      <td> {{ item.get_status_display }} </td>
+    </tr>
     {% endif %}
 
   {% endfor %}

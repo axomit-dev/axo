@@ -1,12 +1,14 @@
-<p> Overall Attendance for past events this semester: {{ percentage }} </p>
-
-<h2> Past Events </h2>
-<table>
+<br>
+<h1> Past </h1>
+<br>
+<p> Overall attendance for past events this semester: {{ percentage }} </p>
+<br>
+<table class='event-table event-table-past'>
   <tr>
     <th> Event </th>
     <th> Attendance </th>
-    <th> Point Value for Event </th>
-    <th> Was Mandatory? </th>
+    <th> Points</th>
+    <th> Mandatory? </th>
   </tr>
 {% for event in past_events %}
   <tr>
