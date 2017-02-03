@@ -23,15 +23,15 @@
 <table>
 <tr>
     <td>{{ form.username.label_tag }}</td>
-    <td>{{ form.username }}</td>
+    <td class='login-box'>{{ form.username }}</td>
 </tr>
 <tr>
     <td>{{ form.password.label_tag }}</td>
-    <td>{{ form.password }}</td>
+    <td class='login-box'>{{ form.password }}</td>
 </tr>
 </table>
 <br>
-<input type="submit" value="login" />
+<input class = 'gen-btn' type="submit" value="login" />
 <input type="hidden" name="next" value="{{ next }}" />
 </form>
 
