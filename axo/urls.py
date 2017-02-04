@@ -17,6 +17,7 @@ from django.conf.urls import include, url
 from django.contrib import admin
 from django.contrib.auth import views as auth_views
 from general import views as general_views
+from django.contrib.flatpages import views as flatpage_views
 #from django.urls import reverse
 from settings import LOGIN_REDIRECT_URL
 
@@ -47,6 +48,9 @@ url(r'^admin/', admin.site.urls),
 url(r'^attendance/', include('attendance.urls')),
 url(r'^', include('general.urls')),
 url(r'^elections/', include('elections.urls')),
-url(r'^house/', include('house.urls')),
+
+# Flatpages
+url(r'^house/$', flatpage_views.flatpage, {'url': '/house/'}, name='house'),
+url(r'^resources/$', flatpage_views.flatpage, {'url': '/resources/'}, name='resources'),
 
 ]

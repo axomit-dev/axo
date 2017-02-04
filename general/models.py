@@ -9,14 +9,13 @@ class Sister(models.Model):
   ACTIVE = 0
   ALUM = 1
   NEW_MEMBER = 2
-  PRC = 3
+  # Deleted PRC status
   ABROAD = 4
   DEAFFILIATED = 5
   STATUS = (
     (ACTIVE, 'Active'),
     (ALUM, 'Alum'),
     (NEW_MEMBER, 'New Member'),
-    (PRC, 'PRC'),
     (ABROAD, 'Abroad'),
     (DEAFFILIATED, 'Deaffiliated'),
   )

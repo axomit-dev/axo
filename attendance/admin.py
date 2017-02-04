@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Event, Semester
+from .models import Event, Semester, Excuse
 
 class EventAdmin(admin.ModelAdmin):
   fieldsets = [
@@ -14,3 +14,4 @@ class EventAdmin(admin.ModelAdmin):
 
 admin.site.register(Event, EventAdmin)
 admin.site.register(Semester)
+admin.site.register(Excuse)

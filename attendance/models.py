@@ -42,6 +42,9 @@ class Event(models.Model):
   sisters_required = models.ManyToManyField(Sister, blank=True, related_name='sisters_required')
   sisters_attended = models.ManyToManyField(Sister, blank=True, related_name='sisters_attended')
   sisters_excused = models.ManyToManyField(Sister, blank=True, related_name='sisters_excused')
+  
+  # List of sisters who used their freebie for this event.
+  sisters_freebied = models.ManyToManyField(Sister, blank=True, related_name='sisters_freebied')
 
   points = models.IntegerField()
  
@@ -70,3 +73,8 @@ class Excuse(models.Model):
   sister = models.ForeignKey(Sister)
   text = models.CharField(max_length=1000)
   status = models.IntegerField(choices=STATUS, default=PENDING)
+
+  # If true, the user would like to use their freebie for the semester
+  # on this event, meaning they get 100% of the points
+  # and do not need to attend.
+  is_freebie = models.BooleanField(default=False)

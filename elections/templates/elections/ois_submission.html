@@ -8,33 +8,42 @@
   <p> Thanks for submitting your OIS! </p>
 {% else %}
 
+  {% if exec_election %}
+    <p> This is an executive board election. </p>
+  {% else %}
+    <p> This is a non-exec election. </p>
+  {% endif %}
+
   <!-- If there's an error, display the error message also. -->
   {% if error %}
     <p> Make sure to select a choice for every position! </p>
   {% endif %}
 
-    <p> Instructions: Please indicate your interest level in each position below. Any new forms you submit will replace your old responses. This form isn't at all binding and you're required to fill it out to participate in voting later! </p>
+  <p> Instructions: Please indicate your interest level in each position below. Any new forms you submit will replace your old responses, even if you don't fill it out for every position. This form isn't at all binding and you're required to fill it out for every position to participate in voting later! </p>
 
-    <form action="{% url 'elections:ois_submission' %}" method="post">
-      {% csrf_token %}
+  <form action="{% url 'elections:ois_submission' %}" method="post">
+    {% csrf_token %}
 
-      {% for office in offices %}
-        <p> {{ office.title }} </p>
-        <p> {{ office.description }} </p>
+    {% for office in offices %}
+      <p> {{ office.title }} </p>
+      <p> {{ office.description }} </p>
 
-
-        <input type="radio" name="{{ office.id }}" value="yes"/>
+      {% if office.is_eligible %}
+        <input type="radio" name="{{ office.id }}" value="0"/>
         <label>Yes</label>
-        <input type="radio" name="{{ office.id }}" value="no"/>
-        <label>No</label>
-        <input type="radio" name="{{ office.id }}" value="maybe"/>
+        <input type="radio" name="{{ office.id }}" value="1"/>
         <label>Maybe</label>
+        <input type="radio" name="{{ office.id }}" value="2"/>
+        <label>No</label>
+      {% else %}
+      <p> Not eligible to run </p>
+      {% endif %}
 
-      {% endfor %}
+    {% endfor %}
 
-      <input type="submit" value="Submit" />
+    <input type="submit" value="Submit" />
 
-    </form>
+  </form>
 
 {% endif %}
 

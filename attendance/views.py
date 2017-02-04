@@ -6,6 +6,7 @@ from django.utils import timezone
 from django.core.mail import send_mail
 from django.conf import settings
 from general.views import get_sister
+from django.utils.datastructures import MultiValueDictKeyError
 
 from .models import Event, User, Excuse, Semester
 from general.models import Sister
@@ -29,6 +30,26 @@ def get_sister_record(sister, semester_id):
   past_events = Event.objects.filter(semester=semester, date__lte=time_threshold).order_by('-date')
   future_events = Event.objects.filter(semester=semester, date__gt=time_threshold).order_by('-date')
 
+  # For past events, determine what points sister actually earned
+  # TODO: Duplicate code from calculate percentage?
+  overall_earned_points = 0
+  overall_total_points = 0
+  for event in past_events:
+    if sister in event.sisters_required.all():
+      if (sister in event.sisters_attended.all()) or (sister in event.sisters_freebied.all()):
+        event.earned_points = event.points
+      elif (sister in event.sisters_excused.all()):
+        event.earned_points = Excuse.VALUE_OF_EXCUSED_ABSENCE*event.points
+      else:
+        event.earned_points = 0
+      event.save()
+      overall_earned_points += event.earned_points
+      if (event.is_mandatory):
+        overall_total_points += event.points
+    else:
+      event.earned_points = "--"
+
+
   # List of events and excuses
   # If the item is an excuse, then there is an excuse associated
   #    with that event for this particular sister.
@@ -50,6 +71,8 @@ def get_sister_record(sister, semester_id):
     'semesters': semesters,
     'current_semester': semester,
     'percentage': format_percentage(calculate_percentage(sister, semester_id)),
+    'overall_total_points': overall_total_points,
+    'overall_earned_points': overall_earned_points,
   }
   return context
 
@@ -71,7 +94,8 @@ def calculate_percentage(sister,semester_id):
     if (sister in event.sisters_required.all()):
       if (event.is_mandatory):
         total_points+=event.points
-      if sister in event.sisters_attended.all():
+      if (sister in event.sisters_attended.all()) or (sister in event.sisters_freebied.all()):
+        # A freebie earns 100% of the event points
         earned_points+=event.points
       elif sister in event.sisters_excused.all():
         earned_points+= Event.VALUE_OF_EXCUSED_ABSENCE*event.points
@@ -277,14 +301,49 @@ def sister_record(request, sister_id, semester_id):
 @login_required
 def excuse_submit(request, event_id):
   event = get_object_or_404(Event, pk=event_id)
-  excuse_text = request.POST['excuse']
   sister = get_sister(request)
-  excuse = Excuse(event=event, sister=sister, text=excuse_text)
-  excuse.save()
+  # Display the page
+  if request.method == 'GET':
+    context = {
+      'event': event,
+    }
+    # See if sister has already used freebie before
+    # Doesn't look at status of excuse since it assumes
+    # all freebie requests will be granted. Alternatively,
+    # could validate during approving excuse that this is
+    # the first freebie of the semester.
+    freebie_excuses = Excuse.objects.filter(
+      sister=sister, is_freebie=True, event__semester=event.semester)
+    print(freebie_excuses)
+    if len(freebie_excuses) > 0:
+      context['used_freebie'] = True
+    else:
+      # They haven't used a freebie this semester
+      context['used_freebie'] = False
+    print(context)
+    return render(request, 'attendance/excuse_form.html', context)
+  
+  # Save the submitted data
+  elif request.method == 'POST':
+    # See if they chose it as a freebie
+    try:
+      freebie = request.POST['is_freebie']
+      using_freebie = True
+    except MultiValueDictKeyError:
+      # They didn't check the box
+      using_freebie = False
 
-  latest_semester = Semester.objects.all()[0]
-  return HttpResponseRedirect(
-    reverse('attendance:personal_record', args=(latest_semester.id,)))
+    # Save excuse
+    # TODO: Make sure there isn't already an existing excuse?
+    excuse_text = request.POST['excuse']
+    excuse = Excuse(event=event, sister=sister, text=excuse_text, is_freebie=using_freebie)
+    excuse.save()
+
+    # Redirect to the personal record page, to the semester
+    # that the event is from
+    return HttpResponseRedirect(
+      reverse('attendance:personal_record', args=(event.semester.id,)))
+  
 
 # Display all pending excuses.
 @user_passes_test(lambda u: u.is_superuser)
@@ -299,12 +358,15 @@ def excuse_approve(request, excuse_id):
   excuse.status = Excuse.APPROVED
   excuse.save()
 
-  # Add that sister to list of excused sisters
+  # Add that sister to list of excused or freebie sisters
   # if they haven't alreaady been checked in
   event = get_object_or_404(Event, pk=excuse.event.id)
   sister = get_object_or_404(Sister, pk=excuse.sister.id)
   if (sister not in event.sisters_attended.all()):
-    event.sisters_excused.add(sister)
+    if (excuse.is_freebie):
+      event.sisters_freebied.add(sister)
+    else:
+      event.sisters_excused.add(sister)
     event.save()
 
   # Email sister with result

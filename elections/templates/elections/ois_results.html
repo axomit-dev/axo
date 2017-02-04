@@ -4,6 +4,8 @@
 
 <h3> OIS Results </h3>
 
+<p> Note that only the interest of sisters who are eligible to run for the given position are shown. </p>
+
 <table>
   <tr>
     <th> Position </th>
@@ -14,7 +16,7 @@
   <tr>
     <td> {{ result.office.title }} </td>
     <td> {{ result.sister.user.username }} </td>
-    <td> {{ result.interest }} </td>
+    <td> {{ result.get_interest_display }} </td>
   </tr>
   {% endfor %}
 

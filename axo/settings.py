@@ -32,13 +32,14 @@ INSTALLED_APPS = [
     'general.apps.GeneralConfig',
     'attendance.apps.AttendanceConfig',
     'elections.apps.ElectionsConfig',
-    'house.apps.HouseConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites', # Used for flatpages
+    'django.contrib.flatpages',
 ]
 
 MIDDLEWARE = [
@@ -71,6 +72,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'axo.wsgi.application'
 
+SITE_ID = 1 # Used for flatpages
 
 # Database
 # https://docs.djangoproject.com/en/1.10/ref/settings/#databases
@@ -145,7 +147,15 @@ EMAIL_PORT = 587
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 # Elections-related things
+EXEC_ELECTION = True
 OIS_OPEN = True
+
+
+# SENIOR_CLASS_YEAR is equal to the class year of the current seniors.
+# It is used for determining who can vote for what positions
+# in elections-related items.
+# This must be changed each fall.
+SENIOR_CLASS_YEAR = 2017
 
 
 ## ATHENA-RELATED ITEMS

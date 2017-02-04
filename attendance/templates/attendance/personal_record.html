@@ -16,9 +16,11 @@
 {% endfor %}
 </div>
 
-<!-- <hr> -->
-<h2> Upcoming </h2>
-<!-- <hr> -->
+
+{% include 'attendance/past_event_table.html' %}
+
+<h1> Upcoming </h1>
+
 <table class='event-table'>
   <tr>
     <th> Event </th>
@@ -32,11 +34,8 @@
       <td> {{ item }} </td>
       <!-- Submit Excuse Button -->
       <td>
-        <form id='excuse-form' action="{% url 'attendance:excuse_submit' item.id %}" method="post">
-          {% csrf_token %}
-          <textarea name="excuse" cols="30" rows="2"></textarea>
-          <input class = 'gen-btn' type="submit" value="Submit" />
-        </form>
+        <a href="{% url 'attendance:excuse_submit' item.id %}"> submit excuse </a>
+
       </td>
       <td> n/a </td>
     </tr>
@@ -51,9 +50,5 @@
 
   {% endfor %}
 </table>
-
-
-{% include 'attendance/past_event_table.html' %}
-
 
 {% endblock content %}
