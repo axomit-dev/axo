@@ -19,10 +19,6 @@ a:hover{
     text-decoration: none;
 }
 
-input{
-    /*border:*/
-}
-
 input:focus {
     /*outline-color: #A40909;*/
     outline: none;
@@ -109,7 +105,7 @@ table {
     /*border: 1px solid #ccc;*/
 }
 
-.event-table th, td, tr {
+.event-table th, .event-table td, .event-table tr {
     min-width: 250px;
     text-align: left;
     vertical-align: top;
@@ -122,7 +118,7 @@ table {
 .event-table tr {
     border-bottom: 1px solid #ccc
 }
-.event-table-past th, td, tr {
+.event-table-past th, .event-table-past td, .event-table-past tr {
     max-width: 190px
 }
 #excuse-form textarea {
