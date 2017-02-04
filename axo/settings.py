@@ -39,6 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites', # Used for flatpages
+    'django.contrib.flatpages',
 ]
 
 MIDDLEWARE = [
@@ -71,6 +73,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'axo.wsgi.application'
 
+SITE_ID = 1 # Used for flatpages
 
 # Database
 # https://docs.djangoproject.com/en/1.10/ref/settings/#databases

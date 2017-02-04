@@ -1,0 +1,11 @@
+{% extends 'general/base.html' %}
+
+{% block content %}
+
+{% if user.is_authenticated %}
+
+  {{ flatpage.content }}
+  
+{% endif %}
+
+{% endblock %}
