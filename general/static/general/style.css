@@ -27,6 +27,8 @@ input:focus {
 #block {
     text-align: center;
     margin: auto;
+    /*background-color: red;*/
+    /*width: 500px;*/
 }
 #title {
     letter-spacing: 3px;
@@ -43,23 +45,41 @@ input:focus {
     margin: auto;
 }
 
-#attendance {
+#navlink1 {
     display: inline-block;
 }
 
-#elections {
+.navlink {
     padding-left: 30px;
     display: inline-block;
 }
 
-#house {
-    padding-left: 30px;
-    display: inline-block;
+.dropdown-content {
+    text-align: left;
+    display: none;
+    position: absolute;
+    background-color: #fff;
+    border: solid 1px #EAEAEA;
+    width: 140px;
+    z-index: 1;
 }
 
-#resources {
-    padding-left: 30px;
-    display: inline-block;
+.dropdown-content a {
+    border-bottom: solid 1px #EAEAEA;
+    padding: 5px;
+    display: block;
+}
+
+.dropdown-content a:hover {
+    background-color: #F4F4F4;
+}
+
+.dropdown:hover .dropdown-content {
+    display: block;
+}
+
+.dropdown:hover #dropbtn {
+   color: #A40909;
 }
 
 #credits {
@@ -127,4 +147,23 @@ table {
 
 #excuse-form input {
     display: block;
+}
+
+#att-content {
+    border-radius: 10px;
+    width: 1000px;
+    margin: auto;
+    margin-bottom: 50px;
+    /*height: 40%;*/
+    /*background-color: #F4F4F4;*/
+    border: solid 1px #A0A0A0;
+    /*overflow: auto;*/
+}
+
+#att-title {
+    background-color: #EAEAEA;
+    padding: 10px;
+    margin-top: -1px;
+    border-top: solid 1px #A0A0A0;
+    border-bottom: solid 1px #A0A0A0;
 }

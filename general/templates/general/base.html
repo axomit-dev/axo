@@ -18,27 +18,37 @@
     <hr>
 
     {% if user.is_authenticated %}
-      {{user.username}}&nbsp;&nbsp;•&nbsp;<a href="{% url 'logout' %}"> logout</a>&nbsp;&nbsp;•&nbsp;<a href="{% url 'password_change' %}"> change password</a>
-      <br>
-      <div id = "attendance">
+<!--       {{user.username}}&nbsp;&nbsp;•&nbsp;<a href="{% url 'logout' %}"> logout</a>&nbsp;&nbsp;•&nbsp;<a href="{% url 'password_change' %}"> change password</a>
+      <br> -->
+      <div id = "navlink1">
         <h2><a href="/attendance">attendance</a></h2>
       </div>
 
-      <div id="elections">
+      <div class = "navlink">
         <h2><a href="/elections">elections</a></h2>
       </div>
 
-      <div id="house">
+      <div class = "navlink">
         <h2><a href="/house">house</a></h2>
-        <div id="house navigation">
-        </div>
+        <!-- <div id="house navigation"> -->
+        <!-- </div> -->
       </div>
 
       
-      <div id="resources">
+      <div class = "navlink">
         <h2><a href="/resources">resources</a></h2>
-        <div id="resources navigation">
+        <!-- <div id="resources navigation"> -->
+        <!-- </div> -->
+      </div>
+
+      <div class = "navlink dropdown">
+        <h2><a id='dropbtn'>account</a></h2>
+        <div class="dropdown-content">
+          <a href="{% url 'logout' %}">logout</a>
+          <a href="{% url 'password_change' %}">change password</a>
         </div>
+        <!-- <div id="resources navigation"> -->
+        <!-- </div> -->
       </div>
 
     {% else %}

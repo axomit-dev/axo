@@ -15,40 +15,42 @@
    {{ semester }}</a>&nbsp;&nbsp;•&nbsp;
 {% endfor %}
 </div>
+<br>
+<div id='att-content'>
 
 
-{% include 'attendance/past_event_table.html' %}
+  <h2 id='att-title'  style='border-radius: 10px 10px 0 0'> Upcoming </h2> <br>
 
-<h1> Upcoming </h1>
-
-<table class='event-table'>
-  <tr>
-    <th> Event </th>
-    <th> Excuse </th>
-    <th> Excuse Status</th>
-  </tr>
-  {% for item in future_events_and_excuses %}
-    {% if item.points %}
-    <!-- It's an event -->
+  <table class='event-table'>
     <tr>
-      <td> {{ item }} </td>
-      <!-- Submit Excuse Button -->
-      <td>
-        <a href="{% url 'attendance:excuse_submit' item.id %}"> submit excuse </a>
-
-      </td>
-      <td> n/a </td>
+      <th> Event </th>
+      <th> Excuse </th>
+      <th> Excuse Status</th>
     </tr>
-    {% else %}
-    <!-- It's an excuse -->
-    <tr>
-      <td> {{ item.event }} </td>
-      <td> {{ item.text }} </td>
-      <td> {{ item.get_status_display }} </td>
-    </tr>
-    {% endif %}
+    {% for item in future_events_and_excuses %}
+      {% if item.points %}
+      <!-- It's an event -->
+      <tr>
+        <td> {{ item }} </td>
+        <!-- Submit Excuse Button -->
+        <td>
+          <a href="{% url 'attendance:excuse_submit' item.id %}"> submit excuse </a>
 
-  {% endfor %}
-</table>
+        </td>
+        <td> n/a </td>
+      </tr>
+      {% else %}
+      <!-- It's an excuse -->
+      <tr>
+        <td> {{ item.event }} </td>
+        <td> {{ item.text }} </td>
+        <td> {{ item.get_status_display }} </td>
+      </tr>
+      {% endif %}
 
-{% endblock content %}
+    {% endfor %}
+  </table>
+    {% include 'attendance/past_event_table.html' %}
+
+</div>
+  {% endblock content %}
