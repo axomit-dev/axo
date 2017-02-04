@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from django.contrib.auth.decorators import login_required
 
 from .models import Sister
 
@@ -31,3 +32,8 @@ def index(request):
 
 def credits(request):
   return render(request, 'general/credits.html', {})
+
+@login_required
+def resources(request):
+  # TODO: Move to resources app
+  return render(request, 'general/resources-index.html', {})
