@@ -141,7 +141,7 @@ STATIC_URL = '/static/'
 EMAIL_USE_TLS = True
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_HOST_PASSWORD = 'lyreup890' #my gmail password
+EMAIL_HOST_PASSWORD = '[redacted]' #my gmail password
 EMAIL_HOST_USER = 'axo.mit.attendance@gmail.com' #my gmail username
 EMAIL_PORT = 587
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
@@ -161,7 +161,6 @@ SENIOR_CLASS_YEAR = 2017
 ## ATHENA-RELATED ITEMS
 ## Comment these out when doing local development,
 ## And uncomment them when planning on pulling from Athena.
-'''
 STATIC_ROOT = '/mit/axo/web_scripts/site-sisters/static'
 
 ALLOWED_HOSTS = ["axo.scripts.mit.edu", "axo-sisters.mit.edu"]
@@ -171,11 +170,10 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'axo+site-sisters2',
         'USER': 'axo',
-        'PASSWORD': 'huv08nay',
+        'PASSWORD': '[redacted]',
         'HOST': 'sql.mit.edu',
         'PORT': '',
     }
 }
 
 DEBUG = False
-'''
