@@ -15,7 +15,7 @@ attended: {{ percent_attended }}% &nbsp;&nbsp;•&nbsp; excused: {{ percent_excu
   </tr>
 {% for sister in event.sisters_required.all %}
   <tr>
-    <td> {{ sister.user.username }} </td>
+    <td> {{ sister }} </td>
     {% if sister in event.sisters_attended.all %}
       <td> Yes! </td>
     {% else %}

@@ -26,9 +26,9 @@ class Sister(models.Model):
 
 
   def __str__(self):
-    return self.user.username
+    #return self.user.username
     # TODO: Make first_name, last_name required for Users somehow
-    #return "%s %s" % (self.user.first_name, self.user.last_name)
+    return "%s %s" % (self.user.first_name, self.user.last_name)
 
 
 
