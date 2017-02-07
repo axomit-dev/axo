@@ -173,6 +173,9 @@ DATABASES = {
         'PASSWORD': '[redacted]',
         'HOST': 'sql.mit.edu',
         'PORT': '',
+        'OPTIONS': {
+            'sql_mode': 'STRICT_TRANS_TABLES',
+        }
     }
 }
 
