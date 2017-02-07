@@ -179,7 +179,7 @@ def event_details(request, event_id):
       percent_absent = 0
     else:
       fraction_attended = len(event.sisters_attended.all())*1.0 / num_required
-      fraction_excused = len(event.sisters_excused.all())*1.0 / num_required
+      fraction_excused = (len(event.sisters_excused.all()) + len(event.sisters_freebied.all()))*1.0 / num_required
       fraction_absent = 1.0 - fraction_attended - fraction_excused
 
       # Convert fraction to 2-digit integer for percentage
