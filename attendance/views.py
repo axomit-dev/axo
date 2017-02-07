@@ -232,6 +232,8 @@ def checkin_sister(request, event_id, sister_id):
   event.sisters_attended.add(sister)
   # Remove from excused absences to avoid duplication
   event.sisters_excused.remove(sister)
+  # Removed from freebied absences to avoid duplication
+  event.sisters_freebied.remove(sister)
   event.save()
   # Redirect to the same event details page
   return HttpResponseRedirect(
