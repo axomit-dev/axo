@@ -168,7 +168,7 @@ ALLOWED_HOSTS = ["axo.scripts.mit.edu", "axo-sisters.mit.edu"]
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'axo+site-sisters2',
+        'NAME': 'axo+site-sisters3',
         'USER': 'axo',
         'PASSWORD': '[redacted]',
         'HOST': 'sql.mit.edu',
