@@ -14,7 +14,7 @@ urlpatterns = [
   # sister_record is used for an admin looking at someone else's attendance
   url(r'^sisters/(?P<sister_id>[0-9]+)/(?P<semester_id>[0-9]+)/$', views.sister_record, name='sister_record'),
   # personal_record is used for a logged-in user looking at their own attendance
-  url(r'^sister/(?P<semester_id>[0-9]+)/$', views.personal_record, name='personal_record'),
+  url(r'^personal/$', views.personal_record, name='personal_record'),
 
   # Event-related views
   url(r'^events/all/(?P<semester_id>[0-9]+)/$', views.events, name='events'), # All events for a certain semester

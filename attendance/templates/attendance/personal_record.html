@@ -8,13 +8,14 @@
   <!-- Color currently selected semester green -->
   <!-- TODO: Better way to do this? -->
   {% if semester.id == current_semester.id %}
-    <a href="{% url 'attendance:personal_record' semester.id %}" style="color: #843535">
+    <a href="{% url 'attendance:personal_record' %}?semester={{semester.id}}" style="color: #843535">
   {% else %}
-    <a href="{% url 'attendance:personal_record' semester.id %}">
+    <a href="{% url 'attendance:personal_record' %}?semester={{semester.id}}">
   {% endif %}
    {{ semester }}</a>&nbsp;&nbsp;•&nbsp;
 {% endfor %}
 </div>
+
 <br>
 <div id='att-content'>
 

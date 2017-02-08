@@ -4,7 +4,7 @@
 
 <!-- Any logged-in user can see their personal attendance -->
 {% if user.is_authenticated %}
-  <a href="{% url 'attendance:personal_record' semester.id %}"> attendance for {{ user.username }} </a>
+  <a href="{% url 'attendance:personal_record' %}"> attendance for {{ user.username }} </a>
 {% endif %}
 
 <!-- A staff can also mark people as attending -->

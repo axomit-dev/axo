@@ -21,6 +21,18 @@ value_of_excused_absence = .75
 ##### HELPER METHODS #####
 ##########################
 
+# Returns the correct semester ID.
+# If request['semester'] is defined, that is the ID.
+# Otherwise, use the ID of the latest semester in the database.
+def get_semester_id(request):
+  if request.GET.get('semester', False):
+    # Semester was passed in as parameter
+    return int(request.GET['semester'])
+  else:
+    # Otherwise, use the latest semester
+    semester = Semester.objects.all()[0]
+    return semester.id
+
 # Returns all the information necessary for a full attendance record
 # for the given sister in the given semester.
 # Assumes that both sister and semester_id are valid.
@@ -247,8 +259,9 @@ def checkin_sister(request, event_id, sister_id):
 
 # View attendance record of the logged-in user.
 @login_required
-def personal_record(request, semester_id):
+def personal_record(request):
   sister = get_sister(request)
+  semester_id = get_semester_id(request)
   context = get_sister_record(sister, semester_id)
   return render(request, 'attendance/personal_record.html', context)
 
