@@ -5,14 +5,16 @@
 {% if user.is_authenticated %}
 
 {% load static %}
-<img src="{% static "general/images/seal.png" %}" alt="seal" style='width: 300px; margin:auto; opacity: 0.3; margin-top:36px'/>
+
+<div id='welcome-index'>Welcome, {{user.username}}!</div>
+<img src="{% static "general/images/seal.png" %}" alt="seal" style='width: 200px; margin:auto; opacity: 1; margin-top:46px'/>
 
 
 {% else %}
 
 
 {% load static %}
-<img src="{% static "general/images/seal.png" %}" alt="seal" style='width: 300px; margin:auto; opacity: 0.3'/>
+<img src="{% static "general/images/seal.png" %}" alt="seal" style='width: 200px; margin:auto; opacity: 1; margin-top:50px'/>
 
 {% endif %}
 
