@@ -10,14 +10,14 @@ urlpatterns = [
   url(r'^$', views.index, name='index'),
 
   # Sister-related views
-  url(r'^sisters/all/(?P<semester_id>[0-9]+)/$', views.sisters, name='sisters'),
+  url(r'^sisters/$', views.sisters, name='sisters'),
   # sister_record is used for an admin looking at someone else's attendance
-  url(r'^sisters/(?P<sister_id>[0-9]+)/(?P<semester_id>[0-9]+)/$', views.sister_record, name='sister_record'),
+  url(r'^sisters/(?P<sister_id>[0-9]+)/$', views.sister_record, name='sister_record'),
   # personal_record is used for a logged-in user looking at their own attendance
   url(r'^personal/$', views.personal_record, name='personal_record'),
 
   # Event-related views
-  url(r'^events/all/(?P<semester_id>[0-9]+)/$', views.events, name='events'), # All events for a certain semester
+  url(r'^events/$', views.events, name='events'),
   url(r'^events/(?P<event_id>[0-9]+)/$', views.event_details, name='event_details'),
   url(r'^events/(?P<event_id>[0-9]+)/activate/$', views.activate, name='activate'),
   url(r'^events/(?P<event_id>[0-9]+)/checkin/sisters/(?P<sister_id>[0-9]+)$', views.checkin_sister, name='checkin_sister'),

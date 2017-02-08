@@ -2,19 +2,7 @@
 
 {% block content %}
 
-<div id="semester-tabs">
-&nbsp;&nbsp;•&nbsp;
-{% for semester in semesters %}
-  <!-- Color currently selected semester green -->
-  <!-- TODO: Better way to do this? -->
-  {% if semester.id == current_semester.id %}
-    <a href="{% url 'attendance:personal_record' %}?semester={{semester.id}}" style="color: #843535">
-  {% else %}
-    <a href="{% url 'attendance:personal_record' %}?semester={{semester.id}}">
-  {% endif %}
-   {{ semester }}</a>&nbsp;&nbsp;•&nbsp;
-{% endfor %}
-</div>
+{% include 'attendance/semester_tabs.html' %}
 
 <br>
 <div id='att-content'>

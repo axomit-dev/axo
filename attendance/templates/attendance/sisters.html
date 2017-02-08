@@ -2,26 +2,15 @@
 
 {% block content %}
 
-<!-- TODO: This is duplicate code from personal_record page. -->
-<div id="semester-tabs">
-&nbsp;&nbsp;•&nbsp;
-{% for semester in semesters %}
-  <!-- Color currently selected semester green -->
-  {% if semester.id == current_semester.id %}
-    <a href="{% url 'attendance:sisters' semester.id %}" style="color: #28960a">
-  {% else %}
-    <a href="{% url 'attendance:sisters' semester.id %}">
-  {% endif %}
-   {{ semester }}</a>&nbsp;&nbsp;•&nbsp;
-{% endfor %}
-</div>
+{% include 'attendance/semester_tabs.html' %}
 
-
-<a href="{% url 'attendance:sisters' current_semester.id %}"> alphabetically by first name </a>&nbsp;&nbsp;•&nbsp;
-<a href="{% url 'attendance:sisters' current_semester.id %}?order_by_percent=True"> order by percentage, lowest to highest </a>
+<!-- Need to save which semester they're currently on so
+  clicking the following links doesn't change the semester -->
+<a href="{% url 'attendance:sisters' %}?semester={{current_semester.id}}"> alphabetically by first name </a>&nbsp;&nbsp;•&nbsp;
+<a href="{% url 'attendance:sisters' %}?semester={{current_semester.id}}&order_by_percent=True"> order by percentage, lowest to highest </a>
 
 {% for sister in sisters %}
-  <p><a href="{% url 'attendance:sister_record' sister.id current_semester.id %}"> {{ sister }}</a> &nbsp;&nbsp;•&nbsp; {{ sister.percentage }}</p>
+  <p><a href="{% url 'attendance:sister_record' sister.id %}"> {{ sister }}</a> &nbsp;&nbsp;•&nbsp; {{ sister.percentage }}</p>
 
 {% endfor %}
 

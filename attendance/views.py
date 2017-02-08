@@ -154,8 +154,9 @@ def index(request):
 
 # List of all events for the given semester
 @user_passes_test(lambda u: u.is_staff)
-def events(request, semester_id):
+def events(request):
   # Get all events for this semester
+  semester_id = get_semester_id(request)
   semester = Semester.objects.get(id=semester_id)
   events = Event.objects.filter(semester=semester).order_by('-date')
   # Get years for activation button
@@ -170,7 +171,8 @@ def events(request, semester_id):
     'events': events,
     'years': years_list,
     'semesters': semesters,
-    'current_semester': semester
+    'current_semester': semester,
+    'semester_tab_url': 'attendance:events'
   }
   return render(request, 'attendance/events.html', context)
 
@@ -263,11 +265,13 @@ def personal_record(request):
   sister = get_sister(request)
   semester_id = get_semester_id(request)
   context = get_sister_record(sister, semester_id)
+  context['semester_tab_url'] = "attendance:personal_record"
   return render(request, 'attendance/personal_record.html', context)
 
 # View a list of all sisters and their percentages.
 @user_passes_test(lambda u: u.is_superuser)
-def sisters(request, semester_id):
+def sisters(request):
+  semester_id = get_semester_id(request)
   semester = Semester.objects.get(id=semester_id)
   active_sisters = Sister.objects.exclude(status=Sister.ALUM).exclude(status=Sister.DEAFFILIATED)
 
@@ -296,13 +300,15 @@ def sisters(request, semester_id):
   context = {
     'sisters': sorted_sisters,
     'current_semester': semester,
-    'semesters': Semester.objects.all()
+    'semesters': Semester.objects.all(),
+    'semester_tab_url': 'attendance:sisters',
   }
   return render(request, 'attendance/sisters.html', context)
 
 # View the attendance record of the sister with sister_id.
 @user_passes_test(lambda u: u.is_superuser)
-def sister_record(request, sister_id, semester_id):
+def sister_record(request, sister_id):
+  semester_id = get_semester_id(request)
   sister = Sister.objects.get(id=sister_id)
   context = get_sister_record(sister, semester_id)
   return render(request, 'attendance/sister_record.html', context)
