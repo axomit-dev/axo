@@ -40,8 +40,6 @@ input:focus {
 #block {
     text-align: center;
     margin: auto;
-    /*background-color: red;*/
-    /*width: 500px;*/
 }
 #title {
     letter-spacing: 12px;
