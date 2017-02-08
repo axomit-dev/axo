@@ -270,10 +270,9 @@ def sisters(request, semester_id):
       return sister.percentage
     sorted_sisters = sorted(active_sisters, key=sort_func)
   else:
-    # Otherwise, sort sisters by username alphabetically
-    def sort_func(sister):
-      return sister.user.username
-    sorted_sisters = sorted(active_sisters, key=sort_func)
+    # Otherwise, sort sisters alphabetically
+    # Sisters are already sorted, so don't need to do anything
+    sorted_sisters = active_sisters
 
   # Format the percentage correctly after using it for sorting
   def format(sister):
