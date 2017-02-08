@@ -8,7 +8,7 @@
   <!-- Color currently selected semester green -->
   <!-- TODO: Better way to do this? -->
   {% if semester.id == current_semester.id %}
-    <a href="{% url 'attendance:personal_record' semester.id %}" style="color: #A40909">
+    <a href="{% url 'attendance:personal_record' semester.id %}" style="color: #843535">
   {% else %}
     <a href="{% url 'attendance:personal_record' semester.id %}">
   {% endif %}

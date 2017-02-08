@@ -3,7 +3,17 @@
 <br>
 <p> Overall attendance for past events this semester: {{ percentage }} </p>
 <br>
-<table class='event-table event-table-past'>
+<table class='event-table event-table-past' style='margin-top: -20px;'>
+  <tr>
+    <td></td>
+    <td>
+      <b> Total earned points: </b></td>
+    <td>
+      <b> {{ overall_earned_points }} </b></td>
+    <td>
+      <b> {{ overall_total_points }} (Mandatory Only) </b></td>
+    <td> </td>
+  </tr>
   <tr>
     <th> Events (Past) </th>
     <th> Attendance </th>
@@ -42,7 +52,7 @@
   </tr>
 {% endfor %}
   <!-- Row to show sum of earned points + total points -->
-  <tr>
+  <!-- <tr>
     <td></td>
     <td style="border-top: 1px solid #000">
       <b> Totals: </b></td>
@@ -51,7 +61,7 @@
     <td style="border-top: 1px solid #000">
       <b> {{ overall_total_points }} (Mandatory Only) </b></td>
     <td> </td>
-  </tr>
+  </tr> -->
 
 
 </table>

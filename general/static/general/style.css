@@ -100,6 +100,7 @@ table {
 /********* NAV *********/
 /***********************/
 #nav {
+    margin-top: -20px;
     font-size: 12px
 }
 
@@ -169,7 +170,7 @@ table {
     font-size: 16px;
 }
 .event-table tr {
-    border-bottom: 1px solid #ccc
+    border-bottom: 1px solid #A0A0A0
 }
 .event-table-past th, .event-table-past td, .event-table-past tr {
     max-width: 190px
@@ -183,6 +184,7 @@ table {
 }
 
 #att-content {
+    background: rgba(255,255,255,0.3);
     border-radius: 10px;
     width: 1000px;
     margin: auto;
@@ -194,7 +196,7 @@ table {
 }
 
 #att-title {
-    background-color: #EAEAEA;
+    background: rgba(255,255,255,0.8);
     padding: 10px;
     margin-top: -1px;
     border-top: solid 1px #A0A0A0;
