@@ -30,9 +30,6 @@ class Semester(models.Model):
 
 @python_2_unicode_compatible
 class Event(models.Model):
-  # Excused absences are worth 75% of the original point value
-  VALUE_OF_EXCUSED_ABSENCE = .75
-
   name = models.CharField(max_length=200)
   date = models.DateTimeField()
   is_mandatory = models.BooleanField(default=False)
