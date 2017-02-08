@@ -3,10 +3,12 @@
 
 {% block content %}
 
-<h3> {{ event }} </h3>
+<div id='events-content' style='margin-top: -30px'>
+  <div class='att-title first-title'>
+    <h3> {{ event }} </h3>
 
-attended: {{ percent_attended }}% &nbsp;&nbsp;•&nbsp; excused: {{ percent_excused }}% &nbsp;&nbsp;•&nbsp; absent: {{ percent_absent }}%
-<div id='events-content'>
+    attended: {{ percent_attended }}% &nbsp;&nbsp;•&nbsp; excused: {{ percent_excused }}% &nbsp;&nbsp;•&nbsp; absent: {{ percent_absent }}%
+  </div>
   <table class='event-table'>
   <tr>
     <th> Sister </th>
