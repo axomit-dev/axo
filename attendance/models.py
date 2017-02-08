@@ -4,6 +4,7 @@ from django.db import models
 from django.utils.encoding import python_2_unicode_compatible
 from django.contrib.auth.models import User
 from general.models import Sister
+from django.utils.timezone import localtime
 
 
 @python_2_unicode_compatible
@@ -52,10 +53,9 @@ class Event(models.Model):
     ordering = ['-date']
 
   def __str__(self):
-    # Example display of the formatted date:
-    # Sunday 1/19/17 at 6:30pm
-    formatted_date = '{dt:%a} {dt.month}/{dt.day}/{dt.year} at {dt:%I}:{dt:%M}{dt:%p}'.format(dt=self.date)
-    #formatted_date = self.date.strftime("%a %m/%d/%y at %I:%M%p")
+    # Convert date to current timezone
+    aware_date = localtime(self.date)
+    formatted_date = '{dt:%a} {dt.month}/{dt.day}/{dt.year} at {dt:%I}:{dt:%M}{dt:%p}'.format(dt=aware_date)
     return self.name + " | " + formatted_date
 
 
