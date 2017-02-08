@@ -24,9 +24,11 @@ class Sister(models.Model):
   status = models.IntegerField(choices=STATUS)
   class_year = models.IntegerField()
 
+  class Meta:
+    # Order by first name then last name
+    ordering = ['user__first_name', 'user__last_name']
 
   def __str__(self):
-    #return self.user.username
     # TODO: Make first_name, last_name required for Users somehow
     return "%s %s" % (self.user.first_name, self.user.last_name)
 

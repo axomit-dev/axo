@@ -15,6 +15,7 @@ from general.models import Sister
 ##### CONSTANTS #####
 #####################
 no_percentage_available_message = "There have been no mandatory events that you've needed to attend yet!"
+value_of_excused_absence = .75
 
 ##########################
 ##### HELPER METHODS #####
@@ -39,7 +40,7 @@ def get_sister_record(sister, semester_id):
       if (sister in event.sisters_attended.all()) or (sister in event.sisters_freebied.all()):
         event.earned_points = event.points
       elif (sister in event.sisters_excused.all()):
-        event.earned_points = Excuse.VALUE_OF_EXCUSED_ABSENCE*event.points
+        event.earned_points = value_of_excused_absence*event.points
       else:
         event.earned_points = 0
       event.save()
@@ -98,7 +99,7 @@ def calculate_percentage(sister,semester_id):
         # A freebie earns 100% of the event points
         earned_points+=event.points
       elif sister in event.sisters_excused.all():
-        earned_points+= Event.VALUE_OF_EXCUSED_ABSENCE*event.points
+        earned_points+= value_of_excused_absence*event.points
     elif sister in event.sisters_attended.all() and sister not in event.sisters_required.all():
       earned_points+=event.points
   if total_points !=0:
@@ -269,10 +270,9 @@ def sisters(request, semester_id):
       return sister.percentage
     sorted_sisters = sorted(active_sisters, key=sort_func)
   else:
-    # Otherwise, sort sisters by username alphabetically
-    def sort_func(sister):
-      return sister.user.username
-    sorted_sisters = sorted(active_sisters, key=sort_func)
+    # Otherwise, sort sisters alphabetically
+    # Sisters are already sorted, so don't need to do anything
+    sorted_sisters = active_sisters
 
   # Format the percentage correctly after using it for sorting
   def format(sister):
