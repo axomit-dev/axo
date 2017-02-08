@@ -9,7 +9,7 @@
 {% for semester in semesters %}
   <!-- Color currently selected semester green -->
   {% if semester.id == current_semester.id %}
-    <a href="{% url 'attendance:events' semester.id %}" style="color: #28960a">
+    <a href="{% url 'attendance:events' semester.id %}" style="color: #843535">
   {% else %}
     <a href="{% url 'attendance:events' semester.id %}">
   {% endif %}
@@ -19,8 +19,9 @@
 
 
 {% if events %}
-
-  <table>
+<div id='events-content'>
+  <h2 class='att-title first-title'> All Events </h2>
+  <table class='event-table'>
     <tr>
       <th> Event </th>
       <th> Is Mandatory? </th>
@@ -56,7 +57,7 @@
                   <option value="{{year}}"> {{year}}s Only </option>
                   {% endfor %}
                 </select>
-                <input type="submit" value="Activate" />
+                <input type="submit" value="Activate" class='gen-btn'/>
               </form>
             {% endif %}
           </td>
@@ -66,8 +67,8 @@
 
     <br>
 
-  <p> When you click the 'Activate' button, all members that are active and are part of the selected group will be recorded as possible attendees. For example, if you choose a class year, then all memebers of that class year who aren't abroad will be possible attendees. </p>
-
+  <p style='width: 650px; margin: auto'> When you click the 'Activate' button, all members that are active and are part of the selected group will be recorded as possible attendees. For example, if you choose a class year, then all members of that class year who aren't abroad will be possible attendees. </p><br>
+</div>
 {% else %}
     <p>No events are available.</p>
 {% endif %}

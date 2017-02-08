@@ -1,23 +1,22 @@
 {% extends 'general/base.html' %}
 
 {% block content %}
-
+<p style='margin-top:-20px'> Sister record for <strong>{{sister}}</strong>. </p><br><br>
 <!-- TODO: This is duplicate code from personal_record page. -->
 <div id="semester-tabs">
 &nbsp;&nbsp;•&nbsp;
 {% for semester in semesters %}
   <!-- Color currently selected semester green -->
   {% if semester.id == current_semester.id %}
-    <a href="{% url 'attendance:sister_record' sister.id semester.id %}" style="color: #28960a">
+    <a href="{% url 'attendance:sister_record' sister.id semester.id %}" style="color: #843535">
   {% else %}
     <a href="{% url 'attendance:sister_record' sister.id semester.id %}">
   {% endif %}
    {{ semester }}</a>&nbsp;&nbsp;•&nbsp;
 {% endfor %}
-</div>
-
-<p> Sister record for {{sister}}. </p>
-
+</div><br>
+<!-- <br><p> Sister record for {{sister}}. </p> -->
+<div id='att-content'>
 {% include 'attendance/past_event_table.html' %}
-
+</div>
 {% endblock %}

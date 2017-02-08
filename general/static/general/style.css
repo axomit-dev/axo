@@ -131,7 +131,7 @@ table {
 
 #droplink {
     margin: 5px;
-    background-color: #fff;
+    background: rgba(255,255,255,0.3);
     padding: 5px;
 }
 
@@ -158,9 +158,8 @@ table {
 /********* ATTENDANCE *********/
 /******************************/
 
-.event-table {
-    /*background-color: #e1e1e1*/
-    /*border: 1px solid #ccc;*/
+#semester-tabs {
+    margin-top: -30px
 }
 
 .event-table th, .event-table td, .event-table tr {
@@ -195,14 +194,27 @@ table {
     margin-bottom: 50px;
     /*height: 40%;*/
     /*background-color: #F4F4F4;*/
-    border: solid 1px #A0A0A0;
+    /*border: solid 1px #A0A0A0;*/
     /*overflow: auto;*/
 }
 
-#att-title {
+.att-title {
     background: rgba(255,255,255,0.8);
     padding: 10px;
     margin-top: -1px;
-    border-top: solid 1px #A0A0A0;
-    border-bottom: solid 1px #A0A0A0;
+    /*border-top: solid 1px #A0A0A0;*/
+    /*border-bottom: solid 1px #A0A0A0;*/
+}
+.first-title{
+    border-radius: 10px 10px 0 0;
+}
+
+#events-content {
+    background: rgba(255,255,255,0.3);
+    border-radius: 10px;
+    width: 800px;
+    margin: auto;
+    margin-bottom: 50px;
+    margin-top: 20px;
+    /*border: solid 1px #A0A0A0;*/
 }
