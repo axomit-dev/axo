@@ -27,6 +27,9 @@
             {% csrf_token %}
             <input class='gen-btn' type="submit" value="Deny"/>
           </form>
+          {% if excuse.is_freebie %}
+            <p> (it's a freebie) </p>
+          {% endif %}
         </td>
 <!--         <td>
           <form action="{% url 'attendance:excuse_deny' excuse.id %}" method="post">
