@@ -37,6 +37,12 @@ a:active{
     text-decoration: none;
 }
 
+a:focus{
+    color: #C88585;
+    text-decoration: none;
+    outline: none;
+}
+
 input:focus {
     /*outline-color: #A40909;*/
     outline: none;
