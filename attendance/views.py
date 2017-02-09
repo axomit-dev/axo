@@ -365,7 +365,7 @@ def excuse_submit(request, event_id):
     # Redirect to the personal record page, to the semester
     # that the event is from
     return HttpResponseRedirect(
-      reverse('attendance:personal_record', args=(event.semester.id,)))
+      reverse('attendance:personal_record') + "?semester=" + str(event.semester.id))
   
 
 # Display all pending excuses.
