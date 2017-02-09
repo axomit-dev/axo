@@ -1,37 +1,43 @@
 {% extends "general/base.html" %}
 
 {% block content %}
+<div id='att-content'>
+  <h2 class='att-title first-title'> All Pending Excuses </h2>
 
-<h2> All Pending Excuses </h2>
-
-<table>
-  <tr>
-    <th> Event </th>
-    <th> Sister </th>
-    <th> Excuse </th>
-  </tr>
-
-  {% for excuse in excuses %}
+  <table class='event-table'>
     <tr>
-      <td> {{ excuse.event }} </td>
-      <td> {{ excuse.sister }} </td>
-      <td> {{ excuse.text }} </td>
-      <!-- Approve and Deny Buttons -->
-      <td>
-        <form action="{% url 'attendance:excuse_approve' excuse.id %}" method="post">
-          {% csrf_token %}
-          <input type="submit" value="Approve" />
-        </form>
-      </td>
-      <td>
-        <form action="{% url 'attendance:excuse_deny' excuse.id %}" method="post">
-          {% csrf_token %}
-          <input type="submit" value="Deny" />
-        </form>
-      </td>
-
+      <th> Event </th>
+      <th> Sister </th>
+      <th> Excuse </th>
+      <th> </th>
     </tr>
 
-  {% endfor %}
+    {% for excuse in excuses %}
+      <tr>
+        <td> {{ excuse.event }} </td>
+        <td> {{ excuse.sister }} </td>
+        <td> {{ excuse.text }} </td>
+        <!-- Approve and Deny Buttons -->
+        <td>
+          <form action="{% url 'attendance:excuse_approve' excuse.id %}" method="post" style='display:inline-block'>
+            {% csrf_token %}
+            <input class='gen-btn' type="submit" value="Approve" />
+          </form>
+          <form action="{% url 'attendance:excuse_deny' excuse.id %}" method="post" style='display:inline-block'>
+            {% csrf_token %}
+            <input class='gen-btn' type="submit" value="Deny"/>
+          </form>
+        </td>
+<!--         <td>
+          <form action="{% url 'attendance:excuse_deny' excuse.id %}" method="post">
+            {% csrf_token %}
+            <input type="submit" value="Deny" />
+          </form>
+        </td> -->
 
+      </tr>
+
+    {% endfor %}
+  </table>
+</div>
 {% endblock content %}
