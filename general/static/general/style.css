@@ -107,7 +107,7 @@ table {
     font-size: 12px
 }
 
-#navlink1 {
+.navlink1 {
     display: inline-block;
 }
 
@@ -121,7 +121,8 @@ table {
     display: none;
     position: absolute;
     margin-left: -7px;
-    /*background-color: #fff;*/
+    background: rgba(225,232,213,0.5);
+    border-radius: 10px;
     /*margin: 5px;*/
     /*opacity: 0.5;*/
     /*border: solid 1px #EAEAEA;*/
@@ -130,8 +131,9 @@ table {
 }
 
 #droplink {
+    border-radius: 10px;
     margin: 5px;
-    background: rgba(255,255,255,0.3);
+    background: rgba(255,255,255,1);
     padding: 5px;
 }
 
@@ -199,7 +201,7 @@ table {
 }
 
 .att-title {
-    background: rgba(255,255,255,0.8);
+    background: rgba(255,255,255,0.6);
     padding: 10px;
     margin-top: -1px;
     /*border-top: solid 1px #A0A0A0;*/

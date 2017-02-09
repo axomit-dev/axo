@@ -23,35 +23,67 @@
       <br> -->
     <div id='nav'>
 
-      {% if user.is_staff %}
-        <div id = "navlink1">
-          <h2><a href="/attendance">attendance</a></h2>
+
+      {% if user.is_superuser %}
+        <div class = "navlink1 dropdown">
+          <h2><a id='dropbtn' href='/attendance'>attendance</a></h2>
+          <div class="dropdown-content">
+            <a id='droplink' href="{% url 'attendance:personal_record' %}"> attendance for {{ user.username }} </a>
+            <a id='droplink' href="{% url 'attendance:events' %}">  all events </a>
+            <a id='droplink' href="{% url 'attendance:sisters' %}">  all sister records </a>
+            <a id='droplink' href="{% url 'attendance:excuse_pending' %}"> pending excuses </a>
+          </div>
         </div>
-      {% elif user.is_superuser %}
-          <div id = "navlink1">
-          <h2><a href="/attendance">attendance</a></h2>
+
+      {% elif user.is_staff %}
+        <div class = "navlink1 dropdown">
+          <h2><a id='dropbtn' href='/attendance'>attendance</a></h2>
+          <div class="dropdown-content">
+            <a id='droplink' href="{% url 'attendance:personal_record' %}"> attendance for {{ user.username }} </a>
+            <a id='droplink' href="{% url 'attendance:events' %}">  all events </a>
+          </div>
         </div>
+
       {% else %}
-        <div id="navlink1">
+        <div class="navlink1">
           <h2><a href="{% url 'attendance:personal_record' %}">attendance</a></h2>
         </div>
       {% endif %}
 
-      <div class = "navlink">
-        <h2><a href="/elections">elections</a></h2>
-      </div>
-
+      {% if user.is_superuser %}
+        <div class = "navlink dropdown">
+          <h2><a id='dropbtn' href='/elections'>elections</a></h2>
+          <div class="dropdown-content">
+            <a id='droplink' href="{% url 'elections:ois_submission' %}"> ois submission </a>
+            <a id='droplink' href="{% url 'elections:ois_results' %}"> ois results </a>
+            <a id='droplink' href="{% url 'elections:loi_submission' %}"> loi submission </a>
+            <a id='droplink' href="{% url 'elections:loi_results' %}"> submitted lois </a>
+            <a id='droplink' href="{% url 'elections:slating_submission' %}"> slating </a>
+            <a id='droplink' href="{% url 'elections:voting_submission' %}"> voting </a>
+            <a id='droplink' href="{% url 'elections:slating_results' %}">  slating results </a>
+            <a id='droplink' href="{% url 'elections:voting_results' %}"> voting results </a>
+          </div>
+        </div>
+      {% else %}
+        <div class = "navlink dropdown">
+          <h2><a id='dropbtn' href='/elections'>elections</a></h2>
+          <div class="dropdown-content">
+            <a id='droplink' href="{% url 'elections:ois_submission' %}"> ois submission </a>
+            <a id='droplink' href="{% url 'elections:ois_results' %}"> ois results </a>
+            <a id='droplink' href="{% url 'elections:loi_submission' %}"> loi submission </a>
+            <a id='droplink' href="{% url 'elections:loi_results' %}"> submitted lois </a>
+            <a id='droplink' href="{% url 'elections:slating_submission' %}"> slating </a>
+            <a id='droplink' href="{% url 'elections:voting_submission' %}"> voting </a>
+          </div>
+        </div>
+      {% endif %}
       <div class = "navlink">
         <h2><a href="/house">house</a></h2>
-        <!-- <div id="house navigation"> -->
-        <!-- </div> -->
       </div>
 
       
       <div class = "navlink">
         <h2><a href="/resources">resources</a></h2>
-        <!-- <div id="resources navigation"> -->
-        <!-- </div> -->
       </div>
 
       <div class = "navlink dropdown">

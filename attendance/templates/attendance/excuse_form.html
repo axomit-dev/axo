@@ -20,7 +20,7 @@
       <p><input type="checkbox" name="is_freebie"> Use a freebie </input></p>
     {% endif %}
     <p>          <input class = 'gen-btn' type="submit" value="Submit" /> 
-    <button type='button' class='gen-btn' onclick='location.href=  "/attendance"  '>Cancel</button></p>
+    <button type='button' class='gen-btn' onclick='location.href=  "{% url 'attendance:personal_record' %}"  '>Cancel</button></p>
   </form><br>
 <!-- 
   {% if used_freebie %}
