@@ -2,10 +2,13 @@
 
 {% block content %}
 
+<p style='margin-top:-20px'> Sister record for <strong>{{sister}}</strong>. </p><br><br>
+
 {% include 'attendance/semester_tabs.html' %}
 
-<p> Sister record for {{sister}} </p>
+<br>
+<div id='att-content'>
 
 {% include 'attendance/past_event_table.html' %}
-
+</div>
 {% endblock %}

@@ -1,7 +1,8 @@
 {% extends 'general/base.html' %}
 
 {% block content %}
-
+<div id='events-content'>
+<h2 class='att-title first-title'> Submit Excuse </h2>
 {% if success %}
   <p> Your excuse for {{ event }} has been successfully submitted. <p>
 {% else %}
@@ -20,7 +21,7 @@
     {% endif %}
     <p>          <input class = 'gen-btn' type="submit" value="Submit" /> 
     <button type='button' class='gen-btn' onclick='location.href=  "/attendance"  '>Cancel</button></p>
-  </form>
+  </form><br>
 <!-- 
   {% if used_freebie %}
     <p> You've already used your freebie for the semester! </p>
@@ -29,5 +30,5 @@
   {% endif %} -->
 
 {% endif %}
-
+</div>
 {% endblock %}

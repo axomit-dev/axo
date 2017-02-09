@@ -4,14 +4,18 @@
 
 {% include 'attendance/semester_tabs.html' %}
 
+
+<div id='events-content'>
+<h2 class='att-title first-title'> All Sister Records </h2>
 <!-- Need to save which semester they're currently on so
   clicking the following links doesn't change the semester -->
 <a href="{% url 'attendance:sisters' %}?semester={{current_semester.id}}"> alphabetically by first name </a>&nbsp;&nbsp;•&nbsp;
-<a href="{% url 'attendance:sisters' %}?semester={{current_semester.id}}&order_by_percent=True"> order by percentage, lowest to highest </a>
+<a href="{% url 'attendance:sisters' %}?semester={{current_semester.id}}&order_by_percent=True"> order by percentage, lowest to highest </a><br><br>
+
 
 {% for sister in sisters %}
   <p><a href="{% url 'attendance:sister_record' sister.id %}?semester={{current_semester.id}}"> {{ sister }}</a> &nbsp;&nbsp;•&nbsp; {{ sister.percentage }}</p>
 
 {% endfor %}
-
+</div>
 {% endblock %}

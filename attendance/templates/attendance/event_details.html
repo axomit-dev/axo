@@ -3,11 +3,13 @@
 
 {% block content %}
 
-<h3> {{ event }} </h3>
+<div id='events-content' style='margin-top: -30px'>
+  <div class='att-title first-title'>
+    <h3> {{ event }} </h3>
 
-attended: {{ percent_attended }}% &nbsp;&nbsp;•&nbsp; excused: {{ percent_excused }}% &nbsp;&nbsp;•&nbsp; absent: {{ percent_absent }}%
-
-<table>
+    attended: {{ percent_attended }}% &nbsp;&nbsp;•&nbsp; excused: {{ percent_excused }}% &nbsp;&nbsp;•&nbsp; absent: {{ percent_absent }}%
+  </div>
+  <table class='event-table'>
   <tr>
     <th> Sister </th>
     <th> Attended? </th>
@@ -22,7 +24,7 @@ attended: {{ percent_attended }}% &nbsp;&nbsp;•&nbsp; excused: {{ percent_excu
       <td> 
         <form action="{% url 'attendance:checkin_sister' event.id sister.id %}" method="post">
           {% csrf_token %}
-          <input type="submit" value="Check In" />
+          <input type="submit" value="Check In" class='gen-btn'/>
         </form>
       </td>
     {% endif %}
@@ -31,10 +33,13 @@ attended: {{ percent_attended }}% &nbsp;&nbsp;•&nbsp; excused: {{ percent_excu
       <td> Excused </td>
     {% elif sister in event.sisters_freebied.all %}
       <td> Freebied </td>
+    {% else %}
+      <td> -- </td>
     {% endif %}
 
   </tr>
   {% endfor %}
 </table>
+</div>
 
 {% endblock content %}
