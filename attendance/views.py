@@ -311,6 +311,8 @@ def sister_record(request, sister_id):
   semester_id = get_semester_id(request)
   sister = Sister.objects.get(id=sister_id)
   context = get_sister_record(sister, semester_id)
+  context['is_sister_record_page'] = True
+  context['semester_tab_url'] = 'attendance:sister_record'
   return render(request, 'attendance/sister_record.html', context)
 
 

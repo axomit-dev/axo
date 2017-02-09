@@ -3,11 +3,29 @@
 {% for semester in semesters %}
   <!-- Color currently selected semester -->
   <!-- TODO: Better way to do this? -->
-  {% if semester.id == current_semester.id %}
-    <a href="{% url semester_tab_url %}?semester={{semester.id}}" style="color: #843535">
+
+  <!-- sister record page needs a different url -->
+  {% if is_sister_record_page %}
+
+    {% if semester.id == current_semester.id %}
+      <a href="{% url semester_tab_url sister.id %}?semester={{semester.id}}" style="color: #843535">
+    {% else %}
+      <a href="{% url semester_tab_url sister.id %}?semester={{semester.id}}">
+    {% endif %}
+
+
+
   {% else %}
-    <a href="{% url semester_tab_url %}?semester={{semester.id}}">
+    <!-- otherwise, use general url -->
+    {% if semester.id == current_semester.id %}
+      <a href="{% url semester_tab_url %}?semester={{semester.id}}" style="color: #843535">
+    {% else %}
+      <a href="{% url semester_tab_url %}?semester={{semester.id}}">
+    {% endif %}
+
   {% endif %}
+
+  
    {{ semester }}</a>&nbsp;&nbsp;•&nbsp;
 {% endfor %}
 </div>

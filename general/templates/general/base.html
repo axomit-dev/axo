@@ -22,9 +22,20 @@
 <!--       {{user.username}}&nbsp;&nbsp;•&nbsp;<a href="{% url 'logout' %}"> logout</a>&nbsp;&nbsp;•&nbsp;<a href="{% url 'password_change' %}"> change password</a>
       <br> -->
     <div id='nav'>
-      <div id = "navlink1">
-        <h2><a href="/attendance">attendance</a></h2>
-      </div>
+
+      {% if user.is_staff %}
+        <div id = "navlink1">
+          <h2><a href="/attendance">attendance</a></h2>
+        </div>
+      {% elif user.is_superuser %}
+          <div id = "navlink1">
+          <h2><a href="/attendance">attendance</a></h2>
+        </div>
+      {% else %}
+        <div id="navlink1">
+          <h2><a href="{% url 'attendance:personal_record' %}">attendance</a></h2>
+        </div>
+      {% endif %}
 
       <div class = "navlink">
         <h2><a href="/elections">elections</a></h2>
