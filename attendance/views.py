@@ -159,9 +159,12 @@ def events(request):
   semester_id = get_semester_id(request)
   semester = Semester.objects.get(id=semester_id)
   events = Event.objects.filter(semester=semester).order_by('-date')
+  
   # Get years for activation button
-  years_query = Sister.objects.values('class_year').distinct()
+  years_query = Sister.objects.values('class_year')
   years_list = [x['class_year'] for x in years_query]
+  # Remove duplicate years by converting to a set
+  years_list = list(set(years_list))
   # Order latest to earliest
   years_list.sort()
   years_list.reverse()
