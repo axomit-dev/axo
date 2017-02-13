@@ -40,8 +40,8 @@ def get_sister_record(sister, semester_id):
   semester = Semester.objects.get(id=semester_id)
   time_threshold = timezone.now()
   #date__lte means 'date is less than or equal to'
-  past_events = Event.objects.filter(semester=semester, date__lte=time_threshold).order_by('-date')
-  future_events = Event.objects.filter(semester=semester, date__gt=time_threshold).order_by('-date')
+  past_events = Event.objects.filter(semester=semester, date__lte=time_threshold).order_by('date')
+  future_events = Event.objects.filter(semester=semester, date__gt=time_threshold).order_by('date')
 
   # For past events, determine what points sister actually earned
   # TODO: Duplicate code from calculate percentage?
@@ -158,7 +158,7 @@ def events(request):
   # Get all events for this semester
   semester_id = get_semester_id(request)
   semester = Semester.objects.get(id=semester_id)
-  events = Event.objects.filter(semester=semester).order_by('-date')
+  events = Event.objects.filter(semester=semester).order_by('date')
   
   # Get years for activation button
   years_query = Sister.objects.values('class_year')
