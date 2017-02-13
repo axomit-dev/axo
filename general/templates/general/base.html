@@ -26,7 +26,7 @@
 
       {% if user.is_superuser %}
         <div class = "navlink1 dropdown">
-          <h2><a id='dropbtn' href='/attendance'>attendance</a></h2>
+          <h2><a id='dropbtn' href='/'>attendance</a></h2>
           <div class="dropdown-content">
             <a id='droplink' href="{% url 'attendance:personal_record' %}"> attendance for {{ user.username }} </a>
             <a id='droplink' href="{% url 'attendance:events' %}">  all events </a>
@@ -37,7 +37,7 @@
 
       {% elif user.is_staff %}
         <div class = "navlink1 dropdown">
-          <h2><a id='dropbtn' href='/attendance'>attendance</a></h2>
+          <h2><a id='dropbtn' href='/'>attendance</a></h2>
           <div class="dropdown-content">
             <a id='droplink' href="{% url 'attendance:personal_record' %}"> attendance for {{ user.username }} </a>
             <a id='droplink' href="{% url 'attendance:events' %}">  all events </a>
@@ -52,7 +52,7 @@
 
       {% if user.is_superuser %}
         <div class = "navlink dropdown">
-          <h2><a id='dropbtn' href='/elections'>elections</a></h2>
+          <h2><a id='dropbtn' href='/'>elections</a></h2>
           <div class="dropdown-content">
             <a id='droplink' href="{% url 'elections:ois_submission' %}"> ois submission </a>
             <a id='droplink' href="{% url 'elections:ois_results' %}"> ois results </a>
@@ -66,7 +66,7 @@
         </div>
       {% else %}
         <div class = "navlink dropdown">
-          <h2><a id='dropbtn' href='/elections'>elections</a></h2>
+          <h2><a id='dropbtn' href='/'>elections</a></h2>
           <div class="dropdown-content">
             <a id='droplink' href="{% url 'elections:ois_submission' %}"> ois submission </a>
             <a id='droplink' href="{% url 'elections:ois_results' %}"> ois results </a>
@@ -87,7 +87,7 @@
       </div>
 
       <div class = "navlink dropdown">
-        <h2><a id='dropbtn'>account</a></h2>
+        <h2><a id='dropbtn' href='/'>account</a></h2>
         <div class="dropdown-content">
           <a id='droplink' href="{% url 'logout' %}">logout</a>
           <a id='droplink' href="{% url 'password_change' %}">change password</a>
