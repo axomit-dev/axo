@@ -10,6 +10,8 @@
 
   <h2 class= 'att-title first-title'> Upcoming </h2> <br>
 
+  <p> You only have the option to submit excuses for non-mandatory events. </p>
+
   <table class='event-table'>
     <tr>
       <th> Event </th>
@@ -21,11 +23,16 @@
       <!-- It's an event -->
       <tr>
         <td> {{ item }} </td>
-        <!-- Submit Excuse Button -->
-        <td>
-          <a href="{% url 'attendance:excuse_submit' item.id %}"> submit excuse </a>
+        <!-- Display 'submit excuse button' if it's mandatory -->
+        {% if item.is_mandatory %}
+          <!-- Submit Excuse Button -->
+          <td>
+            <a href="{% url 'attendance:excuse_submit' item.id %}"> submit excuse </a>
 
-        </td>
+          </td>
+        {% else %}
+          <td> -- </td>
+        {% endif %}
         <td> n/a </td>
       </tr>
       {% else %}
