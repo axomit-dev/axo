@@ -20,17 +20,17 @@
     <td> {{ sister }} </td>
     {% if sister in event.sisters_attended.all %}
       <td>
-        Yes!
-        <form action="{% url 'attendance:uncheck_sister' event.id sister.id %}" method="post">
+        <form action="{% url 'attendance:uncheck_sister' event.id sister.id %}" method="post" style='display: inline-block'>
           {% csrf_token %}
-          <input type="submit" value="Uncheck" class='gen-btn'/>
+          <input type="submit" value="Uncheck" class='gen-btn uncheck' style='margin-right: 15px'/>
         </form>
+        Yes!
       </td>
     {% else %}
       <td> 
         <form action="{% url 'attendance:checkin_sister' event.id sister.id %}" method="post">
           {% csrf_token %}
-          <input type="submit" value="Check In" class='gen-btn'/>
+          <input type="submit" value="Check In" class='gen-btn check' />
         </form>
       </td>
     {% endif %}

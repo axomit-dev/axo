@@ -230,3 +230,11 @@ table {
     margin-top: 20px;
     /*border: solid 1px #A0A0A0;*/
 }
+
+.check {
+    background-color: #d1dcc0;
+}
+
+.uncheck {
+    background-color: #f5bbbb
+}
