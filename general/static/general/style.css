@@ -9,10 +9,14 @@
 /***************************/
 body {
     font-family: 'custom';
-    background-repeat:no-repeat;
-    background-size:100%;
+    background: no-repeat center center fixed; 
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+/*    background-size:100%;
     background-position: center bottom;
-    background-attachment: fixed;
+    background-attachment: fixed;*/
 }
 
 h2 {
