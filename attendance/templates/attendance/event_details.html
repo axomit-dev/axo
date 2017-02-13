@@ -19,7 +19,13 @@
   <tr>
     <td> {{ sister }} </td>
     {% if sister in event.sisters_attended.all %}
-      <td> Yes! </td>
+      <td>
+        Yes!
+        <form action="{% url 'attendance:uncheck_sister' event.id sister.id %}" method="post">
+          {% csrf_token %}
+          <input type="submit" value="Uncheck" class='gen-btn'/>
+        </form>
+      </td>
     {% else %}
       <td> 
         <form action="{% url 'attendance:checkin_sister' event.id sister.id %}" method="post">

@@ -257,6 +257,28 @@ def checkin_sister(request, event_id, sister_id):
   return HttpResponseRedirect(
     reverse('attendance:event_details', args=(event.id,)))
 
+@user_passes_test(lambda u: u.is_staff)
+def uncheck_sister(request, event_id, sister_id):
+  event = get_object_or_404(Event, pk=event_id)
+  sister = get_object_or_404(Sister, pk=sister_id)
+  # Remove sister from list of attendees
+  event.sisters_attended.remove(sister)
+  # See if sister needs to be put back on the excused / freebied lists
+  try:
+    excuse = Excuse.objects.get(event=event, sister=sister)
+  except Excuse.DoesNotExist:
+    pass
+  else:
+    if (excuse.status == Excuse.APPROVED):
+      if (excuse.is_freebie):
+        event.sisters_freebied.add(sister)
+      else:
+        event.sisters_excused.add(sister)
+  event.save()
+
+  # Redirect to the same event details page
+  return HttpResponseRedirect(
+    reverse('attendance:event_details', args=(event.id,)))
 
 ################################
 ##### SISTER-RELATED VIEWS #####
