@@ -254,3 +254,18 @@ table {
     cursor: pointer;
     color: #999999;
 }
+
+#stuff p {
+    z-index: -1
+}
+
+#count {
+    display: inline-block;
+}
+
+#counter {
+    background-color: black;
+    padding: 20px;
+    color: white;
+    display: inline-block;
+}

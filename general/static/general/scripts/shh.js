@@ -20,6 +20,10 @@ $( document ).ready(function() {
     p.style.top = y + '%';
     p.innerHTML = done;
 
-    $("body").append(p);
+    $("#stuff").append(p);
+
+    var count = $('#count').html();
+    var newCount = parseInt(count) + 1;
+    $('#count').html(newCount)
   });
 });
