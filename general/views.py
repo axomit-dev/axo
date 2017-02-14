@@ -33,6 +33,9 @@ def index(request):
 def credits(request):
   return render(request, 'general/credits.html', {})
 
+def meme(request):
+  return render(request, 'general/shh.html', {})
+
 @login_required
 def resources(request):
   # TODO: Move to resources app
