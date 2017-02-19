@@ -24,33 +24,39 @@
         <br> -->
       <div id='nav'>
 
+        <!-- Attendance dropdown -->
 
-        {% if user.is_superuser %}
+        {% if user.is_staff %}
+          <!-- Staff get access to their personal attendance and events -->
           <div class = "navlink1 dropdown">
             <h2><a id='dropbtn' href='/'>attendance</a></h2>
             <div class="dropdown-content">
               <a id='droplink' href="{% url 'attendance:personal_record' %}"> attendance for {{ user.username }} </a>
               <a id='droplink' href="{% url 'attendance:events' %}">  all events </a>
-              <a id='droplink' href="{% url 'attendance:sisters' %}">  all sister records </a>
-              <a id='droplink' href="{% url 'attendance:excuse_pending' %}"> pending excuses </a>
+
+          {% if user.is_superuser %}
+            <!-- Superusers also get access to excuses,
+            attendance records of all sisters, and giving extra points --> 
+            <a id='droplink' href="{% url 'attendance:sisters' %}">  all sister records </a>
+            <a id='droplink' href="{% url 'attendance:excuse_pending' %}"> pending excuses </a>
+            <a id='droplink' href="{% url 'attendance:extra_points' %}"> give extra points </a>
+          {% endif %}
+
+        <!-- close nav divs -->
             </div>
           </div>
 
-        {% elif user.is_staff %}
-          <div class = "navlink1 dropdown">
-            <h2><a id='dropbtn' href='/'>attendance</a></h2>
-            <div class="dropdown-content">
-              <a id='droplink' href="{% url 'attendance:personal_record' %}"> attendance for {{ user.username }} </a>
-              <a id='droplink' href="{% url 'attendance:events' %}">  all events </a>
-            </div>
-          </div>
+        {% else %} 
 
-        {% else %}
+          <!-- For normal users, the attendance tabs goes straight to their attendance -->
           <div class="navlink1">
             <h2><a href="{% url 'attendance:personal_record' %}">attendance</a></h2>
           </div>
-        {% endif %}
 
+        {% endif %} <!-- for user.is_staff -->
+
+       
+        <!-- Elections dropdown -->
         {% if user.is_superuser %}
           <div class = "navlink dropdown">
             <h2><a id='dropbtn' href='/'>elections</a></h2>

@@ -458,3 +458,11 @@ def excuse_deny(request, excuse_id):
 
   return HttpResponseRedirect(
     reverse('attendance:excuse_pending'))
+
+######################################
+##### EXTRA POINTS-RELATED VIEWS #####
+######################################
+
+@user_passes_test(lambda u: u.is_superuser)
+def extra_points(request):
+  return render(request, 'attendance/extra_points.html', {})
