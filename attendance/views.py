@@ -79,6 +79,11 @@ def get_sister_record(sister, semester_id):
     else:
       future_events_and_excuses.append(excuse)
 
+  # Add in any extra points
+  extra_points = ExtraPoints.objects.filter(sister=sister, semester=semester)
+  for extra in extra_points:
+    overall_earned_points += extra.points
+
   semesters = Semester.objects.all()
   context = {
     'sister': sister,
@@ -89,6 +94,7 @@ def get_sister_record(sister, semester_id):
     'percentage': format_percentage(calculate_percentage(sister, semester_id)),
     'overall_total_points': overall_total_points,
     'overall_earned_points': overall_earned_points,
+    'extra_points': extra_points,
   }
   return context
 
@@ -117,6 +123,13 @@ def calculate_percentage(sister,semester_id):
         earned_points+= value_of_excused_absence*event.points
     elif sister in event.sisters_attended.all() and sister not in event.sisters_required.all():
       earned_points+=event.points
+
+
+  # Add in any extra points
+  extra_points = ExtraPoints.objects.filter(sister=sister, semester=semester)
+  for extra in extra_points:
+    earned_points += extra.points
+
   if total_points !=0:
     return float(earned_points)/float(total_points)
   else:
