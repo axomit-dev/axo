@@ -49,6 +49,7 @@ url(r'^attendance/', include('attendance.urls')),
 url(r'^', include('general.urls')),
 url(r'^elections/', include('elections.urls')),
 
+
 # Flatpages
 url(r'^house/$', flatpage_views.flatpage, {'url': '/house/'}, name='house'),
 url(r'^resources/$', flatpage_views.flatpage, {'url': '/resources/'}, name='resources'),
