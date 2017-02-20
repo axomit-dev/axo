@@ -5,6 +5,7 @@ from django.utils.encoding import python_2_unicode_compatible
 from django.contrib.auth.models import User
 from general.models import Sister
 from django.utils.timezone import localtime
+from django.forms import ModelForm
 
 
 @python_2_unicode_compatible
@@ -75,3 +76,18 @@ class Excuse(models.Model):
   # on this event, meaning they get 100% of the points
   # and do not need to attend.
   is_freebie = models.BooleanField(default=False)
+
+class ExtraPoints(models.Model):
+  # ExtraPoints represents giving a sister extra points for a certain semester.
+
+  sister = models.ForeignKey(Sister)
+  points = models.IntegerField()
+  semester = models.ForeignKey(Semester)
+  # Reason for giving someone extra points
+  reason = models.CharField(max_length=1000)
+
+# An easy way to generate a form to give extra points.
+class ExtraPointsForm(ModelForm):
+  class Meta:
+    model = ExtraPoints
+    fields = ['semester', 'sister', 'points', 'reason']

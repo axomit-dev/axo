@@ -2,6 +2,16 @@
 
 {% block content %}
 
-<p> placeholder for extra points page. </p>
+<p> Give sisters extra points here! </p>
+
+<form method="post" action="{% url 'attendance:extra_points' %}">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <input class='gen-btn' type="submit" value="Submit"/>
+</form>
+
+{% if sister_name %}
+  <p> Great! You've successfully given {{ sister_name }} extra points. </p>
+{% endif %}
 
 {% endblock %}

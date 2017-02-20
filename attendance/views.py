@@ -2,13 +2,16 @@ from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required, user_passes_test
+from django.contrib import messages
+from django.contrib.messages import get_messages
 from django.utils import timezone
 from django.core.mail import send_mail
 from django.conf import settings
 from general.views import get_sister
 from django.utils.datastructures import MultiValueDictKeyError
+from django.forms import modelformset_factory
 
-from .models import Event, User, Excuse, Semester
+from .models import Event, User, Excuse, Semester, ExtraPoints, ExtraPointsForm
 from general.models import Sister
 
 #####################
@@ -465,4 +468,36 @@ def excuse_deny(request, excuse_id):
 
 @user_passes_test(lambda u: u.is_superuser)
 def extra_points(request):
-  return render(request, 'attendance/extra_points.html', {})
+  # Display form
+  if request.method == 'GET':
+    form = ExtraPointsForm()
+    context = {'form': form}
+
+    # If they already successfully submitted the form,
+    # display the name of the sister they submitted points for.
+    sister_name = request.session.get('sister_extra_points')
+    if sister_name:
+      context['sister_name'] = sister_name
+
+    # Delete session variable (if it exists) afterwards
+    try:
+      del request.session['sister_extra_points']
+    except KeyError:
+      pass
+
+    # Render page
+    return render(request, 'attendance/extra_points.html', context)
+  
+  # Handle form data
+  elif request.method == 'POST':
+    # Use automatically generated form from model
+    form = ExtraPointsForm(request.POST)
+    if form.is_valid():
+      # Save a new object from the form's data
+      new_extra_points = form.save()
+
+      # Set session variable so sister's name can be displayed.
+      sister = Sister.objects.get(id=request.POST['sister'])
+      request.session['sister_extra_points'] = sister.user.first_name
+
+    return HttpResponseRedirect(reverse('attendance:extra_points'))
