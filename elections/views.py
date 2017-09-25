@@ -181,7 +181,11 @@ def slating_submission(request):
     return render(request, 'elections/loi_submission.html', {'slating_closed': True})
 
 
-  return render(request, 'elections/slating_submission.html', {})
+  # TODO: Add logic for handling POST
+
+  lois = Loi.objects.all()
+
+  return render(request, 'elections/slating_submission.html', {'lois': lois})
 
 # TODO: Make this superuser only
 @login_required

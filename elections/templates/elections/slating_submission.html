@@ -11,6 +11,19 @@
    <p> Sorry, slating submission is closed now! </p>
  {% else %}
    <p> woo slating is open. </p>
+
+   <table>
+   {% for loi in lois %}
+	  <tr>
+	    <td> {{ loi.office.title }} </td>
+	    <td> {{ loi.names_of_sisters }} </td>
+	    <td> {{ loi.loi_text }} </td>
+	  </tr>
+
+   {% endfor %}
+   </table>
+
  {% endif %}
+
 
 {% endblock content %}
