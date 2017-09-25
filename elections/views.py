@@ -157,19 +157,26 @@ def loi_submission(request):
 
   return render(request, 'elections/loi_submission.html', context)
 
+@login_required
 def loi_results(request):
   results = Loi.objects.all()
   return render(request, 'elections/loi_results.html', {'results': results})
 
+@login_required
 def slating_submission(request):
   return render(request, 'elections/slating_submission.html', {})
 
+# TODO: Make this superuser only
+@login_required
 def slating_results(request):
   return render(request, 'elections/slating_results.html', {})
 
+@login_required
 def voting_submission(request):
   return render(request, 'elections/voting_submission.html', {})
 
+# TODO: Make this superuser only
+@login_required
 def voting_results(request):
   return render(request, 'elections/voting_results.html', {})
 
