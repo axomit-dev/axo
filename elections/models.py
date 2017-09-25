@@ -67,9 +67,12 @@ class Loi(models.Model):
   sisters = models.ManyToManyField(Sister)
   loi_text = models.TextField()
 
-  def __str__(self):
-    # TODO
-    return 'LOI text:' + self.loi_text
+  # Used to display the sisters for the LOI in the admin view
+  def names_of_sisters(self):
+    total = ''
+    for sister in self.sisters.all():
+      total = total + ', ' + sister.__str__()
+    return total
 
 # Create a form that mirrors the LOI model
 # so it can be used in the view really easily
