@@ -94,3 +94,22 @@ class LoiForm(ModelForm):
     model = Loi
     fields = ['office', 'sisters', 'loi_text']
 
+# A sister's slate for a specific position.
+class Slate(models.Model):
+  # The sister casting this slate
+  sister = models.ForeignKey(Sister)
+
+  # Office that the slate is for
+  office = models.ForeignKey(Office)
+
+  # First choice for candidate
+  vote_1 = models.ForeignKey(Loi, related_name='vote_1')
+
+  # Second choice for candidate
+  vote_2 = models.ForeignKey(Loi, related_name='vote_2')
+
+  class Meta:
+    # There should only be one entry for a sister-office pair
+    # (you can only slate for a position once)
+    unique_together = ('sister', 'office')
+    # TODO: Assert that vote_1 and vote_2 are for self.office
