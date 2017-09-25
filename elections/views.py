@@ -178,7 +178,7 @@ def slating_submission(request):
   except:
     slating_open = False
   if not slating_open:
-    return render(request, 'elections/loi_submission.html', {'slating_closed': True})
+    return render(request, 'elections/slating_submission.html', {'slating_closed': True})
 
 
   # TODO: Add logic for handling POST
