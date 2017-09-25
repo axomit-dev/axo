@@ -151,7 +151,8 @@ def loi_submission(request):
   return render(request, 'elections/loi_submission.html', context)
 
 def loi_results(request):
-  return render(request, 'elections/loi_results.html', {})
+  results = Loi.objects.all()
+  return render(request, 'elections/loi_results.html', {'results': results})
 
 def slating_submission(request):
   return render(request, 'elections/slating_submission.html', {})

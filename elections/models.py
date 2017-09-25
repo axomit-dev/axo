@@ -74,6 +74,10 @@ class Loi(models.Model):
       total = total + ', ' + sister.__str__()
     return total
 
+  class Meta:
+    # Order by office
+    ordering = ['office']
+
 # Create a form that mirrors the LOI model
 # so it can be used in the view really easily
 class LoiForm(ModelForm):
