@@ -3,7 +3,8 @@ from django.conf import settings
 from general.views import get_sister
 from django.contrib.auth.decorators import login_required, user_passes_test
 
-from .models import Office, OfficeInterest
+from .models import Office, OfficeInterest, Loi, LoiForm
+from general.models import Sister
 
 ##########################
 ##### HELPER METHODS #####
@@ -33,7 +34,7 @@ def index(request):
 
 @login_required
 def ois_submission(request):
-  # TODO: Display whether they've submitted it already?
+  # TODO: Display whether they've submitted it already
 
 
   # Determine whether OIS is open
@@ -56,6 +57,8 @@ def ois_submission(request):
   for office in offices:
     office.is_eligible = is_eligible(sister, office)
     office.save()
+
+  # Set what should be displayed on the page  
   context = {
     'offices': offices,
     'exec_election': exec_election,
@@ -98,8 +101,52 @@ def ois_results(request):
   results = OfficeInterest.objects.all()
   return render(request, 'elections/ois_results.html', {'results': results})
 
+@login_required
 def loi_submission(request):
-  return render(request, 'elections/loi_submission.html', {})
+  # TODO: Show if they've already submitted an LOI before
+
+  # Determine whether LOI submission is open
+  try:
+    loi_open = settings.OIS_OPEN
+  except:
+    loi_open = False
+  if not loi_open:
+    return render(request, 'elections/loi_submission.html', {'loi_closed': True})
+
+  # Determine whether it's an exec or non-exec election
+  try:
+    exec_election = settings.EXEC_ELECTION
+  except:
+    exec_election = False
+
+  context = {}
+
+  # If they pressed submit, process and store that data
+  if request.method == 'POST':
+    print("in if")
+    form = LoiForm(exec_election, request.POST)
+    if form.is_valid():
+      # Delete any pre-existing LOIs
+      try:
+        old_loi = Loi.objects.get(sisters=form.cleaned_data['sisters'], office=form.cleaned_data['office'])
+        old_loi.delete()
+      except:
+        pass
+
+      form.save()
+      context['success'] = True
+
+  else:
+    print("in else")
+    # Otherwise, just show them the form
+    form = LoiForm(exec_election)
+
+  print("form:")
+  print(LoiForm(exec_election))
+
+  context['form'] = form
+
+  return render(request, 'elections/loi_submission.html', context)
 
 def loi_results(request):
   return render(request, 'elections/loi_results.html', {})

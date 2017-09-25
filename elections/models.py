@@ -3,6 +3,7 @@ from django.utils.encoding import python_2_unicode_compatible
 
 from django.db import models
 from general.models import Sister
+from django.forms import ModelForm
 
 @python_2_unicode_compatible
 # An elected position in the sorority.
@@ -59,3 +60,30 @@ class OfficeInterest(models.Model):
     unique_together = ('sister', 'office')
     # Order by office then by interest, Yes first and No last
     ordering = ['office', 'interest']
+
+class Loi(models.Model):
+  office = models.ForeignKey(Office)
+  # LOIs for a committee position can have more than 1 sisters
+  sisters = models.ManyToManyField(Sister)
+  loi_text = models.TextField()
+
+  def __str__(self):
+    # TODO
+    return 'LOI text:' + self.loi_text
+
+# Create a form that mirrors the LOI model
+# so it can be used in the view really easily
+class LoiForm(ModelForm):
+  def __init__(self, exec_election, *args, **kwargs):
+    super(LoiForm, self).__init__(*args, **kwargs);
+
+    # Only allow positions for the correct type of election
+    self.fields['office'].queryset = Office.objects.filter(is_exec=exec_election)
+
+    # Only allow active sisters / new members to submit LOIs
+    self.fields['sisters'].queryset = Sister.objects.filter(status__in=[Sister.NEW_MEMBER, Sister.ACTIVE])
+
+  class Meta:
+    model = Loi
+    fields = ['office', 'sisters', 'loi_text']
+
