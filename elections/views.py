@@ -35,6 +35,8 @@ def is_eligible(sister, office):
 
 # TODO: Bold which menu items are 'active'
 
+# TODO: Add description of what 'LOIs', 'Slating', voting are
+
 @login_required
 def index(request):
   return render(request, 'elections/index.html', {})
@@ -164,6 +166,21 @@ def loi_results(request):
 
 @login_required
 def slating_submission(request):
+  # Determine whether slating submission is open
+
+  # TODO: Abstract away the 'figuring out if something is open' stuff
+  # ^ will also need for the 'viewing results' part
+  # Could possibly let VP CRS say when she wants everything to open + close
+  # and automatically change things.....?
+
+  try:
+    slating_open = settings.SLATING_OPEN
+  except:
+    slating_open = False
+  if not slating_open:
+    return render(request, 'elections/loi_submission.html', {'slating_closed': True})
+
+
   return render(request, 'elections/slating_submission.html', {})
 
 # TODO: Make this superuser only

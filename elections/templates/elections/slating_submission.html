@@ -7,4 +7,10 @@
 <p> Coming Soon... Elections Slating Submission
  </p>
 
+ {% if slating_closed %}
+   <p> Sorry, slating submission is closed now! </p>
+ {% else %}
+   <p> woo slating is open. </p>
+ {% endif %}
+
 {% endblock content %}

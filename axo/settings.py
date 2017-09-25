@@ -150,6 +150,7 @@ DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 EXEC_ELECTION = True
 OIS_OPEN = True
 LOI_OPEN = True
+SLATING_OPEN = True
 
 
 # SENIOR_CLASS_YEAR is equal to the class year of the current seniors.
