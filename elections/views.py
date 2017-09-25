@@ -104,6 +104,8 @@ def ois_results(request):
 @login_required
 def loi_submission(request):
   # TODO: Show if they've already submitted an LOI before
+  # TODO: Restrict selecting multiple sisters if it's a 1-person position?
+  # TODO: Require that they have to select themselves and/or auto-select themselves?
 
   # Determine whether LOI submission is open
   try:
