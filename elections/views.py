@@ -28,6 +28,13 @@ def is_eligible(sister, office):
 
     return sister.class_year == class_year
 
+
+#################
+##### VIEWS #####
+#################
+
+# TODO: Bold which menu items are 'active'
+
 @login_required
 def index(request):
   return render(request, 'elections/index.html', {})
