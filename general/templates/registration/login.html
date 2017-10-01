@@ -15,6 +15,8 @@
     {% endif %}
 {% endif %}
 
+<p> Use your kerberos (no @mit.edu) as your username. </p>
+
 <form id="login-input" method="post" action="{% url 'login' %}">
 {% csrf_token %}
 {% load static %}
