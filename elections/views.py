@@ -37,6 +37,29 @@ def get_election_settings():
 def is_exec_election():
   return get_election_settings().exec_election
 
+# Returns a list of positions that the sister has not submitted
+# an OIS for.
+# all_offices: Is a list of all the offices that a sister needs to
+# submit an OIS for, and is augmented with the 'is_eligible' field
+# which specifies whether the sister is eligible to run for that
+# position.
+def get_ois_empty_offices(sister, all_offices):
+  empty_offices = []
+  for office in all_offices:
+    # If they're not eligible for the office, move on
+    if not office.is_eligible:
+      continue
+
+    # See if they've already submitted for this position
+    try:
+      office_interest = OfficeInterest.objects.get(sister=sister, office=office)
+    except:
+      # If not, add it to the list
+      empty_offices.append(office)
+
+  return empty_offices
+
+
 #################
 ##### VIEWS #####
 #################
@@ -56,21 +79,30 @@ def ois_submission(request):
   if not get_election_settings().ois_open:
     return render(request, 'elections/ois_submission.html', {'ois_closed': True})
 
+
+  # Used to determine if a sister has started her OIS or not
+  num_eligible_offices = 0;
+
   # Determine whether sister is eligible to run for each office
   offices = Office.objects.filter(is_exec=is_exec_election())
   sister = get_sister(request)
   for office in offices:
     office.is_eligible = is_eligible(sister, office)
     office.save()
+    if is_eligible(sister, office):
+      num_eligible_offices += 1
 
   # Set what should be displayed on the page  
   context = {
     'offices': offices,
+    'num_eligible_offices': num_eligible_offices, 
     'exec_election': is_exec_election(),
+    'empty_offices': get_ois_empty_offices(sister, offices)
   }
 
   # If they pressed submit, store that data
   if request.method == 'POST':
+
     for office in offices:
       # If they're not eligible for the office, move on
       if not office.is_eligible:
@@ -89,13 +121,12 @@ def ois_submission(request):
         office_interest.interest = interest
         office_interest.save()
       except:
-        # Exception if they didn't select interest level
-        # for this office
-        context['error'] = True
-        return render(request, 'elections/ois_submission.html', context)
+        pass
 
     # If got through the whole for loop, they've submitted it
     context['submitted'] = True
+    # Reset what 'empty_offices' is because it's likely changed
+    context['empty_offices'] = get_ois_empty_offices(sister, offices)
     # TODO: return HttpResponseRedirect since we successfully dealt
     # with POST data.
 

@@ -19,25 +19,21 @@
 
     <p> Note that only the interest of sisters who are eligible to run for the given position are shown. </p>
 
-    <table>
-      <!-- TODO: Figure out correct CSS for columns. -->
-      <colgroup>
-        <col span="1" style="width: 33%;">
-        <col span="1" style="width: 33%;">
-        <col span="1" style="width: 33%;">
-      </colgroup>
+    <table class="event-table">
+      <!-- TODO: Change the class name so the same style
+        can be applied to all tables. -->
 
       <tbody>
         <tr>
-          <th style="text-align:center"> Position </th>
-          <th style="text-align:center"> Sister </th>
-          <th style="text-align:center"> Interested? </th>
+          <th> Position </th>
+          <th> Sister </th>
+          <th> Interested? </th>
         </tr>
         {% for result in results %}
         <tr>
-          <td> {{ result.office.title }} </td>
-          <td> {{ result.sister.user.username }} </td>
-          <td> {{ result.get_interest_display }} </td>
+          <td style="width: 300px"> {{ result.office.title }} </td>
+          <td style="width: 300px"> {{ result.sister }} </td>
+          <td style="width: 200px"> {{ result.get_interest_display }} </td>
         </tr>
         {% endfor %}
 

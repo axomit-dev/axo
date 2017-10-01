@@ -9,28 +9,37 @@
     margin: auto;
     margin-bottom: 50px;
     margin-top: 20px;'>
-  <h2 class='att-title first-title'> OIS Submission </h2>
+  {% if exec_election %}
+    <h2 class='att-title first-title'> OIS Submission: Exec </h2>
+  {% else %}
+    <h2 class='att-title first-title'> OIS Submission: Non-Exec </h2>
+  {% endif %}
 
   {% if ois_closed %}
-    <p> Sorry, OIS submission is closed now! </p>
-  {% elif submitted %}
-    <p> Thanks for submitting your OIS! </p>
+    <p> Sorry, OIS submission is closed now! </p>    
   {% else %}
-
-    {% if exec_election %}
-      <p> This is an executive board election. </p>
-    {% else %}
-      <p> This is a non-exec election. </p>
-    {% endif %}
-
-    <!-- If there's an error, display the error message also. -->
-    {% if error %}
-      <p> Make sure to select a choice for every position! </p>
-    {% endif %}
 
     <p> Instructions: Please indicate your interest level in each position below. Any new forms you submit will replace your old responses, even if you don't fill it out for every position. This form isn't at all binding. </p>
 
     <p> <strong> You're required to fill out the OIS for every position to participate in voting later! </strong> </p>
+
+    {% if submitted %}
+      <p> Thanks for submitting your OIS! </p>
+    {% endif %}
+
+    <!-- Tell the sister whether she's completed OIS or not. -->
+    {% if empty_offices|length == 0 %}
+      <p> Congrats! You've submitted an OIS for every position.
+      You can still change your OIS for any position by re-submitting. </p>
+    {% elif empty_offices|length == num_eligible_offices %}
+      <!-- The sister hasn't started her OIS yet, so don't display anything. -->
+      <p></p>
+    {% else %}
+      <p> You still haven't submitted an OIS for the following positions: </p>
+      {% for office in empty_offices %}
+        <p> &nbsp;&nbsp;•&nbsp; {{ office.title }} </p>
+      {% endfor %}
+    {% endif %}
 
     <br>
     <br>

@@ -84,7 +84,7 @@ class OfficeInterest(models.Model):
     # There should only be one entry for a sister-office pair
     unique_together = ('sister', 'office')
     # Order by office then by interest, Yes first and No last
-    ordering = ['office', 'interest']
+    ordering = ['office', 'interest', 'sister']
 
 class Loi(models.Model):
   office = models.ForeignKey(Office)
