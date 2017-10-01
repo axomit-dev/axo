@@ -231,6 +231,19 @@ table {
     background-color: #f5bbbb
 }
 
+/** Elections styles */
+/** TODO: Move to the elections-specific styles file */
+
+/* TODO: Make this actually work */
+#ois-submission-content {
+    background: rgba(255,255,255,0.3);
+    border-radius: 10px;
+    width: 800px;
+    margin: auto;
+    margin-bottom: 50px;
+    margin-top: 20px;
+}
+
 /***********************/
 /********* SHH *********/
 /***********************/

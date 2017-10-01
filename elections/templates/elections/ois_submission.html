@@ -2,52 +2,71 @@
 
 {% block content %}
 
-<h2 class='att-title first-title'> OIS Submission </h2>
+<div id='ois-submission-content' style='
+    background: rgba(255,255,255,0.3);
+    border-radius: 10px;
+    width: 800px;
+    margin: auto;
+    margin-bottom: 50px;
+    margin-top: 20px;'>
+  <h2 class='att-title first-title'> OIS Submission </h2>
 
-
-{% if ois_closed %}
-  <p> Sorry, OIS submission is closed now! </p>
-{% elif submitted %}
-  <p> Thanks for submitting your OIS! </p>
-{% else %}
-
-  {% if exec_election %}
-    <p> This is an executive board election. </p>
+  {% if ois_closed %}
+    <p> Sorry, OIS submission is closed now! </p>
+  {% elif submitted %}
+    <p> Thanks for submitting your OIS! </p>
   {% else %}
-    <p> This is a non-exec election. </p>
+
+    {% if exec_election %}
+      <p> This is an executive board election. </p>
+    {% else %}
+      <p> This is a non-exec election. </p>
+    {% endif %}
+
+    <!-- If there's an error, display the error message also. -->
+    {% if error %}
+      <p> Make sure to select a choice for every position! </p>
+    {% endif %}
+
+    <p> Instructions: Please indicate your interest level in each position below. Any new forms you submit will replace your old responses, even if you don't fill it out for every position. This form isn't at all binding. </p>
+
+    <p> <strong> You're required to fill out the OIS for every position to participate in voting later! </strong> </p>
+
+    <br>
+    <br>
+
+    <form action="{% url 'elections:ois_submission' %}" method="post">
+      {% csrf_token %}
+
+      {% for office in offices %}
+        <p><strong> {{ office.title }} </strong></p>
+        <p> {{ office.description }} </p>
+
+        {% if office.is_eligible %}
+          <input type="radio" name="{{ office.id }}" value="0"/>
+          <label>Yes</label>
+          <input type="radio" name="{{ office.id }}" value="1"/>
+          <label>Maybe</label>
+          <input type="radio" name="{{ office.id }}" value="2"/>
+          <label>No</label>
+        {% else %}
+        <p> Not eligible to run </p>
+        {% endif %}
+
+        <br>
+        <br>
+
+      {% endfor %}
+
+      <input type="submit" value="Submit" />
+
+      <br>
+      <br>
+
+    </form>
+
   {% endif %}
 
-  <!-- If there's an error, display the error message also. -->
-  {% if error %}
-    <p> Make sure to select a choice for every position! </p>
-  {% endif %}
-
-  <p> Instructions: Please indicate your interest level in each position below. Any new forms you submit will replace your old responses, even if you don't fill it out for every position. This form isn't at all binding and you're required to fill it out for every position to participate in voting later! </p>
-
-  <form action="{% url 'elections:ois_submission' %}" method="post">
-    {% csrf_token %}
-
-    {% for office in offices %}
-      <p> {{ office.title }} </p>
-      <p> {{ office.description }} </p>
-
-      {% if office.is_eligible %}
-        <input type="radio" name="{{ office.id }}" value="0"/>
-        <label>Yes</label>
-        <input type="radio" name="{{ office.id }}" value="1"/>
-        <label>Maybe</label>
-        <input type="radio" name="{{ office.id }}" value="2"/>
-        <label>No</label>
-      {% else %}
-      <p> Not eligible to run </p>
-      {% endif %}
-
-    {% endfor %}
-
-    <input type="submit" value="Submit" />
-
-  </form>
-
-{% endif %}
+</div>
 
 {% endblock content %}
