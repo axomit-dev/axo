@@ -146,19 +146,6 @@ EMAIL_HOST_USER = 'axo.mit.attendance@gmail.com' #my gmail username
 EMAIL_PORT = 587
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
-# Elections-related things
-EXEC_ELECTION = True
-OIS_OPEN = True
-LOI_OPEN = True
-SLATING_OPEN = True
-
-
-# SENIOR_CLASS_YEAR is equal to the class year of the current seniors.
-# It is used for determining who can vote for what positions
-# in elections-related items.
-# This must be changed each fall.
-SENIOR_CLASS_YEAR = 2018
-
 
 ## ATHENA-RELATED ITEMS
 ## Comment these out when doing local development,
