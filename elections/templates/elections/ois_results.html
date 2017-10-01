@@ -13,33 +13,39 @@
 
   <h2 class='att-title first-title'> OIS Results </h2>
 
-  <p> Note that only the interest of sisters who are eligible to run for the given position are shown. </p>
+  {% if ois_results_closed %}
+    <p> Sorry, you can't view the OIS results right now. </p>
+  {% else %}
 
-  <table>
-    <!-- TODO: Figure out correct CSS for columns. -->
-    <colgroup>
-      <col span="1" style="width: 33%;">
-      <col span="1" style="width: 33%;">
-      <col span="1" style="width: 33%;">
-    </colgroup>
+    <p> Note that only the interest of sisters who are eligible to run for the given position are shown. </p>
 
-    <tbody>
-      <tr>
-        <th style="text-align:center"> Position </th>
-        <th style="text-align:center"> Sister </th>
-        <th style="text-align:center"> Interested? </th>
-      </tr>
-      {% for result in results %}
-      <tr>
-        <td> {{ result.office.title }} </td>
-        <td> {{ result.sister.user.username }} </td>
-        <td> {{ result.get_interest_display }} </td>
-      </tr>
-      {% endfor %}
+    <table>
+      <!-- TODO: Figure out correct CSS for columns. -->
+      <colgroup>
+        <col span="1" style="width: 33%;">
+        <col span="1" style="width: 33%;">
+        <col span="1" style="width: 33%;">
+      </colgroup>
 
-    </tbody>
+      <tbody>
+        <tr>
+          <th style="text-align:center"> Position </th>
+          <th style="text-align:center"> Sister </th>
+          <th style="text-align:center"> Interested? </th>
+        </tr>
+        {% for result in results %}
+        <tr>
+          <td> {{ result.office.title }} </td>
+          <td> {{ result.sister.user.username }} </td>
+          <td> {{ result.get_interest_display }} </td>
+        </tr>
+        {% endfor %}
 
-  </table>
+      </tbody>
+
+    </table>
+
+  {% endif %}
 
 </div>
 

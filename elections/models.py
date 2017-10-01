@@ -12,9 +12,9 @@ class ElectionSettings(models.Model):
   # Whether the current election is for exec (true) or non-exec (false).
   exec_election = models.BooleanField(default=False)
   ois_open = models.BooleanField(default=False)
+  ois_results_open = models.BooleanField(default=False)
   loi_open = models.BooleanField(default=False)
   slating_open = models.BooleanField(default=False)
-
 
   # senior_class_year is equal to the class year of the current seniors.
   # It is used for determining who can vote for what positions

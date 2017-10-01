@@ -103,6 +103,9 @@ def ois_submission(request):
 
 @login_required
 def ois_results(request):
+  if not get_election_settings().ois_results_open:
+    return render(request, 'elections/ois_results.html', {'ois_results_closed': True})
+
   results = OfficeInterest.objects.all()
   return render(request, 'elections/ois_results.html', {'results': results})
 
