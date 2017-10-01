@@ -2,7 +2,28 @@
 
 {% block content %}
 
+<h2 class='att-title first-title'> Slating Submission </h2>
+
 <p> Coming Soon... Elections Slating Submission
  </p>
+
+ {% if slating_closed %}
+   <p> Sorry, slating submission is closed now! </p>
+ {% else %}
+   <p> woo slating is open. </p>
+
+   <table>
+   {% for loi in lois %}
+	  <tr>
+	    <td> {{ loi.office.title }} </td>
+	    <td> {{ loi.names_of_sisters }} </td>
+	    <td> {{ loi.loi_text }} </td>
+	  </tr>
+
+   {% endfor %}
+   </table>
+
+ {% endif %}
+
 
 {% endblock content %}

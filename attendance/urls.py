@@ -23,12 +23,14 @@ urlpatterns = [
   url(r'^events/(?P<event_id>[0-9]+)/checkin/sisters/(?P<sister_id>[0-9]+)$', views.checkin_sister, name='checkin_sister'),
   url(r'^events/(?P<event_id>[0-9]+)/uncheck/sisters/(?P<sister_id>[0-9]+)$', views.uncheck_sister, name='uncheck_sister'),
 
-
-  #Excuse-related views
+  # Excuse-related views
   url(r'^excuses/submit/(?P<event_id>[0-9]+)/$', views.excuse_submit, name='excuse_submit'),
   
   url(r'^excuses/pending/$', views.excuse_pending, name='excuse_pending'),
   url(r'^excuses/approve/(?P<excuse_id>[0-9]+)/$', views.excuse_approve, name='excuse_approve'),
   url(r'^excuses/deny/(?P<excuse_id>[0-9]+)/$', views.excuse_deny, name='excuse_deny'),
+
+  # Extra points
+  url(r'^extra/$', views.extra_points, name="extra_points"),
 
 ]

@@ -1,8 +1,34 @@
 from __future__ import unicode_literals
 from django.utils.encoding import python_2_unicode_compatible
+from django.core.exceptions import ValidationError
 
 from django.db import models
 from general.models import Sister
+from django.forms import ModelForm
+
+# Describes which part of the elections process is open.
+# There should be only one instance of election settings
+class ElectionSettings(models.Model):
+  # Whether the current election is for exec (true) or non-exec (false).
+  exec_election = models.BooleanField(default=False)
+  ois_open = models.BooleanField(default=False)
+  ois_results_open = models.BooleanField(default=False)
+  loi_open = models.BooleanField(default=False)
+  slating_open = models.BooleanField(default=False)
+
+  # senior_class_year is equal to the class year of the current seniors.
+  # It is used for determining who can vote for what positions
+  # in elections-related items.
+  # This must be changed each fall.
+  senior_class_year = models.IntegerField(default=2018)
+
+  # Override save to ensure that there's only one instance of ElectionSettings
+  # Reference: https://stackoverflow.com/questions/39412968/allow-only-one-instance-of-a-model-in-django
+  def save(self, *args, **kwargs):
+    if ElectionSettings.objects.exists() and not self.pk:
+      raise ValidationError('There is can be only one ElectionSettings instance')
+    return super(ElectionSettings, self).save(*args, **kwargs)
+
 
 @python_2_unicode_compatible
 # An elected position in the sorority.
@@ -58,4 +84,57 @@ class OfficeInterest(models.Model):
     # There should only be one entry for a sister-office pair
     unique_together = ('sister', 'office')
     # Order by office then by interest, Yes first and No last
-    ordering = ['office', 'interest']
+    ordering = ['office', 'interest', 'sister']
+
+class Loi(models.Model):
+  office = models.ForeignKey(Office)
+  # LOIs for a committee position can have more than 1 sisters
+  sisters = models.ManyToManyField(Sister)
+  loi_text = models.TextField()
+
+  # Used to display the sisters for the LOI in the admin view
+  def names_of_sisters(self):
+    total = ''
+    for sister in self.sisters.all():
+      total = total + ', ' + sister.__str__()
+    return total
+
+  class Meta:
+    # Order by office
+    ordering = ['office']
+
+# Create a form that mirrors the LOI model
+# so it can be used in the view really easily
+class LoiForm(ModelForm):
+  def __init__(self, exec_election, *args, **kwargs):
+    super(LoiForm, self).__init__(*args, **kwargs);
+
+    # Only allow positions for the correct type of election
+    self.fields['office'].queryset = Office.objects.filter(is_exec=exec_election)
+
+    # Only allow active sisters / new members to submit LOIs
+    self.fields['sisters'].queryset = Sister.objects.filter(status__in=[Sister.NEW_MEMBER, Sister.ACTIVE])
+
+  class Meta:
+    model = Loi
+    fields = ['office', 'sisters', 'loi_text']
+
+# A sister's slate for a specific position.
+class Slate(models.Model):
+  # The sister casting this slate
+  sister = models.ForeignKey(Sister)
+
+  # Office that the slate is for
+  office = models.ForeignKey(Office)
+
+  # First choice for candidate
+  vote_1 = models.ForeignKey(Loi, related_name='vote_1')
+
+  # Second choice for candidate
+  vote_2 = models.ForeignKey(Loi, related_name='vote_2')
+
+  class Meta:
+    # There should only be one entry for a sister-office pair
+    # (you can only slate for a position once)
+    unique_together = ('sister', 'office')
+    # TODO: Assert that vote_1 and vote_2 are for self.office

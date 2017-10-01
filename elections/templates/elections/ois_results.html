@@ -2,25 +2,47 @@
 
 {% block content %}
 
-<h3> OIS Results </h3>
+<!-- TODO: Use a styles file to add these styles -->
+<div id='ois-submission-content' style='
+    background: rgba(255,255,255,0.3);
+    border-radius: 10px;
+    width: 800px;
+    margin: auto;
+    margin-bottom: 50px;
+    margin-top: 20px;'>
 
-<p> Note that only the interest of sisters who are eligible to run for the given position are shown. </p>
+  <h2 class='att-title first-title'> OIS Results </h2>
 
-<table>
-  <tr>
-    <th> Position </th>
-    <th> Sister </th>
-    <th> Interested? </th>
-  </tr>
-  {% for result in results %}
-  <tr>
-    <td> {{ result.office.title }} </td>
-    <td> {{ result.sister.user.username }} </td>
-    <td> {{ result.get_interest_display }} </td>
-  </tr>
-  {% endfor %}
+  {% if ois_results_closed %}
+    <p> Sorry, you can't view the OIS results right now. </p>
+  {% else %}
 
-</table>
+    <p> Note that only the interest of sisters who are eligible to run for the given position are shown. </p>
 
+    <table class="event-table">
+      <!-- TODO: Change the class name so the same style
+        can be applied to all tables. -->
+
+      <tbody>
+        <tr>
+          <th> Position </th>
+          <th> Sister </th>
+          <th> Interested? </th>
+        </tr>
+        {% for result in results %}
+        <tr>
+          <td style="width: 300px"> {{ result.office.title }} </td>
+          <td style="width: 300px"> {{ result.sister }} </td>
+          <td style="width: 200px"> {{ result.get_interest_display }} </td>
+        </tr>
+        {% endfor %}
+
+      </tbody>
+
+    </table>
+
+  {% endif %}
+
+</div>
 
 {% endblock content %}

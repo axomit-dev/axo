@@ -1,7 +1,24 @@
 {% extends "general/base.html" %}
 
 {% block content %}
+ 
+<h2 class='att-title first-title'> LOI Results </h2>
 
-<p> Coming Soon... Elections LOI Results </p>
+<!-- TODO: Give min widths to office + sisters columns -->
 
+<table>
+  <tr>
+    <th> Office </th>
+    <th> Sister(s) </th>
+    <th> LOI </th>
+  </tr>
+  {% for result in results %}
+  <tr>
+    <td> {{ result.office.title }} </td>
+    <td> {{ result.names_of_sisters }} </td>
+    <td> {{ result.loi_text }} </td>
+  </tr>
+  {% endfor %}
+
+</table>
 {% endblock content %}

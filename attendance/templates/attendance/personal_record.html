@@ -46,7 +46,11 @@
 
     {% endfor %}
   </table>
-    {% include 'attendance/past_event_table.html' %}
+  
+  {% include 'attendance/past_event_table.html' %}
+
+  {% include 'attendance/extra_points_table.html' %}
+
 
 </div>
   {% endblock content %}

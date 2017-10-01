@@ -1,0 +1,17 @@
+<h2 class='att-title'> Extra Points </h2>
+<br>
+<br>
+<table class='event-table' style='margin-top: -20px;'>
+  <tr>
+    <td> <b> Reason </b> </td>
+    <td> <b> Points </b> </td>
+  </tr>
+  {% for extra in extra_points %}
+    <tr>
+      <td> {{ extra.reason }} </td>
+      <td> {{ extra.points }} </td>
+    </tr>
+  {% endfor %}
+</table>
+
+<br> 

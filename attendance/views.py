@@ -2,13 +2,16 @@ from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required, user_passes_test
+from django.contrib import messages
+from django.contrib.messages import get_messages
 from django.utils import timezone
 from django.core.mail import send_mail
 from django.conf import settings
 from general.views import get_sister
 from django.utils.datastructures import MultiValueDictKeyError
+from django.forms import modelformset_factory
 
-from .models import Event, User, Excuse, Semester
+from .models import Event, User, Excuse, Semester, ExtraPoints, ExtraPointsForm
 from general.models import Sister
 
 #####################
@@ -76,6 +79,11 @@ def get_sister_record(sister, semester_id):
     else:
       future_events_and_excuses.append(excuse)
 
+  # Add in any extra points
+  extra_points = ExtraPoints.objects.filter(sister=sister, semester=semester)
+  for extra in extra_points:
+    overall_earned_points += extra.points
+
   semesters = Semester.objects.all()
   context = {
     'sister': sister,
@@ -86,6 +94,7 @@ def get_sister_record(sister, semester_id):
     'percentage': format_percentage(calculate_percentage(sister, semester_id)),
     'overall_total_points': overall_total_points,
     'overall_earned_points': overall_earned_points,
+    'extra_points': extra_points,
   }
   return context
 
@@ -114,6 +123,13 @@ def calculate_percentage(sister,semester_id):
         earned_points+= value_of_excused_absence*event.points
     elif sister in event.sisters_attended.all() and sister not in event.sisters_required.all():
       earned_points+=event.points
+
+
+  # Add in any extra points
+  extra_points = ExtraPoints.objects.filter(sister=sister, semester=semester)
+  for extra in extra_points:
+    earned_points += extra.points
+
   if total_points !=0:
     return float(earned_points)/float(total_points)
   else:
@@ -458,3 +474,43 @@ def excuse_deny(request, excuse_id):
 
   return HttpResponseRedirect(
     reverse('attendance:excuse_pending'))
+
+######################################
+##### EXTRA POINTS-RELATED VIEWS #####
+######################################
+
+@user_passes_test(lambda u: u.is_superuser)
+def extra_points(request):
+  # Display form
+  if request.method == 'GET':
+    form = ExtraPointsForm()
+    context = {'form': form}
+
+    # If they already successfully submitted the form,
+    # display the name of the sister they submitted points for.
+    sister_name = request.session.get('sister_extra_points')
+    if sister_name:
+      context['sister_name'] = sister_name
+
+    # Delete session variable (if it exists) afterwards
+    try:
+      del request.session['sister_extra_points']
+    except KeyError:
+      pass
+
+    # Render page
+    return render(request, 'attendance/extra_points.html', context)
+  
+  # Handle form data
+  elif request.method == 'POST':
+    # Use automatically generated form from model
+    form = ExtraPointsForm(request.POST)
+    if form.is_valid():
+      # Save a new object from the form's data
+      new_extra_points = form.save()
+
+      # Set session variable so sister's name can be displayed.
+      sister = Sister.objects.get(id=request.POST['sister'])
+      request.session['sister_extra_points'] = sister.user.first_name
+
+    return HttpResponseRedirect(reverse('attendance:extra_points'))

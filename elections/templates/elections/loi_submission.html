@@ -2,6 +2,38 @@
 
 {% block content %}
 
-<p> Coming Soon... Elections LOI Submission </p>
+  <h2 class='att-title first-title'> LOI Submission </h2>
+
+	{% if loi_closed %}
+	  <p> Sorry, LOI submission is closed now. </p>
+	{% elif success %}
+	  <p> Your LOI was submitted successfully! Refresh this page if you want to submit another LOI. </p>
+	{% else %}
+
+	  <form method="post" action="">
+	  	{% csrf_token %}
+
+        {{ form.office.label_tag }}
+	    {{ form.office }}
+
+	    <p></p><br>
+
+        {{ form.sisters.label_tag }}
+	    {{ form.sisters }}
+
+	    <p> Hold down 'Ctrl' or 'Command' to select multiple sisters. </p>
+
+	    <br>
+
+        {{ form.loi_text.label_tag }}
+	    {{ form.loi_text }}
+
+	  	<input type="submit" value="Submit LOI" />
+	  </form>
+
+	  <p> Note: An LOI submitted for a given office will replace any previously submitted LOIs.</p>
+
+	{% endif %}  
+
 
 {% endblock content %}
