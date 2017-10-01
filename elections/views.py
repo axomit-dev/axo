@@ -3,7 +3,7 @@ from django.conf import settings
 from general.views import get_sister
 from django.contrib.auth.decorators import login_required, user_passes_test
 
-from .models import Office, OfficeInterest, Loi, LoiForm
+from .models import ElectionSettings, Office, OfficeInterest, Loi, LoiForm
 from general.models import Sister
 
 ##########################
@@ -18,16 +18,24 @@ def is_eligible(sister, office):
   else:
     # TODO: Better way to do this?
     if office.eligible_class == Office.FRESHMAN:
-      class_year = settings.SENIOR_CLASS_YEAR + 3
+      class_year = get_election_settings().senior_class_year + 3
     elif office.eligible_class == Office.SOPHOMORE:
-      class_year = settings.SENIOR_CLASS_YEAR + 2
+      class_year = get_election_settings().senior_class_year + 2
     elif office.eligible_class == Office.JUNIOR:
-      class_year = settings.SENIOR_CLASS_YEAR + 1
+      class_year = get_election_settings().senior_class_year + 1
     else: # office.eligible_class == Office.SENIOR:
-      class_year = settings.SENIOR_CLASS_YEAR
+      class_year = get_election_settings().senior_class_year
 
     return sister.class_year == class_year
 
+# Returns the current election settings.
+def get_election_settings():
+  # There should always be exactly one ElectionSettings instance.
+  return ElectionSettings.objects.all().first()
+
+# Returns true if it's an exec election and false otherwise
+def is_exec_election():
+  return get_election_settings().exec_election
 
 #################
 ##### VIEWS #####
@@ -45,23 +53,11 @@ def index(request):
 def ois_submission(request):
   # TODO: Display whether they've submitted it already
 
-
-  # Determine whether OIS is open
-  try:
-    ois_open = settings.OIS_OPEN
-  except:
-    ois_open = False
-  if not ois_open:
+  if not get_election_settings().ois_open:
     return render(request, 'elections/ois_submission.html', {'ois_closed': True})
 
-  # Determine whether it's an exec or non-exec election
-  try:
-    exec_election = settings.EXEC_ELECTION
-  except:
-    exec_election = False
-
   # Determine whether sister is eligible to run for each office
-  offices = Office.objects.filter(is_exec=exec_election)
+  offices = Office.objects.filter(is_exec=is_exec_election())
   sister = get_sister(request)
   for office in offices:
     office.is_eligible = is_eligible(sister, office)
@@ -70,7 +66,7 @@ def ois_submission(request):
   # Set what should be displayed on the page  
   context = {
     'offices': offices,
-    'exec_election': exec_election,
+    'exec_election': is_exec_election(),
   }
 
   # If they pressed submit, store that data
@@ -116,26 +112,15 @@ def loi_submission(request):
   # TODO: Restrict selecting multiple sisters if it's a 1-person position?
   # TODO: Require that they have to select themselves and/or auto-select themselves?
 
-  # Determine whether LOI submission is open
-  try:
-    loi_open = settings.OIS_OPEN
-  except:
-    loi_open = False
-  if not loi_open:
+  if not get_election_settings().loi_open:
     return render(request, 'elections/loi_submission.html', {'loi_closed': True})
-
-  # Determine whether it's an exec or non-exec election
-  try:
-    exec_election = settings.EXEC_ELECTION
-  except:
-    exec_election = False
 
   context = {}
 
   # If they pressed submit, process and store that data
   if request.method == 'POST':
     print("in if")
-    form = LoiForm(exec_election, request.POST)
+    form = LoiForm(is_exec_election(), request.POST)
     if form.is_valid():
       # Delete any pre-existing LOIs
       try:
@@ -150,10 +135,10 @@ def loi_submission(request):
   else:
     print("in else")
     # Otherwise, just show them the form
-    form = LoiForm(exec_election)
+    form = LoiForm(is_exec_election())
 
   print("form:")
-  print(LoiForm(exec_election))
+  print(LoiForm(is_exec_election()))
 
   context['form'] = form
 
@@ -173,11 +158,8 @@ def slating_submission(request):
   # Could possibly let VP CRS say when she wants everything to open + close
   # and automatically change things.....?
 
-  try:
-    slating_open = settings.SLATING_OPEN
-  except:
-    slating_open = False
-  if not slating_open:
+
+  if not get_election_settings().slating_open:
     return render(request, 'elections/slating_submission.html', {'slating_closed': True})
 
 

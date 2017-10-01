@@ -1,9 +1,34 @@
 from __future__ import unicode_literals
 from django.utils.encoding import python_2_unicode_compatible
+from django.core.exceptions import ValidationError
 
 from django.db import models
 from general.models import Sister
 from django.forms import ModelForm
+
+# Describes which part of the elections process is open.
+# There should be only one instance of election settings
+class ElectionSettings(models.Model):
+  # Whether the current election is for exec (true) or non-exec (false).
+  exec_election = models.BooleanField(default=False)
+  ois_open = models.BooleanField(default=False)
+  loi_open = models.BooleanField(default=False)
+  slating_open = models.BooleanField(default=False)
+
+
+  # senior_class_year is equal to the class year of the current seniors.
+  # It is used for determining who can vote for what positions
+  # in elections-related items.
+  # This must be changed each fall.
+  senior_class_year = models.IntegerField(default=2018)
+
+  # Override save to ensure that there's only one instance of ElectionSettings
+  # Reference: https://stackoverflow.com/questions/39412968/allow-only-one-instance-of-a-model-in-django
+  def save(self, *args, **kwargs):
+    if ElectionSettings.objects.exists() and not self.pk:
+      raise ValidationError('There is can be only one ElectionSettings instance')
+    return super(ElectionSettings, self).save(*args, **kwargs)
+
 
 @python_2_unicode_compatible
 # An elected position in the sorority.
