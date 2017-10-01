@@ -2,26 +2,45 @@
 
 {% block content %}
 
+<!-- TODO: Use a styles file to add these styles -->
+<div id='ois-submission-content' style='
+    background: rgba(255,255,255,0.3);
+    border-radius: 10px;
+    width: 800px;
+    margin: auto;
+    margin-bottom: 50px;
+    margin-top: 20px;'>
+
   <h2 class='att-title first-title'> OIS Results </h2>
 
+  <p> Note that only the interest of sisters who are eligible to run for the given position are shown. </p>
 
-<p> Note that only the interest of sisters who are eligible to run for the given position are shown. </p>
+  <table>
+    <!-- TODO: Figure out correct CSS for columns. -->
+    <colgroup>
+      <col span="1" style="width: 33%;">
+      <col span="1" style="width: 33%;">
+      <col span="1" style="width: 33%;">
+    </colgroup>
 
-<table>
-  <tr>
-    <th> Position </th>
-    <th> Sister </th>
-    <th> Interested? </th>
-  </tr>
-  {% for result in results %}
-  <tr>
-    <td> {{ result.office.title }} </td>
-    <td> {{ result.sister.user.username }} </td>
-    <td> {{ result.get_interest_display }} </td>
-  </tr>
-  {% endfor %}
+    <tbody>
+      <tr>
+        <th style="text-align:center"> Position </th>
+        <th style="text-align:center"> Sister </th>
+        <th style="text-align:center"> Interested? </th>
+      </tr>
+      {% for result in results %}
+      <tr>
+        <td> {{ result.office.title }} </td>
+        <td> {{ result.sister.user.username }} </td>
+        <td> {{ result.get_interest_display }} </td>
+      </tr>
+      {% endfor %}
 
-</table>
+    </tbody>
 
+  </table>
+
+</div>
 
 {% endblock content %}
