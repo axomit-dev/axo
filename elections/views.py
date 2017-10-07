@@ -180,6 +180,9 @@ def loi_submission(request):
 
 @login_required
 def loi_results(request):
+  if not get_election_settings().loi_results_open:
+    return render(request, 'elections/loi_results.html', {'loi_results_closed': True})
+
   results = Loi.objects.all()
   return render(request, 'elections/loi_results.html', {'results': results})
 

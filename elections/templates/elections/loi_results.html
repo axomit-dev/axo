@@ -2,23 +2,41 @@
 
 {% block content %}
  
-<h2 class='att-title first-title'> LOI Results </h2>
+<!-- TODO: Use a styles file to add these styles -->
+<div id='loi-submission-content' style='
+    background: rgba(255,255,255,0.3);
+    border-radius: 10px;
+    width: 800px;
+    margin: auto;
+    margin-bottom: 50px;
+    margin-top: 20px;'>
 
-<!-- TODO: Give min widths to office + sisters columns -->
+  <h2 class='att-title first-title'> LOI Results </h2>
 
-<table>
-  <tr>
-    <th> Office </th>
-    <th> Sister(s) </th>
-    <th> LOI </th>
-  </tr>
-  {% for result in results %}
-  <tr>
-    <td> {{ result.office.title }} </td>
-    <td> {{ result.names_of_sisters }} </td>
-    <td> {{ result.loi_text }} </td>
-  </tr>
-  {% endfor %}
+  <!-- TODO: Give min widths to office + sisters columns -->
 
-</table>
+    {% if loi_results_closed %}
+      <p> Sorry, you can't view the LOIs submitted by sisters right now. </p>
+    {% else %}
+
+      <table class="event-table">
+        <tr>
+          <th> Office </th>
+          <th> Sister(s) </th>
+          <th> LOI </th>
+        </tr>
+        {% for result in results %}
+        <tr>
+          <td> {{ result.office.title }} </td>
+          <td> {{ result.names_of_sisters }} </td>
+          <td> {{ result.loi_text }} </td>
+        </tr>
+        {% endfor %}
+
+      </table>
+
+    {% endif %}
+
+</div>
+
 {% endblock content %}

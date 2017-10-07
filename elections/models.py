@@ -14,6 +14,7 @@ class ElectionSettings(models.Model):
   ois_open = models.BooleanField(default=False)
   ois_results_open = models.BooleanField(default=False)
   loi_open = models.BooleanField(default=False)
+  loi_results_open = models.BooleanField(default=False)
   slating_open = models.BooleanField(default=False)
 
   # senior_class_year is equal to the class year of the current seniors.
