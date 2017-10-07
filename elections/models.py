@@ -1,6 +1,7 @@
 from __future__ import unicode_literals
 from django.utils.encoding import python_2_unicode_compatible
 from django.core.exceptions import ValidationError
+from django.utils.translation import ugettext as _
 
 from django.db import models
 from general.models import Sister
@@ -14,6 +15,7 @@ class ElectionSettings(models.Model):
   ois_open = models.BooleanField(default=False)
   ois_results_open = models.BooleanField(default=False)
   loi_open = models.BooleanField(default=False)
+  loi_results_open = models.BooleanField(default=False)
   slating_open = models.BooleanField(default=False)
 
   # senior_class_year is equal to the class year of the current seniors.
@@ -119,6 +121,40 @@ class LoiForm(ModelForm):
     model = Loi
     fields = ['office', 'sisters', 'loi_text']
 
+  def clean(self):
+    cleaned_data = super(LoiForm, self).clean()
+    office = cleaned_data.get('office')
+    sisters = cleaned_data.get('sisters')
+
+    # Non-committee offices cannot have > 1 sister on an LOI
+    if (not office.is_committee and sisters.count() > 1):    
+      self.add_error(
+        'sisters',
+        ValidationError(_('Only one sister can run for this office.'))
+      )
+
+    # Offices for specific classes should only have LOIs with
+    # sisters that are in that class
+    if (not office.eligible_class == Office.ALL_CLASSES):
+      for sister in sisters:
+        if not is_eligible(sister, office):
+          self.add_error(
+            'sisters',
+            ValidationError(_('Only %(eligible_class)ss can run for %(office_title)s. ' + 
+              'However, %(sister)s is a %(sister_year)s.'),
+              params={'eligible_class': office.get_eligible_class_display(),
+                      'office_title': office.title,
+                      'sister': sister,
+                      'sister_year': sister.class_year}
+                      # TODO: Convert class year into a word? (e.g. 2018 -> senior)
+            )
+          )
+
+
+  # TODO: Make sure there aren't two LOIs like "caitlin for soph semi"
+  #   and "caitlin and rebecca for soph semi"
+  # TODO: Make sure that any LOI you submit has to include yourself
+
 # A sister's slate for a specific position.
 class Slate(models.Model):
   # The sister casting this slate
@@ -138,3 +174,33 @@ class Slate(models.Model):
     # (you can only slate for a position once)
     unique_together = ('sister', 'office')
     # TODO: Assert that vote_1 and vote_2 are for self.office
+
+
+##########################
+##### HELPER METHODS #####
+##########################
+
+
+# Returns the current election settings.
+def get_election_settings():
+  # There should always be exactly one ElectionSettings instance.
+  return ElectionSettings.objects.all().first()
+
+
+# Returns true if the sister is eligible to run / vote
+# for the given office.
+def is_eligible(sister, office):
+  if office.eligible_class == Office.ALL_CLASSES:
+    return True
+  else:
+    # TODO: Better way to do this?
+    if office.eligible_class == Office.FRESHMAN:
+      class_year = get_election_settings().senior_class_year + 3
+    elif office.eligible_class == Office.SOPHOMORE:
+      class_year = get_election_settings().senior_class_year + 2
+    elif office.eligible_class == Office.JUNIOR:
+      class_year = get_election_settings().senior_class_year + 1
+    else: # office.eligible_class == Office.SENIOR:
+      class_year = get_election_settings().senior_class_year
+
+    return sister.class_year == class_year

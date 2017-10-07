@@ -10,6 +10,7 @@
 	  <p> Your LOI was submitted successfully! Refresh this page if you want to submit another LOI. </p>
 	{% else %}
 
+
 	  <form method="post" action="">
 	  	{% csrf_token %}
 
@@ -22,6 +23,9 @@
 	    {{ form.sisters }}
 
 	    <p> Hold down 'Ctrl' or 'Command' to select multiple sisters. </p>
+
+	    <!-- TODO: Style this. -->
+	    {{ form.sisters.errors }}
 
 	    <br>
 

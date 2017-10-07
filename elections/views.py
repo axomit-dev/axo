@@ -3,35 +3,12 @@ from django.conf import settings
 from general.views import get_sister
 from django.contrib.auth.decorators import login_required, user_passes_test
 
-from .models import ElectionSettings, Office, OfficeInterest, Loi, LoiForm
+from .models import ElectionSettings, Office, OfficeInterest, Loi, LoiForm, is_eligible, get_election_settings
 from general.models import Sister
 
 ##########################
 ##### HELPER METHODS #####
 ##########################
-
-# Returns true if the sister is eligible to run / vote
-# for the given office.
-def is_eligible(sister, office):
-  if office.eligible_class == Office.ALL_CLASSES:
-    return True
-  else:
-    # TODO: Better way to do this?
-    if office.eligible_class == Office.FRESHMAN:
-      class_year = get_election_settings().senior_class_year + 3
-    elif office.eligible_class == Office.SOPHOMORE:
-      class_year = get_election_settings().senior_class_year + 2
-    elif office.eligible_class == Office.JUNIOR:
-      class_year = get_election_settings().senior_class_year + 1
-    else: # office.eligible_class == Office.SENIOR:
-      class_year = get_election_settings().senior_class_year
-
-    return sister.class_year == class_year
-
-# Returns the current election settings.
-def get_election_settings():
-  # There should always be exactly one ElectionSettings instance.
-  return ElectionSettings.objects.all().first()
 
 # Returns true if it's an exec election and false otherwise
 def is_exec_election():
@@ -153,7 +130,6 @@ def loi_submission(request):
 
   # If they pressed submit, process and store that data
   if request.method == 'POST':
-    print("in if")
     form = LoiForm(is_exec_election(), request.POST)
     if form.is_valid():
       # Delete any pre-existing LOIs
@@ -166,13 +142,10 @@ def loi_submission(request):
       form.save()
       context['success'] = True
 
+
   else:
-    print("in else")
     # Otherwise, just show them the form
     form = LoiForm(is_exec_election())
-
-  print("form:")
-  print(LoiForm(is_exec_election()))
 
   context['form'] = form
 
@@ -180,6 +153,9 @@ def loi_submission(request):
 
 @login_required
 def loi_results(request):
+  if not get_election_settings().loi_results_open:
+    return render(request, 'elections/loi_results.html', {'loi_results_closed': True})
+
   results = Loi.objects.all()
   return render(request, 'elections/loi_results.html', {'results': results})
 
