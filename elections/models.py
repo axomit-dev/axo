@@ -133,9 +133,24 @@ class LoiForm(ModelForm):
         ValidationError(_('Only one sister can run for this office.'))
       )
 
+    # Offices for specific classes should only have LOIs with
+    # sisters that are in that class
+    if (not office.eligible_class == Office.ALL_CLASSES):
+      for sister in sisters:
+        if not is_eligible(sister, office):
+          self.add_error(
+            'sisters',
+            ValidationError(_('Only %(eligible_class)ss can run for %(office_title)s. ' + 
+              'However, %(sister)s is a %(sister_year)s.'),
+              params={'eligible_class': office.get_eligible_class_display(),
+                      'office_title': office.title,
+                      'sister': sister,
+                      'sister_year': sister.class_year}
+                      # TODO: Convert class year into a word? (e.g. 2018 -> senior)
+            )
+          )
 
-  # TODO: If office is restricted to specific class,
-  #   Make sure the sister(s) selected are all in that class
+
   # TODO: Make sure there aren't two LOIs like "caitlin for soph semi"
   #   and "caitlin and rebecca for soph semi"
   # TODO: Make sure that any LOI you submit has to include yourself
@@ -159,3 +174,33 @@ class Slate(models.Model):
     # (you can only slate for a position once)
     unique_together = ('sister', 'office')
     # TODO: Assert that vote_1 and vote_2 are for self.office
+
+
+##########################
+##### HELPER METHODS #####
+##########################
+
+
+# Returns the current election settings.
+def get_election_settings():
+  # There should always be exactly one ElectionSettings instance.
+  return ElectionSettings.objects.all().first()
+
+
+# Returns true if the sister is eligible to run / vote
+# for the given office.
+def is_eligible(sister, office):
+  if office.eligible_class == Office.ALL_CLASSES:
+    return True
+  else:
+    # TODO: Better way to do this?
+    if office.eligible_class == Office.FRESHMAN:
+      class_year = get_election_settings().senior_class_year + 3
+    elif office.eligible_class == Office.SOPHOMORE:
+      class_year = get_election_settings().senior_class_year + 2
+    elif office.eligible_class == Office.JUNIOR:
+      class_year = get_election_settings().senior_class_year + 1
+    else: # office.eligible_class == Office.SENIOR:
+      class_year = get_election_settings().senior_class_year
+
+    return sister.class_year == class_year

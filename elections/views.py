@@ -3,35 +3,12 @@ from django.conf import settings
 from general.views import get_sister
 from django.contrib.auth.decorators import login_required, user_passes_test
 
-from .models import ElectionSettings, Office, OfficeInterest, Loi, LoiForm
+from .models import ElectionSettings, Office, OfficeInterest, Loi, LoiForm, is_eligible, get_election_settings
 from general.models import Sister
 
 ##########################
 ##### HELPER METHODS #####
 ##########################
-
-# Returns true if the sister is eligible to run / vote
-# for the given office.
-def is_eligible(sister, office):
-  if office.eligible_class == Office.ALL_CLASSES:
-    return True
-  else:
-    # TODO: Better way to do this?
-    if office.eligible_class == Office.FRESHMAN:
-      class_year = get_election_settings().senior_class_year + 3
-    elif office.eligible_class == Office.SOPHOMORE:
-      class_year = get_election_settings().senior_class_year + 2
-    elif office.eligible_class == Office.JUNIOR:
-      class_year = get_election_settings().senior_class_year + 1
-    else: # office.eligible_class == Office.SENIOR:
-      class_year = get_election_settings().senior_class_year
-
-    return sister.class_year == class_year
-
-# Returns the current election settings.
-def get_election_settings():
-  # There should always be exactly one ElectionSettings instance.
-  return ElectionSettings.objects.all().first()
 
 # Returns true if it's an exec election and false otherwise
 def is_exec_election():
