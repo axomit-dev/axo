@@ -141,12 +141,9 @@ def loi_submission(request):
 
       form.save()
       context['success'] = True
-    #else:
-      # Invalid form
 
 
   else:
-    print("in else")
     # Otherwise, just show them the form
     form = LoiForm(is_exec_election())
 
