@@ -119,6 +119,10 @@ class LoiForm(ModelForm):
     model = Loi
     fields = ['office', 'sisters', 'loi_text']
 
+  # TODO: If office is not committee, only let sisters have length 1
+  # TODO: If office is restricted to specific class,
+  # Make sure the sister(s) selected are all in that class
+
 # A sister's slate for a specific position.
 class Slate(models.Model):
   # The sister casting this slate
