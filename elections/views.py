@@ -153,7 +153,6 @@ def loi_submission(request):
 
   # If they pressed submit, process and store that data
   if request.method == 'POST':
-    print("in if")
     form = LoiForm(is_exec_election(), request.POST)
     if form.is_valid():
       # Delete any pre-existing LOIs
@@ -165,14 +164,14 @@ def loi_submission(request):
 
       form.save()
       context['success'] = True
+    #else:
+      # Invalid form
+
 
   else:
     print("in else")
     # Otherwise, just show them the form
     form = LoiForm(is_exec_election())
-
-  print("form:")
-  print(LoiForm(is_exec_election()))
 
   context['form'] = form
 

@@ -1,6 +1,7 @@
 from __future__ import unicode_literals
 from django.utils.encoding import python_2_unicode_compatible
 from django.core.exceptions import ValidationError
+from django.utils.translation import ugettext as _
 
 from django.db import models
 from general.models import Sister
@@ -120,7 +121,19 @@ class LoiForm(ModelForm):
     model = Loi
     fields = ['office', 'sisters', 'loi_text']
 
-  # TODO: If office is not committee, only let sisters have length 1
+  def clean(self):
+    cleaned_data = super(LoiForm, self).clean()
+    office = cleaned_data.get('office')
+    sisters = cleaned_data.get('sisters')
+
+    # Non-committee offices cannot have > 1 sister on an LOI
+    if (not office.is_committee and sisters.count() > 1):    
+      self.add_error(
+        'sisters',
+        ValidationError(_('Only one sister can run for this office.'))
+      )
+
+
   # TODO: If office is restricted to specific class,
   #   Make sure the sister(s) selected are all in that class
   # TODO: Make sure there aren't two LOIs like "caitlin for soph semi"
