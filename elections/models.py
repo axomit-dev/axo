@@ -122,7 +122,10 @@ class LoiForm(ModelForm):
 
   # TODO: If office is not committee, only let sisters have length 1
   # TODO: If office is restricted to specific class,
-  # Make sure the sister(s) selected are all in that class
+  #   Make sure the sister(s) selected are all in that class
+  # TODO: Make sure there aren't two LOIs like "caitlin for soph semi"
+  #   and "caitlin and rebecca for soph semi"
+  # TODO: Make sure that any LOI you submit has to include yourself
 
 # A sister's slate for a specific position.
 class Slate(models.Model):
