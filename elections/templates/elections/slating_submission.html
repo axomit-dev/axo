@@ -9,6 +9,8 @@
 
  {% if slating_closed %}
    <p> Sorry, slating submission is closed now! </p>
+ {% elif has_slated %}
+   <p> Congrats on already submitting your slate! </p>
  {% else %}
    <p> woo slating is open. </p>
 
@@ -61,6 +63,11 @@
       <br>
 
       <input type="submit" value="Submit" />
+
+      <br>
+      <br>
+      <br>
+      <br>
 
    </form>
 

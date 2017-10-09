@@ -3,7 +3,7 @@ from django.conf import settings
 from general.views import get_sister
 from django.contrib.auth.decorators import login_required, user_passes_test
 
-from .models import ElectionSettings, Office, OfficeInterest, Loi, LoiForm, is_eligible, get_election_settings
+from .models import ElectionSettings, Office, OfficeInterest, Loi, LoiForm, Slate, is_eligible, get_election_settings
 from general.models import Sister
 
 ##########################
@@ -164,6 +164,15 @@ def slating_submission(request):
   # Determine whether slating submission is open
   if not get_election_settings().slating_open:
     return render(request, 'elections/slating_submission.html', {'slating_closed': True})
+
+  # TODO: Have better metric of when a sister has
+  # submitted her slate
+  
+  # Determine if sister has already submitted her slate
+  sister = get_sister(request)
+  sister_slate = Slate.objects.filter(sister=sister)
+  if sister_slate:
+    return render(request, 'elections/slating_submission.html', {'has_slated': True})
 
   # TODO: Add logic for handling POST
 
