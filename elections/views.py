@@ -209,10 +209,8 @@ def slating_submission(request):
     return render(request, 'elections/slating_submission.html', {'has_slated': True})
 
   # Not submitting slate, so just render the page
-  # TODO: Filter on whether it's an exec election?
-  # Theoretically, shouldn't have to bc there should
-  # only be LOIs for the given type of election
-  lois = Loi.objects.all()
+  # With LOIs for the current type of election
+  lois = Loi.objects.filter(office__is_exec=is_exec_election())
 
   # TODO: What do to if there's no LOIs for a position in the election?
   return render(request, 'elections/slating_submission.html', {'lois': lois})
