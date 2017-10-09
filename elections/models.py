@@ -98,8 +98,8 @@ class Loi(models.Model):
   def names_of_sisters(self):
     total = ''
     for sister in self.sisters.all():
-      total = total + ', ' + sister.__str__()
-    return total
+      total = total + sister.__str__() + ', '
+    return total[:-2] # Remove last comma and space
 
   class Meta:
     # Order by office
