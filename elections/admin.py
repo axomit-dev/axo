@@ -11,8 +11,7 @@ class OfficeInterestAdmin(admin.ModelAdmin):
 class LoiAdmin(admin.ModelAdmin):
   list_display = ('office', 'names_of_sisters', 'loi_text')
 
-admin.site.register(Office, OfficeAdmin)
 admin.site.register(ElectionSettings)
-admin.site.register(Office)
+admin.site.register(Office, OfficeAdmin)
 admin.site.register(OfficeInterest, OfficeInterestAdmin)
 admin.site.register(Loi, LoiAdmin)
