@@ -4,7 +4,7 @@ from .models import Event, Semester, Excuse
 
 class EventAdmin(admin.ModelAdmin):
   fieldsets = [
-    (None, {'fields': ['name', 'date', 'is_mandatory', 'points', 'semester']})
+    (None, {'fields': ['name', 'date', 'is_mandatory', 'points', 'semester', 'sisters_excused', 'sisters_freebied']})
   ]
   list_display = ('name', 'date', 'is_mandatory', 'points', 'semester')
 
