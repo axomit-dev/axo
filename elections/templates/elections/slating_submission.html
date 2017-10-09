@@ -12,16 +12,35 @@
  {% else %}
    <p> woo slating is open. </p>
 
-   <table>
-   {% for loi in lois %}
-	  <tr>
-	    <td> {{ loi.office.title }} </td>
-	    <td> {{ loi.names_of_sisters }} </td>
-	    <td> {{ loi.loi_text }} </td>
-	  </tr>
+   <!-- TODO: Use same template for both LOI viewing
+      and slating submission -->
+
+      <!-- TODO: Fix indentation -->
+
+     {% regroup lois by office as grouped_lois %}
+
+     {% for office in grouped_lois %}
+
+     <h2 class='att-title first-title'> {{office.grouper.title}} </h2>
+
+     <table class="event-table">
+       <tr>
+         <th> Sister(s) </th>
+         <th> LOI </th>
+       </tr>
+       {% for loi in office.list %}
+       <tr>
+         <td> {{ loi.names_of_sisters }} </td>
+         <td> {{ loi.loi_text }} </td>
+       </tr>
+       {% endfor %}
+     </table>
+
+     <!-- TODO: Add voting options -->
+     <!-- TODO: Style page correctly -->
 
    {% endfor %}
-   </table>
+
 
  {% endif %}
 

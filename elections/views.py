@@ -172,7 +172,6 @@ def slating_submission(request):
   if not get_election_settings().slating_open:
     return render(request, 'elections/slating_submission.html', {'slating_closed': True})
 
-
   # TODO: Add logic for handling POST
 
   lois = Loi.objects.all()
