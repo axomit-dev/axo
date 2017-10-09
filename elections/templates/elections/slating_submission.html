@@ -12,34 +12,57 @@
  {% else %}
    <p> woo slating is open. </p>
 
-   <!-- TODO: Use same template for both LOI viewing
-      and slating submission -->
-
       <!-- TODO: Fix indentation -->
 
      {% regroup lois by office as grouped_lois %}
 
-     {% for office in grouped_lois %}
+     <form method="post" action="">
+       {% csrf_token %}
 
-     <h2 class='att-title first-title'> {{office.grouper.title}} </h2>
+        {% for office in grouped_lois %}
 
-     <table class="event-table">
-       <tr>
-         <th> Sister(s) </th>
-         <th> LOI </th>
-       </tr>
-       {% for loi in office.list %}
-       <tr>
-         <td> {{ loi.names_of_sisters }} </td>
-         <td> {{ loi.loi_text }} </td>
-       </tr>
-       {% endfor %}
-     </table>
+        <h2 class='att-title first-title'> {{office.grouper.title}} </h2>
 
-     <!-- TODO: Add voting options -->
-     <!-- TODO: Style page correctly -->
+        <table class="event-table">
+          <tr>
+            <th> Sister(s) </th>
+            <th> LOI </th>
+          </tr>
+          {% for loi in office.list %}
+          <tr>
+            <td> {{ loi.names_of_sisters }} </td>
+            <td> {{ loi.loi_text }} </td>
+          </tr>
+          {% endfor %}
+        </table>
 
-   {% endfor %}
+        <p> Select your two favorite candicates for {{office.grouper.title}}. A second vote for the same candidate will not be counted.</p>
+
+        <!-- TODO: Not duplicate the code twice? -->
+        <select name="{{office.id}}">
+          <option value="Abstain">Abstain</option>
+          {% for loi in office.list %}
+            <option value="{{loi.id}}">{{loi.names_of_sisters}}</option>
+          {% endfor %} 
+        </select>
+
+        <select name="{{office.id}}">
+          <option value="Abstain">Abstain</option>
+          {% for loi in office.list %}
+            <option value="{{loi.id}}">{{loi.names_of_sisters}}</option>
+          {% endfor %} 
+        </select>
+
+        <!-- TODO: Style page correctly -->
+
+      {% endfor %}
+
+      <br>
+      <br>
+
+      <input type="submit" value="Submit" />
+
+   </form>
 
 
  {% endif %}
