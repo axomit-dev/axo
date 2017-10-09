@@ -105,7 +105,7 @@ class Loi(models.Model):
     return 'Office: ' + self.office.__str__() + '. ' + \
            'Sister(s): ' + self.names_of_sisters() + '. ' + \
            'LOI: ' + self.loi_text[:50]
-           # Only show first 100 characters of LOI
+           # Only show first 50 characters of LOI
 
   class Meta:
     # Order by office
