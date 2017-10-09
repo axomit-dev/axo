@@ -159,6 +159,8 @@ def loi_results(request):
   results = Loi.objects.all()
   return render(request, 'elections/loi_results.html', {'results': results})
 
+# TODO: Not associate a user with their slate?
+# Unsure how 'private' a slate has to be
 @login_required
 def slating_submission(request):
   # Determine whether slating submission is open
