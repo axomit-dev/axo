@@ -162,20 +162,12 @@ def loi_results(request):
 @login_required
 def slating_submission(request):
   # Determine whether slating submission is open
-
-  # TODO: Abstract away the 'figuring out if something is open' stuff
-  # ^ will also need for the 'viewing results' part
-  # Could possibly let VP CRS say when she wants everything to open + close
-  # and automatically change things.....?
-
-
   if not get_election_settings().slating_open:
     return render(request, 'elections/slating_submission.html', {'slating_closed': True})
 
   # TODO: Add logic for handling POST
 
   lois = Loi.objects.all()
-
   return render(request, 'elections/slating_submission.html', {'lois': lois})
 
 # TODO: Make this superuser only
