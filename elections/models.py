@@ -163,11 +163,13 @@ class Slate(models.Model):
   # Office that the slate is for
   office = models.ForeignKey(Office)
 
+  # Votes are null if they're a vote for 'abstain'
+
   # First choice for candidate
-  vote_1 = models.ForeignKey(Loi, related_name='vote_1')
+  vote_1 = models.ForeignKey(Loi, null=True, related_name='vote_1')
 
   # Second choice for candidate
-  vote_2 = models.ForeignKey(Loi, related_name='vote_2')
+  vote_2 = models.ForeignKey(Loi, null=True, related_name='vote_2')
 
   class Meta:
     # There should only be one entry for a sister-office pair

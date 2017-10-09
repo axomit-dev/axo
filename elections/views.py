@@ -171,12 +171,50 @@ def slating_submission(request):
   # Determine if sister has already submitted her slate
   sister = get_sister(request)
   sister_slate = Slate.objects.filter(sister=sister)
+  print(sister_slate)
   if sister_slate:
     return render(request, 'elections/slating_submission.html', {'has_slated': True})
 
-  # TODO: Add logic for handling POST
+  # Submit their slate
+  if request.method == 'POST':
+    offices = Office.objects.filter(is_exec=is_exec_election())
 
+    for office in offices:
+      vote_1 = None
+      vote_2 = None
+
+      # Get first vote
+      try:
+        vote_1_id = request.POST[str(office.id)+"_vote_1"]
+        vote_1 = Loi.objects.get(id=vote_1_id)
+      except:
+        # Voted 'Abstain'
+        pass
+
+      # Get second vote
+      try:
+        vote_2_id = request.POST[str(office.id)+"_vote_2"]
+         # Can't vote for the same candidate twice
+        if vote_2_id != vote_1_id: 
+          vote_2 = Loi.objects.get(id=vote_2_id)
+      except:
+        # Voted 'Abstain'
+        pass
+
+      slate = Slate(sister=sister, office=office, vote_1=vote_1, vote_2=vote_2)
+      print(slate)
+      slate.save()
+
+    # Slate has been submitted
+    return render(request, 'elections/slating_submission.html', {'has_slated': True})
+
+  # Not submitting slate, so just render the page
+  # TODO: Filter on whether it's an exec election?
+  # Theoretically, shouldn't have to bc there should
+  # only be LOIs for the given type of election
   lois = Loi.objects.all()
+
+  # TODO: What do to if there's no LOIs for a position in the election?
   return render(request, 'elections/slating_submission.html', {'lois': lois})
 
 # TODO: Make this superuser only

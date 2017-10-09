@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import ElectionSettings, Office, OfficeInterest, Loi
+from .models import ElectionSettings, Office, OfficeInterest, Loi, Slate
 
 class OfficeAdmin(admin.ModelAdmin):
   list_display = ('title', 'is_exec', 'eligible_class')
@@ -15,3 +15,4 @@ admin.site.register(ElectionSettings)
 admin.site.register(Office, OfficeAdmin)
 admin.site.register(OfficeInterest, OfficeInterestAdmin)
 admin.site.register(Loi, LoiAdmin)
+admin.site.register(Slate)

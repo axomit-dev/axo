@@ -23,39 +23,38 @@
 
         {% for office in grouped_lois %}
 
-        <h2 class='att-title first-title'> {{office.grouper.title}} </h2>
+           <h2 class='att-title first-title'> {{office.grouper.title}} </h2>
 
-        <table class="event-table">
-          <tr>
-            <th> Sister(s) </th>
-            <th> LOI </th>
-          </tr>
-          {% for loi in office.list %}
-          <tr>
-            <td> {{ loi.names_of_sisters }} </td>
-            <td> {{ loi.loi_text }} </td>
-          </tr>
-          {% endfor %}
-        </table>
+           <table class="event-table">
+             <tr>
+               <th> Sister(s) </th>
+               <th> LOI </th>
+             </tr>
+             {% for loi in office.list %}
+             <tr>
+               <td> {{ loi.names_of_sisters }} </td>
+               <td> {{ loi.loi_text }} </td>
+             </tr>
+             {% endfor %}
+           </table>
 
-        <p> Select your two favorite candicates for {{office.grouper.title}}. A second vote for the same candidate will not be counted.</p>
+           <p> Select your two favorite candicates for {{office.grouper.title}}. A second vote for the same candidate will not be counted.</p>
 
-        <!-- TODO: Not duplicate the code twice? -->
-        <select name="{{office.id}}">
-          <option value="Abstain">Abstain</option>
-          {% for loi in office.list %}
-            <option value="{{loi.id}}">{{loi.names_of_sisters}}</option>
-          {% endfor %} 
-        </select>
+           <select name="{{office.grouper.id}}_vote_1">
+             <option value="Abstain">Abstain</option>
+             {% for loi in office.list %}
+               <option value="{{loi.id}}">{{loi.names_of_sisters}}</option>
+             {% endfor %} 
+           </select>
 
-        <select name="{{office.id}}">
-          <option value="Abstain">Abstain</option>
-          {% for loi in office.list %}
-            <option value="{{loi.id}}">{{loi.names_of_sisters}}</option>
-          {% endfor %} 
-        </select>
+           <select name="{{office.grouper.id}}_vote_2">
+             <option value="Abstain">Abstain</option>
+             {% for loi in office.list %}
+               <option value="{{loi.id}}">{{loi.names_of_sisters}}</option>
+             {% endfor %} 
+           </select>
 
-        <!-- TODO: Style page correctly -->
+           <!-- TODO: Style page correctly -->
 
       {% endfor %}
 
