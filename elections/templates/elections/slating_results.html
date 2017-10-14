@@ -4,6 +4,26 @@
 
 <h2 class='att-title first-title'> Slating Results </h2>
 
-<p> Coming Soon... Elections Slating Results </p>
+<div id='events-content'>
+  {% for office, candidates_results in slating_results.items %}
+
+    <h3 class='att-title first-title'> {{office}} </h3>
+    <table class='event-table'>
+      <tr>
+        <th> Candidates </th>
+        <th> Number of Votes </th>
+      </tr>
+      {% for candidates, num_votes in candidates_results.items %}
+        <tr>
+          <td> {{candidates}} </td>
+          <td> {{num_votes}} </td>
+          <!-- TODO: Sort by number of votes -->
+        </tr>
+      {% endfor %}
+    </table>
+
+  {% endfor %}
+
+</div>
 
 {% endblock content %}

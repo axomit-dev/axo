@@ -222,9 +222,31 @@ def slating_submission(request):
 
 @user_passes_test(lambda u: u.is_superuser)
 def slating_results(request):
+  slating_results = {}
 
-  
-  return render(request, 'elections/slating_results.html', {})
+  # Calcuate number of votes for each candidate for each office
+  offices = Office.objects.filter(is_exec=is_exec_election())
+  for office in offices:
+    # All candidates running for that office
+    lois_for_office = Loi.objects.filter(office=office)
+
+    # Stores how many votes each candidate received
+    vote_counts = {}
+    for loi in lois_for_office:
+      vote_counts[loi.names_of_sisters()] = 0
+
+    # Calculate the vote counts
+    slates_for_office = Slate.objects.filter(office=office)
+    for slate in slates_for_office:
+      if slate.vote_1:
+        vote_counts[slate.vote_1.names_of_sisters()] += 1
+      if slate.vote_2:
+        vote_counts[slate.vote_2.names_of_sisters()] += 1
+
+    slating_results[office] = vote_counts
+
+
+  return render(request, 'elections/slating_results.html', {'slating_results': slating_results})
 
 @login_required
 def voting_submission(request):
