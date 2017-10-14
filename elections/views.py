@@ -6,6 +6,9 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from .models import ElectionSettings, Office, OfficeInterest, Loi, LoiForm, Slate, is_eligible, get_election_settings
 from general.models import Sister
 
+# TODO: Automatically stop someone from slating/voting
+# if they haven't done OIS, slated, etc.
+
 ##########################
 ##### HELPER METHODS #####
 ##########################

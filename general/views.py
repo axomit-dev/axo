@@ -3,6 +3,9 @@ from django.contrib.auth.decorators import login_required
 
 from .models import Sister
 
+# TODO: Move TODOs from the running task list
+# into the code.
+
 ##########################
 ##### HELPER METHODS #####
 ##########################
