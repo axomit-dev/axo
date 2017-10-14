@@ -24,6 +24,23 @@
 
   {% endfor %}
 
+  <br>
+  <br>
+
+  <h3 class='att-title first-title'>
+  Sisters who didn't slate </h3>
+
+  <table class='event-table'>
+    {% for sister in sisters_no_slate %}
+      <tr><td>{{sister}}</td><tr>
+    {% endfor %}
+  </table>
+
+  <br>
+  <br>
+
+  <p> Make sure these sisters do not vote! </p>
+
 </div>
 
 {% endblock content %}

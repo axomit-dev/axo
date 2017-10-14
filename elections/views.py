@@ -9,6 +9,9 @@ from general.models import Sister
 # TODO: Automatically stop someone from slating/voting
 # if they haven't done OIS, slated, etc.
 
+# TODO: Don't let an alum, disaffiliated person, etc.
+# do any elections things.
+
 ##########################
 ##### HELPER METHODS #####
 ##########################
@@ -245,8 +248,24 @@ def slating_results(request):
 
     slating_results[office] = vote_counts
 
+  # Display sisters who haven't slated  
+  sister_who_slated = []
+  for slate in Slate.objects.all():
+    # This sister did cast a slate
+    sister_who_slated.append(slate.sister)
 
-  return render(request, 'elections/slating_results.html', {'slating_results': slating_results})
+  sisters_no_slate = Sister.objects \
+    .exclude(id__in=[s.id for s in sister_who_slated]) \
+    .exclude(status=Sister.ALUM) \
+    .exclude(status=Sister.ABROAD) \
+    .exclude(status=Sister.DEAFFILIATED)
+
+  context = {
+    'slating_results': slating_results,
+    'sisters_no_slate': sisters_no_slate,
+  }
+
+  return render(request, 'elections/slating_results.html', context)
 
 @login_required
 def voting_submission(request):
