@@ -220,17 +220,17 @@ def slating_submission(request):
   # TODO: What do to if there's no LOIs for a position in the election?
   return render(request, 'elections/slating_submission.html', {'lois': lois})
 
-# TODO: Make this superuser only
-@login_required
+@user_passes_test(lambda u: u.is_superuser)
 def slating_results(request):
+
+  
   return render(request, 'elections/slating_results.html', {})
 
 @login_required
 def voting_submission(request):
   return render(request, 'elections/voting_submission.html', {})
 
-# TODO: Make this superuser only
-@login_required
+@user_passes_test(lambda u: u.is_superuser)
 def voting_results(request):
   return render(request, 'elections/voting_results.html', {})
 
