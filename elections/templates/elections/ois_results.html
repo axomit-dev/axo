@@ -41,6 +41,20 @@
 
     </table>
 
+    <h3 class='att-title first-title'>
+    Sisters who didn't submit any OIS </h3>
+
+    <table class='event-table'>
+      {% for sister in sisters_no_ois %}
+        <tr><td>{{sister}}</td><tr>
+      {% endfor %}
+    </table>
+
+    <br>
+    <br>
+
+    <p> These sisters will not be able to slate or vote. </p>
+
   {% endif %}
 
 </div>

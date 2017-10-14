@@ -120,8 +120,26 @@ def ois_results(request):
   if not get_election_settings().ois_results_open:
     return render(request, 'elections/ois_results.html', {'ois_results_closed': True})
 
-  results = OfficeInterest.objects.all()
-  return render(request, 'elections/ois_results.html', {'results': results})
+  # Display sisters who haven't submitted OIS 
+  # TODO: If they've only submitted half their OIS,
+  #   are they allowed to slate/vote? 
+  sister_who_did_ois = set()
+  for ois in OfficeInterest.objects.all():
+    # This sister did cast a slate
+    sister_who_did_ois.add(ois.sister)
+
+  sisters_no_ois = Sister.objects \
+    .exclude(id__in=[s.id for s in sister_who_did_ois]) \
+    .exclude(status=Sister.ALUM) \
+    .exclude(status=Sister.ABROAD) \
+    .exclude(status=Sister.DEAFFILIATED)
+
+  context = {
+    'results': OfficeInterest.objects.all(),
+    'sisters_no_ois': sisters_no_ois
+  }
+
+  return render(request, 'elections/ois_results.html', context)
 
 @login_required
 def loi_submission(request):
@@ -179,7 +197,6 @@ def slating_submission(request):
   # Determine if sister has already submitted her slate
   sister = get_sister(request)
   sister_slate = Slate.objects.filter(sister=sister)
-  print(sister_slate)
   if sister_slate:
     return render(request, 'elections/slating_submission.html', {'has_slated': True})
 
@@ -210,7 +227,6 @@ def slating_submission(request):
         pass
 
       slate = Slate(sister=sister, office=office, vote_1=vote_1, vote_2=vote_2)
-      print(slate)
       slate.save()
 
     # Slate has been submitted
