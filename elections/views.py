@@ -135,6 +135,7 @@ def ois_results(request):
     .exclude(status=Sister.DEAFFILIATED)
 
   context = {
+    # TODO: Filter for OISes for only exec or non-exec
     'results': OfficeInterest.objects.all(),
     'sisters_no_ois': sisters_no_ois
   }
