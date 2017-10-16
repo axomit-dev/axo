@@ -113,6 +113,9 @@ def ois_submission(request):
     # TODO: return HttpResponseRedirect since we successfully dealt
     # with POST data.
 
+  # TODO: Add 'I don't know' option
+  # TODO: Add a 'There's only one candidate' option?
+
   return render(request, 'elections/ois_submission.html', context)
 
 @login_required
