@@ -19,5 +19,5 @@ urlpatterns = [
 
   url(r'^voting/submission/$', views.voting_submission, name='voting_submission'),
   url(r'^voting/results/$', views.voting_results, name='voting_results'),
-
+  url(r'^voting/settings/$', views.voting_settings, name='voting_settings'),
 ]

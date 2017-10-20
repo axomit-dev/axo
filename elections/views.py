@@ -375,3 +375,6 @@ def voting_results(request):
   }
 
   return render(request, 'elections/voting_results.html', context)
+
+def voting_settings(request):
+  return render(request, 'elections/voting_settings.html', {})
