@@ -42,6 +42,33 @@ def get_ois_empty_offices(sister, all_offices):
 
   return empty_offices
 
+# Slating results are used on both the slating results page
+# and the voting settings page;)
+def get_slating_results():
+  slating_results = {}
+
+  # Calcuate number of votes for each candidate for each office
+  offices = Office.objects.filter(is_exec=is_exec_election())
+  for office in offices:
+    # All candidates running for that office
+    lois_for_office = Loi.objects.filter(office=office)
+
+    # Stores how many votes each candidate received
+    vote_counts = {}
+    for loi in lois_for_office:
+      vote_counts[loi.names_of_sisters()] = 0
+
+    # Calculate the vote counts
+    slates_for_office = Slate.objects.filter(office=office)
+    for slate in slates_for_office:
+      if slate.vote_1:
+        vote_counts[slate.vote_1.names_of_sisters()] += 1
+      if slate.vote_2:
+        vote_counts[slate.vote_2.names_of_sisters()] += 1
+
+    slating_results[office] = vote_counts
+
+  return slating_results
 
 #################
 ##### VIEWS #####
@@ -245,28 +272,7 @@ def slating_submission(request):
 
 @user_passes_test(lambda u: u.is_superuser)
 def slating_results(request):
-  slating_results = {}
-
-  # Calcuate number of votes for each candidate for each office
-  offices = Office.objects.filter(is_exec=is_exec_election())
-  for office in offices:
-    # All candidates running for that office
-    lois_for_office = Loi.objects.filter(office=office)
-
-    # Stores how many votes each candidate received
-    vote_counts = {}
-    for loi in lois_for_office:
-      vote_counts[loi.names_of_sisters()] = 0
-
-    # Calculate the vote counts
-    slates_for_office = Slate.objects.filter(office=office)
-    for slate in slates_for_office:
-      if slate.vote_1:
-        vote_counts[slate.vote_1.names_of_sisters()] += 1
-      if slate.vote_2:
-        vote_counts[slate.vote_2.names_of_sisters()] += 1
-
-    slating_results[office] = vote_counts
+  slating_results = get_slating_results()
 
   # Display sisters who haven't slated  
   sister_who_slated = []
@@ -390,4 +396,8 @@ def voting_settings(request):
   # If there are voting settings, send those
   # so the checkboxes can be on the right things.
 
-  return render(request, 'elections/voting_settings.html', {})
+  context = {
+    'slating_results': get_slating_results()
+  }
+
+  return render(request, 'elections/voting_settings.html', context)
