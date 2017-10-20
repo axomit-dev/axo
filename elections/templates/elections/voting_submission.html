@@ -3,11 +3,16 @@
 {% block content %}
 
            <!-- TODO: Style page correctly -->
+           <!-- TODO: Fix indentation -->
 
 
 <h2 class='att-title first-title'> Voting Submission </h2>
 
-{% regroup lois by office as grouped_lois %}
+{% if voting_closed %}
+  <p> Sorry, voting is closed now! </p>
+{% else %}
+
+  {% regroup lois by office as grouped_lois %}
 
      <form method="post" action="">
        {% csrf_token %}
@@ -45,4 +50,7 @@
       <br>
 
    </form>
+
+{% endif %}
+
 {% endblock content %}

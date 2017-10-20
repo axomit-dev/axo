@@ -289,7 +289,9 @@ def slating_results(request):
 
 @login_required
 def voting_submission(request):
-  # TODO: Only show is voting is open
+  # Determine whether slating submission is open
+  if not get_election_settings().voting_open:
+    return render(request, 'elections/voting_submission.html', {'voting_closed': True})
 
   # TODO: Don't just default show all the LOIs
   #   Have a page for CRS to select the right candidates
