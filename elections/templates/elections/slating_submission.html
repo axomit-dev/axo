@@ -2,17 +2,16 @@
 
 {% block content %}
 
-<h2 class='att-title first-title'> Slating Submission </h2>
+<div id='events-content'>
 
-<p> Coming Soon... Elections Slating Submission
- </p>
+<h2 class='att-title first-title'> Slating Submission </h2>
 
  {% if slating_closed %}
    <p> Sorry, slating submission is closed now! </p>
  {% elif has_slated %}
    <p> Congrats on already submitting your slate! </p>
  {% else %}
-   <p> woo slating is open. </p>
+   <p> Submit your slate here! </p>
 
       <!-- TODO: Fix indentation -->
 
@@ -73,5 +72,6 @@
 
  {% endif %}
 
+</div>
 
 {% endblock content %}
