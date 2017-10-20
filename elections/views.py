@@ -336,5 +336,42 @@ def voting_submission(request):
 
 @user_passes_test(lambda u: u.is_superuser)
 def voting_results(request):
-  return render(request, 'elections/voting_results.html', {})
+  # Calculate number of votes for each office
+  voting_results = {}
 
+  offices = Office.objects.filter(is_exec=is_exec_election())
+
+  for office in offices:
+    # All candidates running for that office
+    lois_for_office = Loi.objects.filter(office=office)
+
+    # Stores how many votes each candidate received
+    vote_counts = {}
+    for loi in lois_for_office:
+      vote_counts[loi.names_of_sisters()] = 0
+
+    # Add the Abstain and I don't know options
+    vote_counts["Abstain"] = 0
+    vote_counts["I don't know"] = 0
+
+    # Calculate the vote counts
+    final_votes_for_office = FinalVote.objects.filter(office=office)
+    for final_vote in final_votes_for_office:
+      if final_vote.vote_type == FinalVote.ABSTAIN:
+        vote_counts["Abstain"] += 1
+      elif final_vote.vote_type == FinalVote.I_DONT_KNOW:
+        vote_counts["I don't know"] += 1
+      else:
+        vote_counts[final_vote.vote.names_of_sisters()] += 1
+
+    # Save all the votes associated with this office
+    voting_results[office] = vote_counts
+
+
+  # TODO: Display total percent of chapter that voted
+  context = {
+    'voting_results': voting_results,
+    'sisters_who_voted': FinalVoteParticipant.objects.all()
+  }
+
+  return render(request, 'elections/voting_results.html', context)
