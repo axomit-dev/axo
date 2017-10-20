@@ -3,7 +3,7 @@ from django.conf import settings
 from general.views import get_sister
 from django.contrib.auth.decorators import login_required, user_passes_test
 
-from .models import ElectionSettings, Office, OfficeInterest, Loi, LoiForm, Slate, is_eligible, get_election_settings
+from .models import ElectionSettings, Office, OfficeInterest, Loi, LoiForm, Slate, FinalVote, FinalVoteParticipant, is_eligible, get_election_settings
 from general.models import Sister
 
 # TODO: Automatically stop someone from slating/voting
@@ -289,14 +289,50 @@ def slating_results(request):
 
 @login_required
 def voting_submission(request):
-  # Determine whether slating submission is open
+  # Determine whether voting submission is open
   if not get_election_settings().voting_open:
     return render(request, 'elections/voting_submission.html', {'voting_closed': True})
 
+  # Determine if sister has already submitted her votes
+  sister = get_sister(request)
+  sister_vote = FinalVoteParticipant.objects.filter(sister=sister)
+  if sister_vote:
+    return render(request, 'elections/voting_submission.html', {'has_voted': True})
+
+  # Submit their vote
+  if request.method == 'POST':
+    offices = Office.objects.filter(is_exec=is_exec_election())
+
+    for office in offices:
+      try:
+        vote = request.POST[str(office.id)]
+
+        if vote == "Abstain":
+          finalVote = FinalVote(office=office, vote_type=FinalVote.ABSTAIN)
+        elif vote == "I don't know":
+          finalVote = FinalVote(office=office, vote_type=FinalVote.I_DONT_KNOW)
+        else: # Was a vote for someone
+          person_vote = Loi.objects.get(id=vote)
+          finalVote = FinalVote(office=office, vote_type=FinalVote.PERSON, vote=person_vote)
+
+        finalVote.save()
+
+      except:
+        # There was no submission for this office
+        # Do nothing, keep going
+        pass
+
+    # Save that they submitted votes
+    finalVoteParticipant = FinalVoteParticipant(sister=sister)
+    finalVoteParticipant.save()
+
+    return render(request, 'elections/voting_submission.html', {'has_voted': True})
+
   # TODO: Don't just default show all the LOIs
   #   Have a page for CRS to select the right candidates
-  lois = Loi.objects.all()
+  lois = Loi.objects.filter(office__is_exec=is_exec_election())
   return render(request, 'elections/voting_submission.html', {'lois': lois})
+
 
 @user_passes_test(lambda u: u.is_superuser)
 def voting_results(request):

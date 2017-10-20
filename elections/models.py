@@ -203,10 +203,18 @@ class FinalVote(models.Model):
   # Their vote
   vote = models.ForeignKey(Loi, null=True)
 
-# A list of people who submitted a final vote in an election
-class FinalVoteParticipants(models.Model):
-  # The sisters that submitted a final vote
-  sisters = models.ManyToManyField(Sister, blank=True)
+  # TODO: Assert that vote is blank if they chose abstain or I don't know
+
+# A sister who submitted a final vote in an election
+class FinalVoteParticipant(models.Model):
+  # The sister that submitted a final vote
+  sister = models.ForeignKey(Sister)
+
+  # TODO: Prevent the deletion of a single FinalVoteParticipant
+  #   so you can only delete them all at once.
+  #   Do this to prevent selectively removing participants
+  #   so they can vote multiple times.
+  #   Also, should probably remove from the admin interface.
 
 
 ##########################

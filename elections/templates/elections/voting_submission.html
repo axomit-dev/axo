@@ -10,6 +10,8 @@
 
 {% if voting_closed %}
   <p> Sorry, voting is closed now! </p>
+{% elif has_voted %}
+   <p> Congrats on having submitting your vote! </p>
 {% else %}
 
   {% regroup lois by office as grouped_lois %}
@@ -27,9 +29,9 @@
            <tr>
              <td> {{ office.grouper.title }} </td>
              <td>
-               <select name="{{office.grouper.id}}_vote_1">
+               <select name="{{office.grouper.id}}">
                  <option value="Abstain">Abstain</option>
-                 <option value="idk">I don't know</option>
+                 <option value="I don't know">I don't know</option>
                  {% for loi in office.list %}
                    <option value="{{loi.id}}">{{loi.names_of_sisters}}</option>
                  {% endfor %} 
