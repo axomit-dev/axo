@@ -183,6 +183,30 @@ class Slate(models.Model):
     unique_together = ('sister', 'office')
     # TODO: Assert that vote_1 and vote_2 are for self.office
 
+# A final vote for an office
+class FinalVote(models.Model):
+  # Office that the vote is for
+  office = models.ForeignKey(Office)
+
+  # Type of vote
+  ABSTAIN = 0
+  I_DONT_KNOW = 1
+  PERSON = 2 # If they voted for a specific person
+  VOTE_TYPES = (
+    (ABSTAIN, 'Abstain'),
+    (I_DONT_KNOW, 'I don\'t know'),
+    (PERSON, 'Person'),
+  )
+  vote_type = models.IntegerField(choices=VOTE_TYPES)
+
+  # Their vote
+  vote = models.ForeignKey(Loi, null=True)
+
+# A list of people who submitted a final vote in an election
+class FinalVoteParticipants(models.Model):
+  # The sisters that submitted a final vote
+  sisters = models.ManyToManyField(Sister, blank=True)
+
 
 ##########################
 ##### HELPER METHODS #####
