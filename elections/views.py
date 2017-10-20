@@ -377,4 +377,17 @@ def voting_results(request):
   return render(request, 'elections/voting_results.html', context)
 
 def voting_settings(request):
+  # To process a POST:
+  # Find which checkboxes are checkef
+  # For the things next to them, either just find
+  # that LOI of create a new 'LOI' for the selected people.
+  # Have that new LOI
+
+  # Save the values in a VotingSettings model.
+
+  # To display page:
+  # Get slating results
+  # If there are voting settings, send those
+  # so the checkboxes can be on the right things.
+
   return render(request, 'elections/voting_settings.html', {})
