@@ -2,8 +2,47 @@
 
 {% block content %}
 
+           <!-- TODO: Style page correctly -->
+
+
 <h2 class='att-title first-title'> Voting Submission </h2>
 
-<p> Coming Soon... Elections Voting Submission </p>
+{% regroup lois by office as grouped_lois %}
 
+     <form method="post" action="">
+       {% csrf_token %}
+
+       <table class="event-table">
+         <tr>
+           <th> Position </th>
+           <th> Vote </th>
+         </tr>
+
+         {% for office in grouped_lois %}
+           <tr>
+             <td> {{ office.grouper.title }} </td>
+             <td>
+               <select name="{{office.grouper.id}}_vote_1">
+                 <option value="Abstain">Abstain</option>
+                 <option value="idk">I don't know</option>
+                 {% for loi in office.list %}
+                   <option value="{{loi.id}}">{{loi.names_of_sisters}}</option>
+                 {% endfor %} 
+               </select>
+             </td>
+           </tr>
+        {% endfor %}
+       </table>
+
+      <br>
+      <br>
+
+      <input type="submit" value="Submit" />
+
+      <br>
+      <br>
+      <br>
+      <br>
+
+   </form>
 {% endblock content %}

@@ -289,7 +289,12 @@ def slating_results(request):
 
 @login_required
 def voting_submission(request):
-  return render(request, 'elections/voting_submission.html', {})
+  # TODO: Only show is voting is open
+
+  # TODO: Don't just default show all the LOIs
+  #   Have a page for CRS to select the right candidates
+  lois = Loi.objects.all()
+  return render(request, 'elections/voting_submission.html', {'lois': lois})
 
 @user_passes_test(lambda u: u.is_superuser)
 def voting_results(request):
