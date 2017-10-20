@@ -26,7 +26,11 @@
           <tr>
             <td> {{candidates}} </td>
             <td> {{num_votes}} </td>
-            <td> TODO: checkbox here </td>
+            <td>
+              <input type="checkbox" name="{{ office.id }}" value="{{candidates}}"/>
+              <!-- TODO: Not sure if the names of sistes
+                will work for the value but we'll see -->
+            </td>
             <!-- TODO: Sort by number of votes -->
           </tr>
         {% endfor %}
@@ -34,6 +38,17 @@
       </table>
 
     {% endfor %}
+
+
+  <br>
+  <br>
+
+  <input type="submit" value="Submit" />
+
+  <br>
+  <br>
+
+
 
 </form>
 
