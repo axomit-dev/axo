@@ -17,6 +17,7 @@ class ElectionSettings(models.Model):
   loi_open = models.BooleanField(default=False)
   loi_results_open = models.BooleanField(default=False)
   slating_open = models.BooleanField(default=False)
+  voting_open = models.BooleanField(default=False)
 
   # senior_class_year is equal to the class year of the current seniors.
   # It is used for determining who can vote for what positions
@@ -182,6 +183,38 @@ class Slate(models.Model):
     # (you can only slate for a position once)
     unique_together = ('sister', 'office')
     # TODO: Assert that vote_1 and vote_2 are for self.office
+
+# A final vote for an office
+class FinalVote(models.Model):
+  # Office that the vote is for
+  office = models.ForeignKey(Office)
+
+  # Type of vote
+  ABSTAIN = 0
+  I_DONT_KNOW = 1
+  PERSON = 2 # If they voted for a specific person
+  VOTE_TYPES = (
+    (ABSTAIN, 'Abstain'),
+    (I_DONT_KNOW, 'I don\'t know'),
+    (PERSON, 'Person'),
+  )
+  vote_type = models.IntegerField(choices=VOTE_TYPES)
+
+  # Their vote
+  vote = models.ForeignKey(Loi, null=True)
+
+  # TODO: Assert that vote is blank if they chose abstain or I don't know
+
+# A sister who submitted a final vote in an election
+class FinalVoteParticipant(models.Model):
+  # The sister that submitted a final vote
+  sister = models.ForeignKey(Sister)
+
+  # TODO: Prevent the deletion of a single FinalVoteParticipant
+  #   so you can only delete them all at once.
+  #   Do this to prevent selectively removing participants
+  #   so they can vote multiple times.
+  #   Also, should probably remove from the admin interface.
 
 
 ##########################

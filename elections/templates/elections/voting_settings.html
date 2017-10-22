@@ -1,0 +1,76 @@
+{% extends "general/base.html" %}
+
+{% block content %}
+
+           <!-- TODO: Style page correctly -->
+           <!-- TODO: Fix indentation -->
+
+<div id='events-content'>
+  <h2 class='att-title first-title'> Voting Settings </h2>
+
+  <p> Choose who you want to be displayed as candidates for each position here. </p>
+
+  <form action="{% url 'elections:voting_settings' %}" method="post">
+    {% csrf_token %}
+
+    {% for office, candidates_results in slating_results.items %}
+
+      <h3 class='att-title first-title'> {{office}} </h3>
+      <table class='event-table'>
+        <tr>
+          <th> Candidates </th>
+          <th> Number of votes from slating </th>
+          <th> Select this candidate for voting </th>
+        </tr>
+        {% for candidates, num_votes in candidates_results.items %}
+          <tr>
+            <td> {{candidates}} </td>
+            <td> {{num_votes}} </td>
+            <td>
+              <input type="checkbox" name="{{ office.id }}" value="{{candidates}}"/>
+              <!-- TODO: Not sure if the names of sistes
+                will work for the value but we'll see -->
+            </td>
+            <!-- TODO: Sort by number of votes -->
+          </tr>
+        {% endfor %}
+        <!-- TODO: Show 2 boxes to select any candidates they want -->
+      </table>
+
+    {% endfor %}
+
+
+  <br>
+  <br>
+
+  <input type="submit" value="Submit" />
+
+  <br>
+  <br>
+
+
+
+</form>
+
+
+
+<!--
+  TODO:
+  Default checkboxes on the top two slating candidates.
+
+  After she's submitted a selection, checkboxes should
+  be on the ones she's submitted.
+-->
+
+
+<!--
+
+          <input type="radio" name="{{ office.id }}" value="0"/>
+          <label>Yes</label>
+          <input type="radio" name="{{ office.id }}" value="1"/>
+          <label>Maybe</label>
+          <input type="radio" name="{{ office.id }}" value="2"/>
+          <label>No</label>
+        -->
+
+{% endblock content %}

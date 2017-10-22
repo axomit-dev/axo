@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import ElectionSettings, Office, OfficeInterest, Loi, Slate
+from .models import ElectionSettings, Office, OfficeInterest, Loi, Slate, FinalVote, FinalVoteParticipant
 
 class OfficeAdmin(admin.ModelAdmin):
   list_display = ('title', 'is_exec', 'eligible_class')
@@ -16,3 +16,6 @@ admin.site.register(Office, OfficeAdmin)
 admin.site.register(OfficeInterest, OfficeInterestAdmin)
 admin.site.register(Loi, LoiAdmin)
 admin.site.register(Slate)
+# TODO: Give better display of FinalVote + FinalVoteParticipant
+admin.site.register(FinalVote)
+admin.site.register(FinalVoteParticipant)

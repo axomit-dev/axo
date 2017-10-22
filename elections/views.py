@@ -3,7 +3,7 @@ from django.conf import settings
 from general.views import get_sister
 from django.contrib.auth.decorators import login_required, user_passes_test
 
-from .models import ElectionSettings, Office, OfficeInterest, Loi, LoiForm, Slate, is_eligible, get_election_settings
+from .models import ElectionSettings, Office, OfficeInterest, Loi, LoiForm, Slate, FinalVote, FinalVoteParticipant, is_eligible, get_election_settings
 from general.models import Sister
 
 # TODO: Automatically stop someone from slating/voting
@@ -42,6 +42,48 @@ def get_ois_empty_offices(sister, all_offices):
 
   return empty_offices
 
+# Slating results are used on both the slating results page
+# and the voting settings page;)
+def get_slating_results():
+  slating_results = {}
+
+  # Calcuate number of votes for each candidate for each office
+  offices = Office.objects.filter(is_exec=is_exec_election())
+  for office in offices:
+    # All candidates running for that office
+    lois_for_office = Loi.objects.filter(office=office)
+
+    # Stores how many votes each candidate received
+    vote_counts = {}
+    for loi in lois_for_office:
+      vote_counts[loi.names_of_sisters()] = 0
+
+    # Calculate the vote counts
+    slates_for_office = Slate.objects.filter(office=office)
+    for slate in slates_for_office:
+      if slate.vote_1:
+        vote_counts[slate.vote_1.names_of_sisters()] += 1
+      if slate.vote_2:
+        vote_counts[slate.vote_2.names_of_sisters()] += 1
+
+    slating_results[office] = vote_counts
+
+  return slating_results
+
+# Get a list of sisters who didn't slate
+def get_sisters_no_slate():
+  sister_who_slated = []
+  for slate in Slate.objects.filter(office__is_exec=is_exec_election()):
+    # This sister did cast a slate
+    sister_who_slated.append(slate.sister)
+
+  sisters_no_slate = Sister.objects \
+    .exclude(id__in=[s.id for s in sister_who_slated]) \
+    .exclude(status=Sister.ALUM) \
+    .exclude(status=Sister.ABROAD) \
+    .exclude(status=Sister.DEAFFILIATED)
+
+  return sisters_no_slate
 
 #################
 ##### VIEWS #####
@@ -113,6 +155,9 @@ def ois_submission(request):
     # TODO: return HttpResponseRedirect since we successfully dealt
     # with POST data.
 
+  # TODO: Add 'I don't know' option
+  # TODO: Add a 'There's only one candidate' option?
+
   return render(request, 'elections/ois_submission.html', context)
 
 @login_required
@@ -135,6 +180,7 @@ def ois_results(request):
     .exclude(status=Sister.DEAFFILIATED)
 
   context = {
+    # TODO: Filter for OISes for only exec or non-exec
     'results': OfficeInterest.objects.all(),
     'sisters_no_ois': sisters_no_ois
   }
@@ -241,40 +287,9 @@ def slating_submission(request):
 
 @user_passes_test(lambda u: u.is_superuser)
 def slating_results(request):
-  slating_results = {}
+  slating_results = get_slating_results()
 
-  # Calcuate number of votes for each candidate for each office
-  offices = Office.objects.filter(is_exec=is_exec_election())
-  for office in offices:
-    # All candidates running for that office
-    lois_for_office = Loi.objects.filter(office=office)
-
-    # Stores how many votes each candidate received
-    vote_counts = {}
-    for loi in lois_for_office:
-      vote_counts[loi.names_of_sisters()] = 0
-
-    # Calculate the vote counts
-    slates_for_office = Slate.objects.filter(office=office)
-    for slate in slates_for_office:
-      if slate.vote_1:
-        vote_counts[slate.vote_1.names_of_sisters()] += 1
-      if slate.vote_2:
-        vote_counts[slate.vote_2.names_of_sisters()] += 1
-
-    slating_results[office] = vote_counts
-
-  # Display sisters who haven't slated  
-  sister_who_slated = []
-  for slate in Slate.objects.all():
-    # This sister did cast a slate
-    sister_who_slated.append(slate.sister)
-
-  sisters_no_slate = Sister.objects \
-    .exclude(id__in=[s.id for s in sister_who_slated]) \
-    .exclude(status=Sister.ALUM) \
-    .exclude(status=Sister.ABROAD) \
-    .exclude(status=Sister.DEAFFILIATED)
+  sisters_no_slate = get_sisters_no_slate()
 
   context = {
     'slating_results': slating_results,
@@ -285,9 +300,118 @@ def slating_results(request):
 
 @login_required
 def voting_submission(request):
-  return render(request, 'elections/voting_submission.html', {})
+  # Determine whether voting submission is open
+  if not get_election_settings().voting_open:
+    return render(request, 'elections/voting_submission.html', {'voting_closed': True})
+
+  # Determine if sister has already submitted her votes
+  sister = get_sister(request)
+  sister_vote = FinalVoteParticipant.objects.filter(sister=sister)
+  if sister_vote:
+    return render(request, 'elections/voting_submission.html', {'has_voted': True})
+
+  # Determine if sister is eligible to vote
+  if sister in get_sisters_no_slate():
+    # If she didn't slate, she can't vote
+    return render(request, 'elections/voting_submission.html', {'no_slate': True})
+ 
+
+  # Submit their vote
+  if request.method == 'POST':
+    # TODO: Check that they're eligible to vote
+    # TODO: Check that voting submission is open
+
+    offices = Office.objects.filter(is_exec=is_exec_election())
+
+    for office in offices:
+      try:
+        vote = request.POST[str(office.id)]
+
+        if vote == "Abstain":
+          finalVote = FinalVote(office=office, vote_type=FinalVote.ABSTAIN)
+        elif vote == "I don't know":
+          finalVote = FinalVote(office=office, vote_type=FinalVote.I_DONT_KNOW)
+        else: # Was a vote for someone
+          person_vote = Loi.objects.get(id=vote)
+          finalVote = FinalVote(office=office, vote_type=FinalVote.PERSON, vote=person_vote)
+
+        finalVote.save()
+
+      except:
+        # There was no submission for this office
+        # Do nothing, keep going
+        pass
+
+    # Save that they submitted votes
+    finalVoteParticipant = FinalVoteParticipant(sister=sister)
+    finalVoteParticipant.save()
+
+    return render(request, 'elections/voting_submission.html', {'has_voted': True})
+
+  # TODO: Don't just default show all the LOIs
+  #   Have a page for CRS to select the right candidates
+  lois = Loi.objects.filter(office__is_exec=is_exec_election())
+  return render(request, 'elections/voting_submission.html', {'lois': lois})
+
 
 @user_passes_test(lambda u: u.is_superuser)
 def voting_results(request):
-  return render(request, 'elections/voting_results.html', {})
+  # Calculate number of votes for each office
+  voting_results = {}
 
+  offices = Office.objects.filter(is_exec=is_exec_election())
+
+  for office in offices:
+    # All candidates running for that office
+    lois_for_office = Loi.objects.filter(office=office)
+
+    # Stores how many votes each candidate received
+    vote_counts = {}
+    for loi in lois_for_office:
+      vote_counts[loi.names_of_sisters()] = 0
+
+    # Add the Abstain and I don't know options
+    vote_counts["Abstain"] = 0
+    vote_counts["I don't know"] = 0
+
+    # Calculate the vote counts
+    final_votes_for_office = FinalVote.objects.filter(office=office)
+    for final_vote in final_votes_for_office:
+      if final_vote.vote_type == FinalVote.ABSTAIN:
+        vote_counts["Abstain"] += 1
+      elif final_vote.vote_type == FinalVote.I_DONT_KNOW:
+        vote_counts["I don't know"] += 1
+      else:
+        vote_counts[final_vote.vote.names_of_sisters()] += 1
+
+    # Save all the votes associated with this office
+    voting_results[office] = vote_counts
+
+
+  # TODO: Display total percent of chapter that voted
+  context = {
+    'voting_results': voting_results,
+    'sisters_who_voted': FinalVoteParticipant.objects.all()
+  }
+
+  return render(request, 'elections/voting_results.html', context)
+
+def voting_settings(request):
+  # To process a POST:
+  # Find which checkboxes are checkef
+  # For the things next to them, either just find
+  # that LOI of create a new 'LOI' for the selected people.
+  # Have that new LOI
+
+  # Save the values in a VotingSettings model.
+
+  # To display page:
+  # Get slating results
+  # If there are voting settings, send those
+  # so the checkboxes can be on the right things.
+
+  context = {
+    'slating_results': get_slating_results()
+  }
+
+  return render(request, 'elections/voting_settings.html', context)

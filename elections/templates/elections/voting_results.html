@@ -4,6 +4,42 @@
 
 <h2 class='att-title first-title'> Voting Results </h2>
 
-<p> Coming Soon... Elections Voting Results </p>
+<div id='events-content'>
+  {% for office, results in voting_results.items %}
+
+    <h3 class='att-title first-title'> {{office}} </h3>
+    <table class='event-table'>
+      <tr>
+        <th> Choice </th>
+        <th> Number of Votes </th>
+      </tr>
+      {% for choice, num_votes in results.items %}
+        <tr>
+          <td> {{choice}} </td>
+          <td> {{num_votes}} </td>
+          <!-- TODO: Sort by number of votes -->
+        </tr>
+      {% endfor %}
+    </table>
+
+  {% endfor %}
+
+  <br>
+  <br>
+
+  <h3 class='att-title first-title'>
+  Sisters who voted </h3>
+
+  <table class='event-table'>
+    {% for sister in sisters_who_voted %}
+      <tr><td>{{sister.sister}}</td><tr>
+    {% endfor %}
+  </table>
+
+  <br>
+  <br>
+
+
+</div>
 
 {% endblock content %}
