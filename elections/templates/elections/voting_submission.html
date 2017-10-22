@@ -12,6 +12,8 @@
   <p> Sorry, voting is closed now! </p>
 {% elif has_voted %}
    <p> Congrats on having submitting your vote! </p>
+{% elif no_slate %}
+  <p> You did not submit your slate, so you cannot vote. </p>
 {% else %}
 
   {% regroup lois by office as grouped_lois %}

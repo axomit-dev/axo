@@ -70,6 +70,21 @@ def get_slating_results():
 
   return slating_results
 
+# Get a list of sisters who didn't slate
+def get_sisters_no_slate():
+  sister_who_slated = []
+  for slate in Slate.objects.filter(office__is_exec=is_exec_election()):
+    # This sister did cast a slate
+    sister_who_slated.append(slate.sister)
+
+  sisters_no_slate = Sister.objects \
+    .exclude(id__in=[s.id for s in sister_who_slated]) \
+    .exclude(status=Sister.ALUM) \
+    .exclude(status=Sister.ABROAD) \
+    .exclude(status=Sister.DEAFFILIATED)
+
+  return sisters_no_slate
+
 #################
 ##### VIEWS #####
 #################
@@ -274,17 +289,7 @@ def slating_submission(request):
 def slating_results(request):
   slating_results = get_slating_results()
 
-  # Display sisters who haven't slated  
-  sister_who_slated = []
-  for slate in Slate.objects.all():
-    # This sister did cast a slate
-    sister_who_slated.append(slate.sister)
-
-  sisters_no_slate = Sister.objects \
-    .exclude(id__in=[s.id for s in sister_who_slated]) \
-    .exclude(status=Sister.ALUM) \
-    .exclude(status=Sister.ABROAD) \
-    .exclude(status=Sister.DEAFFILIATED)
+  sisters_no_slate = get_sisters_no_slate()
 
   context = {
     'slating_results': slating_results,
@@ -305,8 +310,17 @@ def voting_submission(request):
   if sister_vote:
     return render(request, 'elections/voting_submission.html', {'has_voted': True})
 
+  # Determine if sister is eligible to vote
+  if sister in get_sisters_no_slate():
+    # If she didn't slate, she can't vote
+    return render(request, 'elections/voting_submission.html', {'no_slate': True})
+ 
+
   # Submit their vote
   if request.method == 'POST':
+    # TODO: Check that they're eligible to vote
+    # TODO: Check that voting submission is open
+
     offices = Office.objects.filter(is_exec=is_exec_election())
 
     for office in offices:
