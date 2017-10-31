@@ -221,11 +221,20 @@ def loi_submission(request):
 
   return render(request, 'elections/loi_submission.html', context)
 
+# TODO: LOI text can't be deleted if it contains some characters that
+# aren't unicode:
+# UnicodeEncodeError at /admin/elections/loi/3/change/
+# 'ascii' codec can't encode character u'\u2019' in position 27: ordinal not in range(128)
+#
+# Example LOI that causes this bug:
+# Hi Sister-Friends! What’s up! I’m Michal! 
+
 @login_required
 def loi_results(request):
   if not get_election_settings().loi_results_open:
     return render(request, 'elections/loi_results.html', {'loi_results_closed': True})
 
+  # TODO: Only render LOIs for current season (exec or non-exec)
   results = Loi.objects.all()
   return render(request, 'elections/loi_results.html', {'results': results})
 
@@ -233,6 +242,9 @@ def loi_results(request):
 # Unsure how 'private' a slate has to be
 @login_required
 def slating_submission(request):
+  # TODO: Do the is_eligible stuff that is done for OIS,
+  # so people can't slate for positions that aren't relevant
+  # to their class year.
   # Determine whether slating submission is open
   if not get_election_settings().slating_open:
     return render(request, 'elections/slating_submission.html', {'slating_closed': True})
@@ -300,6 +312,10 @@ def slating_results(request):
 
 @login_required
 def voting_submission(request):
+  # TODO: Do the is_eligible stuff that is done for OIS,
+  # so people can't slate for positions that aren't relevant
+  # to their class year.
+  
   # Determine whether voting submission is open
   if not get_election_settings().voting_open:
     return render(request, 'elections/voting_submission.html', {'voting_closed': True})
