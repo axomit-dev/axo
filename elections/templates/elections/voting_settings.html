@@ -12,6 +12,10 @@
 
   <p> You can use the selection boxes to add candidates. </p>
 
+  <p> When you click 'Submit', only the candidates that are checked
+    will be eligible candidates for voting. Then page will refresh
+  and show you your new selections. </p>
+
   <!-- TODO: Restrict to two checkboxes -->
 
   <form action="{% url 'elections:voting_settings' %}" method="post">
@@ -34,7 +38,12 @@
            </td>
             <td> {{num_votes}} </td>
             <td>
-              <input type="checkbox" name="{{ office.id }}" value="{{loi.id}}"/>
+              {% if loi.is_candidate %}
+                <input type="checkbox" name="{{ office.id }}" value="{{loi.id}}" checked/>
+              {% else %}
+                <input type="checkbox" name="{{ office.id }}" value="{{loi.id}}"/>
+              {% endif %}
+
             </td>
             <!-- TODO: Sort by number of votes -->
           </tr>

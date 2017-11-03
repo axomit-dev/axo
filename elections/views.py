@@ -94,6 +94,7 @@ def get_candidate(request, office, candidate_value):
     # This is a new candidate
     # Get the selected sisters
     selected_sisters_ids = request.POST.getlist(candidate_value)
+    # TODO: If list is empty, throw error
     selected_sisters = []
     for sister_id in selected_sisters_ids:
       selected_sisters.append(Sister.objects.get(id=sister_id))
@@ -448,12 +449,12 @@ def voting_results(request):
 def voting_settings(request):
 
 
-  # Submit their vote
+  # Submit their voting settings
   if request.method == 'POST':
     offices = Office.objects.filter(is_exec=is_exec_election())
 
     for office in offices:
-      #try:
+
       selected_candidates = request.POST.getlist(str(office.id))
       print("got something:")
       print(selected_candidates)
@@ -483,15 +484,27 @@ def voting_settings(request):
       except:
         pass
 
-  # TODO: If there are voting settings, send those
-  # so the checkboxes can be on the right candidates.
-  # TODO: Get the top two slating results in case no voting setting
-  # object for that office has been created.
-
   # TODO: Have a 'get active sisters' method
 
+  # For each office, annotate whether a given LOI
+  # is currently selected as a candidate
+  slating_results = get_slating_results()
+  for office, results in slating_results.items():
+    try:
+      voting_setting = VotingSetting.objects.get(office=office)
+      # Annotate the LOIs that are in this voting setting
+      for loi, num_votes in results.items():
+        if loi == voting_setting.candidate_1 or loi == voting_setting.candidate_2:
+          loi.is_candidate = True
+          loi.save()
+    except:
+      # There is no voting setting, so select the top two
+      # results from slating
+      # TODO
+      pass
+
   context = {
-    'slating_results': get_slating_results(),
+    'slating_results': slating_results,
     'sisters': Sister.objects \
       .exclude(status=Sister.ALUM) \
       .exclude(status=Sister.ABROAD) \
