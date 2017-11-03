@@ -460,9 +460,6 @@ def voting_settings(request):
       if (len(selected_candidates) > 2):
         # TODO: Return some error
         pass
-      if (len(selected_candidates) == 0):
-        # No selections, keep going
-        continue
 
       candidate_1 = None
       candidate_2 = None
@@ -470,7 +467,6 @@ def voting_settings(request):
         candidate_1 = get_candidate(request, office, selected_candidates[0])
       if len(selected_candidates) > 1:
         candidate_2 = get_candidate(request, office, selected_candidates[1])
-
 
       # See if there's already a voting setting for this position
       try:
@@ -486,27 +482,11 @@ def voting_settings(request):
         office_voting_setting.save()
       except:
         pass
-          
 
-
-
-
-      #except:
-        # No checkmarks made for this position
-        #print("didn't get anything")
-
-    # To process a POST:
-    # Find which checkboxes are checked
-    # For the things next to them, either just find
-    # that LOI of create a new 'LOI' for the selected people.
-    # Have that new LOI
-
-    # Save the values in a VotingSettings model.
-
-  # To display page:
-  # Get slating results
-  # If there are voting settings, send those
-  # so the checkboxes can be on the right things.
+  # TODO: If there are voting settings, send those
+  # so the checkboxes can be on the right candidates.
+  # TODO: Get the top two slating results in case no voting setting
+  # object for that office has been created.
 
   # TODO: Have a 'get active sisters' method
 
