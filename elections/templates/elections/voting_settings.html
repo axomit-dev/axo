@@ -10,6 +10,10 @@
 
   <p> Choose who you want to be displayed as candidates for each position here. </p>
 
+  <p> You can use the selection boxes to add candidates. </p>
+
+  <!-- TODO: Restrict to two checkboxes -->
+
   <form action="{% url 'elections:voting_settings' %}" method="post">
     {% csrf_token %}
 
@@ -34,7 +38,39 @@
             <!-- TODO: Sort by number of votes -->
           </tr>
         {% endfor %}
-        <!-- TODO: Show 2 boxes to select any candidates they want -->
+
+        <tr>  
+          <td>    
+            <select name="custom-candidate-1" multiple="true">
+              {% for sister in sisters %}
+              <option value="{{sister.id}}"> {{sister}} </option>
+              {% endfor %}
+            </select>
+          </td>
+          <td></td>
+          <td>
+            <input type="checkbox" name="{{ office.id }}" value="custom-candidate-1"/>
+            <!-- TODO: Not sure if the names of sistes
+              will work for the value but we'll see -->
+          </td>
+        </tr>
+
+        <tr>  
+          <td>    
+            <select name="custom-candidate-2" multiple="true">
+              {% for sister in sisters %}
+              <option value="{{sister.id}}"> {{sister}} </option>
+              {% endfor %}
+            </select>
+          </td>
+          <td></td>
+          <td>
+            <input type="checkbox" name="{{ office.id }}" value="custom-candidate-2"/>
+            <!-- TODO: Not sure if the names of sistes
+              will work for the value but we'll see -->
+          </td>
+        </tr>
+
       </table>
 
     {% endfor %}

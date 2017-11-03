@@ -426,8 +426,14 @@ def voting_settings(request):
   # If there are voting settings, send those
   # so the checkboxes can be on the right things.
 
+  # TODO: Have a 'get active sisters' method
+
   context = {
-    'slating_results': get_slating_results()
+    'slating_results': get_slating_results(),
+    'sisters': Sister.objects \
+      .exclude(status=Sister.ALUM) \
+      .exclude(status=Sister.ABROAD) \
+      .exclude(status=Sister.DEAFFILIATED)
   }
 
   return render(request, 'elections/voting_settings.html', context)
