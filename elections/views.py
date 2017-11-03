@@ -85,6 +85,12 @@ def get_sisters_no_slate():
 
   return sisters_no_slate
 
+# Get the candidates with the most number of votes
+# during slating for this office.
+def get_top_two_from_slate(office):
+  # TODO
+  return []
+
 # Get a candidate based on candidate_value.
 # If candidate_value is a number, find the LOI with that ID.
 # Otherwise, it is a new candidate.
@@ -400,8 +406,34 @@ def voting_submission(request):
 
   # TODO: Don't just default show all the LOIs
   #   Have a page for CRS to select the right candidates
-  lois = Loi.objects.filter(office__is_exec=is_exec_election())
-  return render(request, 'elections/voting_submission.html', {'lois': lois})
+
+  # Get voting candidates
+  voting_candidates = {}
+
+  offices = Office.objects.filter(is_exec=is_exec_election())
+  for office in offices:
+    try:
+      voting_setting = VotingSetting.objects.get(office=office)
+      print("got voting setting")
+      print(voting_setting.candidate_1)
+      print(voting_setting.candidate_2)
+      candidates = []
+      if voting_setting.candidate_1 != None:
+        candidates.append(voting_setting.candidate_1)
+      if voting_setting.candidate_2 != None:
+        candidates.append(voting_setting.candidate_2)
+      voting_candidates[office] = candidates
+      
+    except:
+      print("got except")
+      # There is no voting setting, so select the top two
+      # results from slating
+      candidates = get_top_two_from_slate(office)
+      voting_candidates[office] = candidates
+
+  # TODO: What happens if there are no candidates for that position?
+  print(voting_candidates)
+  return render(request, 'elections/voting_submission.html', {'voting_candidates': voting_candidates})
 
 
 @user_passes_test(lambda u: u.is_superuser)
