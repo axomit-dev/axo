@@ -5,7 +5,7 @@
 <h2 class='att-title first-title'> Slating Results </h2>
 
 <div id='events-content'>
-  {% for office, candidates_results in slating_results.items %}
+  {% for office, results in slating_results.items %}
 
     <h3 class='att-title first-title'> {{office}} </h3>
     <table class='event-table'>
@@ -13,9 +13,9 @@
         <th> Candidates </th>
         <th> Number of Votes </th>
       </tr>
-      {% for candidates, num_votes in candidates_results.items %}
+      {% for loi, num_votes in results.items %}
         <tr>
-          <td> {{candidates}} </td>
+          <td> {{loi.names_of_sisters}} </td>
           <td> {{num_votes}} </td>
           <!-- TODO: Sort by number of votes -->
         </tr>

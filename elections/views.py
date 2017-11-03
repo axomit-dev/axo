@@ -56,15 +56,15 @@ def get_slating_results():
     # Stores how many votes each candidate received
     vote_counts = {}
     for loi in lois_for_office:
-      vote_counts[loi.names_of_sisters()] = 0
+      vote_counts[loi] = 0
 
     # Calculate the vote counts
     slates_for_office = Slate.objects.filter(office=office)
     for slate in slates_for_office:
       if slate.vote_1:
-        vote_counts[slate.vote_1.names_of_sisters()] += 1
+        vote_counts[slate.vote_1] += 1
       if slate.vote_2:
-        vote_counts[slate.vote_2.names_of_sisters()] += 1
+        vote_counts[slate.vote_2] += 1
 
     slating_results[office] = vote_counts
 

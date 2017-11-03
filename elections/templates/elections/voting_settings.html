@@ -17,7 +17,7 @@
   <form action="{% url 'elections:voting_settings' %}" method="post">
     {% csrf_token %}
 
-    {% for office, candidates_results in slating_results.items %}
+    {% for office, results in slating_results.items %}
 
       <h3 class='att-title first-title'> {{office}} </h3>
       <table class='event-table'>
@@ -26,14 +26,12 @@
           <th> Number of votes from slating </th>
           <th> Select this candidate for voting </th>
         </tr>
-        {% for candidates, num_votes in candidates_results.items %}
+        {% for loi, num_votes in results.items %}
           <tr>
-            <td> {{candidates}} </td>
+            <td> {{loi.names_of_sisters}} </td>
             <td> {{num_votes}} </td>
             <td>
-              <input type="checkbox" name="{{ office.id }}" value="{{candidates}}"/>
-              <!-- TODO: Not sure if the names of sistes
-                will work for the value but we'll see -->
+              <input type="checkbox" name="{{ office.id }}" value="{{loi.id}}"/>
             </td>
             <!-- TODO: Sort by number of votes -->
           </tr>
@@ -41,7 +39,7 @@
 
         <tr>  
           <td>    
-            <select name="custom-candidate-1" multiple="true">
+            <select name="custom-candidates-1" multiple="true">
               {% for sister in sisters %}
               <option value="{{sister.id}}"> {{sister}} </option>
               {% endfor %}
@@ -49,7 +47,7 @@
           </td>
           <td></td>
           <td>
-            <input type="checkbox" name="{{ office.id }}" value="custom-candidate-1"/>
+            <input type="checkbox" name="{{ office.id }}" value="custom-candidates-1"/>
             <!-- TODO: Not sure if the names of sistes
               will work for the value but we'll see -->
           </td>
@@ -57,7 +55,7 @@
 
         <tr>  
           <td>    
-            <select name="custom-candidate-2" multiple="true">
+            <select name="custom-candidates-2" multiple="true">
               {% for sister in sisters %}
               <option value="{{sister.id}}"> {{sister}} </option>
               {% endfor %}
@@ -65,7 +63,7 @@
           </td>
           <td></td>
           <td>
-            <input type="checkbox" name="{{ office.id }}" value="custom-candidate-2"/>
+            <input type="checkbox" name="{{ office.id }}" value="custom-candidates-2"/>
             <!-- TODO: Not sure if the names of sistes
               will work for the value but we'll see -->
           </td>
