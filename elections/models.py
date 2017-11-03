@@ -216,6 +216,18 @@ class FinalVoteParticipant(models.Model):
   #   so they can vote multiple times.
   #   Also, should probably remove from the admin interface.
 
+# A setting for which candidates can be voted on
+# in a final election
+class VotingSetting(models.Model):
+  # Office that this vote setting is for
+  office = models.ForeignKey(Office)
+
+  # First candidate
+  candidate_1 = models.ForeignKey(Loi, null=True, related_name='candidate_1')
+
+  # Second candidate
+  candidate_2 = models.ForeignKey(Loi, null=True, related_name='candidate_2')
+
 
 ##########################
 ##### HELPER METHODS #####

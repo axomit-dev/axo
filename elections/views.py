@@ -3,7 +3,7 @@ from django.conf import settings
 from general.views import get_sister
 from django.contrib.auth.decorators import login_required, user_passes_test
 
-from .models import ElectionSettings, Office, OfficeInterest, Loi, LoiForm, Slate, FinalVote, FinalVoteParticipant, is_eligible, get_election_settings
+from .models import ElectionSettings, Office, OfficeInterest, Loi, LoiForm, Slate, FinalVote, FinalVoteParticipant, VotingSetting, is_eligible, get_election_settings
 from general.models import Sister
 
 # TODO: Automatically stop someone from slating/voting
@@ -84,6 +84,39 @@ def get_sisters_no_slate():
     .exclude(status=Sister.DEAFFILIATED)
 
   return sisters_no_slate
+
+# Get a candidate based on candidate_value.
+# If candidate_value is a number, find the LOI with that ID.
+# Otherwise, it is a new candidate.
+def get_candidate(request, office, candidate_value):
+  print("getting candidate")
+  if candidate_value == 'custom-candidates-1' or candidate_value == 'custom-candidates-2':
+    # This is a new candidate
+    # Get the selected sisters
+    selected_sisters_ids = request.POST.getlist(candidate_value)
+    selected_sisters = []
+    for sister_id in selected_sisters_ids:
+      selected_sisters.append(Sister.objects.get(id=sister_id))
+
+    print(selected_sisters)
+
+    # Create a new LOI for this position
+    # TODO: Assert there isn't already an loi with this position
+    candidate = Loi(office=office, loi_text='Automatically generated from voting settings page.')
+    candidate.save()
+    # Have to save the new LOI before adding sisters,
+    # otherwise you get 'recursive depth exceeded' error.
+    # https://stackoverflow.com/questions/17613367/maximum-recursion-depth-exceeded-on-django-model-when-creating
+    for sister in selected_sisters:
+      candidate.sisters.add(sister)
+    print(candidate)
+    return candidate
+  else:
+    # There's already an LOI for this position
+    candidate = Loi.objects.get(id=int(candidate_value))
+    print(candidate)
+    return candidate
+
 
 #################
 ##### VIEWS #####
@@ -413,13 +446,62 @@ def voting_results(request):
   return render(request, 'elections/voting_results.html', context)
 
 def voting_settings(request):
-  # To process a POST:
-  # Find which checkboxes are checkef
-  # For the things next to them, either just find
-  # that LOI of create a new 'LOI' for the selected people.
-  # Have that new LOI
 
-  # Save the values in a VotingSettings model.
+
+  # Submit their vote
+  if request.method == 'POST':
+    offices = Office.objects.filter(is_exec=is_exec_election())
+
+    for office in offices:
+      #try:
+      selected_candidates = request.POST.getlist(str(office.id))
+      print("got something:")
+      print(selected_candidates)
+      if (len(selected_candidates) > 2):
+        # TODO: Return some error
+        pass
+      if (len(selected_candidates) == 0):
+        # No selections, keep going
+        continue
+
+      candidate_1 = None
+      candidate_2 = None
+      if len(selected_candidates) > 0:
+        candidate_1 = get_candidate(request, office, selected_candidates[0])
+      if len(selected_candidates) > 1:
+        candidate_2 = get_candidate(request, office, selected_candidates[1])
+
+
+      # See if there's already a voting setting for this position
+      try:
+        office_voting_setting = VotingSetting.objects.get(office=office)
+      except:
+        # If not, make a new instance
+        office_voting_setting = VotingSetting(office=office)
+      
+      # Save the candidates for this position
+      try:
+        office_voting_setting.candidate_1 = candidate_1
+        office_voting_setting.candidate_2 = candidate_2
+        office_voting_setting.save()
+      except:
+        pass
+          
+
+
+
+
+      #except:
+        # No checkmarks made for this position
+        #print("didn't get anything")
+
+    # To process a POST:
+    # Find which checkboxes are checked
+    # For the things next to them, either just find
+    # that LOI of create a new 'LOI' for the selected people.
+    # Have that new LOI
+
+    # Save the values in a VotingSettings model.
 
   # To display page:
   # Get slating results
@@ -437,3 +519,5 @@ def voting_settings(request):
   }
 
   return render(request, 'elections/voting_settings.html', context)
+
+
