@@ -28,7 +28,10 @@
         </tr>
         {% for loi, num_votes in results.items %}
           <tr>
-            <td> {{loi.names_of_sisters}} </td>
+            <td>
+              <p> {{loi.names_of_sisters}} </p>
+              <p style="font-size:6px"> {{loi.loi_text}} </p>
+           </td>
             <td> {{num_votes}} </td>
             <td>
               <input type="checkbox" name="{{ office.id }}" value="{{loi.id}}"/>
