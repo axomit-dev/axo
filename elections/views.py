@@ -50,25 +50,35 @@ def get_slating_results():
   # Calcuate number of votes for each candidate for each office
   offices = Office.objects.filter(is_exec=is_exec_election())
   for office in offices:
-    # All candidates running for that office
-    lois_for_office = Loi.objects.filter(office=office)
-
-    # Stores how many votes each candidate received
-    vote_counts = {}
-    for loi in lois_for_office:
-      vote_counts[loi] = 0
-
-    # Calculate the vote counts
-    slates_for_office = Slate.objects.filter(office=office)
-    for slate in slates_for_office:
-      if slate.vote_1:
-        vote_counts[slate.vote_1] += 1
-      if slate.vote_2:
-        vote_counts[slate.vote_2] += 1
-
+    vote_counts = get_slate_votes(office)
     slating_results[office] = vote_counts
 
   return slating_results
+
+# Gets the number of votes during slating for
+# each candidate for this office.
+# Results are returned sorted by number of votes, highest first.
+def get_slate_votes(office):
+  # All candidates running for that office
+  lois_for_office = Loi.objects.filter(office=office)
+
+  # Stores how many votes each candidate received
+  vote_counts = {}
+  for loi in lois_for_office:
+    vote_counts[loi] = 0
+
+  # Calculate the vote counts
+  slates_for_office = Slate.objects.filter(office=office)
+  for slate in slates_for_office:
+    if slate.vote_1:
+      vote_counts[slate.vote_1] += 1
+    if slate.vote_2:
+      vote_counts[slate.vote_2] += 1
+
+  # Sort by number of votes, highest first
+  # TODO
+
+  return vote_counts
 
 # Get a list of sisters who didn't slate
 def get_sisters_no_slate():
@@ -87,9 +97,17 @@ def get_sisters_no_slate():
 
 # Get the candidates with the most number of votes
 # during slating for this office.
+# Will return a list of size 0, 1, or 2.
+# TODO: What if there's a tie?
 def get_top_two_from_slate(office):
-  # TODO
-  return []
+  vote_counts = get_slate_votes(office)
+  sorted_votes = sorted(vote_counts, key=vote_counts.get, reverse=True)
+  print("sorted votes:")
+  print(sorted_votes)
+  if len(sorted_votes) > 2:
+    return sorted_votes[0:2]
+  else:
+    return sorted_votes
 
 # Get a candidate based on candidate_value.
 # If candidate_value is a number, find the LOI with that ID.
@@ -520,20 +538,23 @@ def voting_settings(request):
 
   # For each office, annotate whether a given LOI
   # is currently selected as a candidate
+  # So that we can show those as default checkmarks
+
   slating_results = get_slating_results()
   for office, results in slating_results.items():
     try:
       voting_setting = VotingSetting.objects.get(office=office)
-      # Annotate the LOIs that are in this voting setting
-      for loi, num_votes in results.items():
-        if loi == voting_setting.candidate_1 or loi == voting_setting.candidate_2:
-          loi.is_candidate = True
-          loi.save()
+      selected_candidates = [voting_setting.candidate_1, voting_setting.candidate_2]
+      
     except:
       # There is no voting setting, so select the top two
       # results from slating
-      # TODO
-      pass
+      selected_candidates = get_top_two_from_slate(office)
+
+    for loi, num_votes in results.items():
+      if loi in selected_candidates:
+        loi.is_candidate = True
+        loi.save()
 
   context = {
     'slating_results': slating_results,
