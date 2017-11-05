@@ -102,8 +102,6 @@ def get_sisters_no_slate():
 def get_top_two_from_slate(office):
   vote_counts = get_slate_votes(office)
   sorted_votes = sorted(vote_counts, key=vote_counts.get, reverse=True)
-  print("sorted votes:")
-  print(sorted_votes)
   if len(sorted_votes) > 2:
     return sorted_votes[0:2]
   else:
@@ -113,7 +111,6 @@ def get_top_two_from_slate(office):
 # If candidate_value is a number, find the LOI with that ID.
 # Otherwise, it is a new candidate.
 def get_candidate(request, office, candidate_value):
-  print("getting candidate")
   if candidate_value == 'custom-candidates-1' or candidate_value == 'custom-candidates-2':
     # This is a new candidate
     # Get the selected sisters
@@ -122,8 +119,6 @@ def get_candidate(request, office, candidate_value):
     selected_sisters = []
     for sister_id in selected_sisters_ids:
       selected_sisters.append(Sister.objects.get(id=sister_id))
-
-    print(selected_sisters)
 
     # Create a new LOI for this position
     # TODO: Assert there isn't already an loi with this position
@@ -134,12 +129,11 @@ def get_candidate(request, office, candidate_value):
     # https://stackoverflow.com/questions/17613367/maximum-recursion-depth-exceeded-on-django-model-when-creating
     for sister in selected_sisters:
       candidate.sisters.add(sister)
-    print(candidate)
+    candidate.save()
     return candidate
   else:
     # There's already an LOI for this position
     candidate = Loi.objects.get(id=int(candidate_value))
-    print(candidate)
     return candidate
 
 
@@ -432,9 +426,6 @@ def voting_submission(request):
   for office in offices:
     try:
       voting_setting = VotingSetting.objects.get(office=office)
-      print("got voting setting")
-      print(voting_setting.candidate_1)
-      print(voting_setting.candidate_2)
       candidates = []
       if voting_setting.candidate_1 != None:
         candidates.append(voting_setting.candidate_1)
@@ -443,14 +434,11 @@ def voting_submission(request):
       voting_candidates[office] = candidates
       
     except:
-      print("got except")
       # There is no voting setting, so select the top two
       # results from slating
       candidates = get_top_two_from_slate(office)
       voting_candidates[office] = candidates
 
-  # TODO: What happens if there are no candidates for that position?
-  print(voting_candidates)
   return render(request, 'elections/voting_submission.html', {'voting_candidates': voting_candidates})
 
 
@@ -506,8 +494,6 @@ def voting_settings(request):
     for office in offices:
 
       selected_candidates = request.POST.getlist(str(office.id))
-      print("got something:")
-      print(selected_candidates)
       if (len(selected_candidates) > 2):
         # TODO: Return some error
         pass
