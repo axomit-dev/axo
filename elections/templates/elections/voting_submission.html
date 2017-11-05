@@ -30,13 +30,17 @@
        <tr>
          <td> {{ office.title }} </td>
          <td>
-           <select name="{{office.grouper.id}}">
-             <option value="Abstain">Abstain</option>
-             <option value="I don't know">I don't know</option>
-             {% for candidate in candidates %}
-               <option value="{{candidate.id}}">{{candidate.names_of_sisters}}</option>
-             {% endfor %} 
-           </select>
+           {% if candidates|length == 0 %}
+             <p> No candidates </p>
+           {% else %}
+             <select name="{{office.grouper.id}}">
+               <option value="Abstain">Abstain</option>
+               <option value="I don't know">I don't know</option>
+               {% for candidate in candidates %}
+                 <option value="{{candidate.id}}">{{candidate.names_of_sisters}}</option>
+               {% endfor %} 
+             </select>
+           {% endif %}
          </td>
        </tr>
     {% endfor %}
