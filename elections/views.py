@@ -278,8 +278,9 @@ def loi_submission(request):
 # UnicodeEncodeError at /admin/elections/loi/3/change/
 # 'ascii' codec can't encode character u'\u2019' in position 27: ordinal not in range(128)
 #
-# Example LOI that causes this bug:
-# Hi Sister-Friends! What’s up! I’m Michal! 
+# Athena also complains if I try and put an example LOI
+# here that causes the bug, with the error:
+# Non-ASCII character '\xe2'
 
 @login_required
 def loi_results(request):
