@@ -33,7 +33,7 @@
            {% if candidates|length == 0 %}
              <p> No candidates </p>
            {% else %}
-             <select name="{{office.grouper.id}}">
+             <select name="{{office.id}}">
                <option value="Abstain">Abstain</option>
                <option value="I don't know">I don't know</option>
                {% for candidate in candidates %}
