@@ -484,9 +484,8 @@ def voting_results(request):
 
   return render(request, 'elections/voting_results.html', context)
 
+@user_passes_test(lambda u: u.is_superuser)
 def voting_settings(request):
-
-
   # Submit their voting settings
   if request.method == 'POST':
     offices = Office.objects.filter(is_exec=is_exec_election())
