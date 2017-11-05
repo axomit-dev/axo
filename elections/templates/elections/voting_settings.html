@@ -8,13 +8,13 @@
 <div id='events-content'>
   <h2 class='att-title first-title'> Voting Settings </h2>
 
-  <p> Choose who you want to be displayed as candidates for each position here. </p>
-
-  <p> You can use the selection boxes to add candidates. </p>
+  <p> Choose who you want to be displayed as candidates for each position here using the checkboxes on the right. </p>
 
   <p> When you click 'Submit', only the candidates that are checked
     will be eligible candidates for voting. Then page will refresh
   and show you your new selections. </p>
+
+  <p> You can add new candidates using the bottom two rows for each position. </p>
 
   <!-- TODO: Restrict to two checkboxes -->
 
@@ -34,8 +34,10 @@
           <tr>
             <td>
               <p> {{loi.names_of_sisters}} </p>
-              <p style="font-size:6px"> {{loi.loi_text}} </p>
+              <p style="font-size:10px"> {{loi.loi_text}} </p>
            </td>
+           <!-- TODO: If they were automatically created, 
+            show N/A for num votes -->
             <td> {{num_votes}} </td>
             <td>
               {% if loi.is_candidate %}
