@@ -1,5 +1,5 @@
 from __future__ import unicode_literals
-from django.utils.encoding import python_2_unicode_compatible
+from django.utils.encoding import python_2_unicode_compatible, smart_str
 from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext as _
 
@@ -102,10 +102,10 @@ class Loi(models.Model):
       total = total + sister.__str__() + ', '
     return total[:-2] # Remove last comma and space
 
-  def __str__(self):
-    return 'Office: ' + self.office.__str__() + '. ' + \
-           'Sister(s): ' + self.names_of_sisters() + '. ' + \
-           'LOI: ' + self.loi_text[:50]
+  def __unicode__(self):
+    return u'Office: ' + smart_str(self.office.__str__()) + u'. ' + \
+           u'Sister(s): ' + smart_str(self.names_of_sisters()) + u'. ' + \
+           u'LOI: ' + smart_str(self.loi_text)[:50]
            # Only show first 50 characters of LOI
 
   class Meta:
