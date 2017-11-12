@@ -479,6 +479,8 @@ def excuse_deny(request, excuse_id):
 ##### EXTRA POINTS-RELATED VIEWS #####
 ######################################
 
+# TODO: Finish the extra points thing
+
 @user_passes_test(lambda u: u.is_superuser)
 def extra_points(request):
   # Display form

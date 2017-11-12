@@ -38,6 +38,8 @@ class Event(models.Model):
   is_activated = models.BooleanField(default=False)
   semester = models.ForeignKey(Semester)
 
+  # TODO: Change name to sisters_eligible_to_attend
+  # instead of sisters_required
   sisters_required = models.ManyToManyField(Sister, blank=True, related_name='sisters_required')
   sisters_attended = models.ManyToManyField(Sister, blank=True, related_name='sisters_attended')
   sisters_excused = models.ManyToManyField(Sister, blank=True, related_name='sisters_excused')

@@ -12,6 +12,11 @@ from general.models import Sister
 # TODO: Don't let an alum, disaffiliated person, etc.
 # do any elections things.
 
+# TODO: Write tests
+
+# TODO: Add some way to remove a position
+# from elections this cycle
+
 ##########################
 ##### HELPER METHODS #####
 ##########################

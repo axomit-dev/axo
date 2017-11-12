@@ -2,6 +2,12 @@
 
 {% block content %}
 
+<!-- TODO: Use MIT certificates to log in?
+    Use MIT certificates?
+http://web.mit.edu/snippets/django/README.md
+ScriptsRemoteUserMiddleware and ScriptsRemoteUserBackend
+-->
+
 {% if form.errors %}
 <p>Your username and password didn't match. Please try again.</p>
 {% endif %}
